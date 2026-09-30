@@ -1,0 +1,119 @@
+{
+  "$defs": {
+    "EvidenceRef": {
+      "additionalProperties": false,
+      "properties": {
+        "path": {
+          "maxLength": 240,
+          "minLength": 1,
+          "title": "Path",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "screenshot",
+            "aria",
+            "dom",
+            "event",
+            "trace",
+            "configuration"
+          ],
+          "title": "Kind",
+          "type": "string"
+        }
+      },
+      "required": [
+        "path",
+        "kind"
+      ],
+      "title": "EvidenceRef",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "format": "uuid",
+      "title": "Id",
+      "type": "string"
+    },
+    "title": {
+      "maxLength": 160,
+      "minLength": 1,
+      "title": "Title",
+      "type": "string"
+    },
+    "severity": {
+      "enum": [
+        "critical",
+        "high",
+        "medium",
+        "low"
+      ],
+      "title": "Severity",
+      "type": "string"
+    },
+    "observed_behavior": {
+      "maxLength": 2000,
+      "minLength": 1,
+      "title": "Observed Behavior",
+      "type": "string"
+    },
+    "inferred_mechanism": {
+      "maxLength": 2000,
+      "minLength": 1,
+      "title": "Inferred Mechanism",
+      "type": "string"
+    },
+    "confidence": {
+      "maximum": 1,
+      "minimum": 0,
+      "title": "Confidence",
+      "type": "number"
+    },
+    "affected_sessions": {
+      "minimum": 1,
+      "title": "Affected Sessions",
+      "type": "integer"
+    },
+    "eligible_sessions": {
+      "minimum": 1,
+      "title": "Eligible Sessions",
+      "type": "integer"
+    },
+    "evidence": {
+      "items": {
+        "$ref": "#/$defs/EvidenceRef"
+      },
+      "minItems": 1,
+      "title": "Evidence",
+      "type": "array"
+    },
+    "recommendation": {
+      "maxLength": 2000,
+      "minLength": 1,
+      "title": "Recommendation",
+      "type": "string"
+    },
+    "verification": {
+      "maxLength": 2000,
+      "minLength": 1,
+      "title": "Verification",
+      "type": "string"
+    }
+  },
+  "required": [
+    "title",
+    "severity",
+    "observed_behavior",
+    "inferred_mechanism",
+    "confidence",
+    "affected_sessions",
+    "eligible_sessions",
+    "evidence",
+    "recommendation",
+    "verification"
+  ],
+  "title": "Finding",
+  "type": "object"
+}

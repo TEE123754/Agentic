@@ -1,0 +1,87 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "action_id": {
+      "format": "uuid",
+      "title": "Action Id",
+      "type": "string"
+    },
+    "before": {
+      "maximum": 100,
+      "minimum": 0,
+      "title": "Before",
+      "type": "integer"
+    },
+    "after": {
+      "maximum": 100,
+      "minimum": 0,
+      "title": "After",
+      "type": "integer"
+    },
+    "delta": {
+      "maximum": 100,
+      "minimum": -100,
+      "title": "Delta",
+      "type": "integer"
+    },
+    "kind": {
+      "enum": [
+        "penalty",
+        "progress_credit",
+        "unchanged",
+        "excluded"
+      ],
+      "title": "Kind",
+      "type": "string"
+    },
+    "event_ids": {
+      "default": [],
+      "items": {
+        "format": "uuid",
+        "type": "string"
+      },
+      "title": "Event Ids",
+      "type": "array"
+    },
+    "reason": {
+      "maxLength": 2000,
+      "minLength": 1,
+      "title": "Reason",
+      "type": "string"
+    },
+    "application_seconds": {
+      "minimum": 0,
+      "title": "Application Seconds",
+      "type": "number"
+    },
+    "inference_seconds": {
+      "minimum": 0,
+      "title": "Inference Seconds",
+      "type": "number"
+    },
+    "queue_seconds": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Queue Seconds",
+      "type": "number"
+    },
+    "behavioral_delay_seconds": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Behavioral Delay Seconds",
+      "type": "number"
+    }
+  },
+  "required": [
+    "action_id",
+    "before",
+    "after",
+    "delta",
+    "kind",
+    "reason",
+    "application_seconds",
+    "inference_seconds"
+  ],
+  "title": "PatienceEntry",
+  "type": "object"
+}

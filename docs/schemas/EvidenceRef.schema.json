@@ -1,0 +1,29 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "path": {
+      "maxLength": 240,
+      "minLength": 1,
+      "title": "Path",
+      "type": "string"
+    },
+    "kind": {
+      "enum": [
+        "screenshot",
+        "aria",
+        "dom",
+        "event",
+        "trace",
+        "configuration"
+      ],
+      "title": "Kind",
+      "type": "string"
+    }
+  },
+  "required": [
+    "path",
+    "kind"
+  ],
+  "title": "EvidenceRef",
+  "type": "object"
+}

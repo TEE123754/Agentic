@@ -1,0 +1,97 @@
+{
+  "$defs": {
+    "CompletionCriterion": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[a-z][a-z0-9_-]{1,63}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "heading_visible",
+            "text_visible",
+            "route_matches"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "value": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Value",
+          "type": "string"
+        },
+        "exact": {
+          "default": true,
+          "title": "Exact",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "id",
+        "kind",
+        "value"
+      ],
+      "title": "CompletionCriterion",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "pattern": "^[a-z][a-z0-9_-]{1,63}$",
+      "title": "Id",
+      "type": "string"
+    },
+    "name": {
+      "maxLength": 120,
+      "minLength": 1,
+      "title": "Name",
+      "type": "string"
+    },
+    "goal": {
+      "maxLength": 2000,
+      "minLength": 1,
+      "title": "Goal",
+      "type": "string"
+    },
+    "start_path": {
+      "default": "/",
+      "title": "Start Path",
+      "type": "string"
+    },
+    "completion": {
+      "items": {
+        "$ref": "#/$defs/CompletionCriterion"
+      },
+      "maxItems": 20,
+      "minItems": 1,
+      "title": "Completion",
+      "type": "array"
+    },
+    "prohibited_operations": {
+      "items": {
+        "enum": [
+          "place_order",
+          "real_payment",
+          "external_dispatch",
+          "delete_user"
+        ],
+        "type": "string"
+      },
+      "title": "Prohibited Operations",
+      "type": "array"
+    }
+  },
+  "required": [
+    "id",
+    "name",
+    "goal",
+    "completion",
+    "prohibited_operations"
+  ],
+  "title": "Journey",
+  "type": "object"
+}

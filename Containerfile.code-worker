@@ -1,0 +1,5 @@
+ARG BASE_IMAGE
+FROM ${BASE_IMAGE}
+COPY frictionlab/planning/container_worker.py /opt/frictionlab/worker.py
+USER 65534:65534
+ENTRYPOINT ["python", "-I", "-u", "/opt/frictionlab/worker.py"]

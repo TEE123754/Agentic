@@ -1,0 +1,238 @@
+{
+  "$defs": {
+    "Action": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "format": "uuid",
+          "title": "Id",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "click",
+            "type_text",
+            "press_key",
+            "scroll",
+            "wait",
+            "finish"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "observation_id": {
+          "format": "uuid",
+          "title": "Observation Id",
+          "type": "string"
+        },
+        "candidate_id": {
+          "anyOf": [
+            {
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Candidate Id"
+        },
+        "text_reference": {
+          "anyOf": [
+            {
+              "pattern": "^[a-z][a-z0-9_-]{1,63}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Text Reference"
+        },
+        "key": {
+          "anyOf": [
+            {
+              "enum": [
+                "Tab",
+                "Shift+Tab",
+                "Enter",
+                "Space",
+                "Escape",
+                "ArrowUp",
+                "ArrowDown"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Key"
+        },
+        "direction": {
+          "anyOf": [
+            {
+              "enum": [
+                "up",
+                "down"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Direction"
+        },
+        "amount": {
+          "anyOf": [
+            {
+              "maximum": 800,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Amount"
+        },
+        "timeout_ms": {
+          "anyOf": [
+            {
+              "maximum": 10000,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Timeout Ms"
+        }
+      },
+      "required": [
+        "kind",
+        "observation_id"
+      ],
+      "title": "Action",
+      "type": "object"
+    },
+    "EvidenceRef": {
+      "additionalProperties": false,
+      "properties": {
+        "path": {
+          "maxLength": 240,
+          "minLength": 1,
+          "title": "Path",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "screenshot",
+            "aria",
+            "dom",
+            "event",
+            "trace",
+            "configuration"
+          ],
+          "title": "Kind",
+          "type": "string"
+        }
+      },
+      "required": [
+        "path",
+        "kind"
+      ],
+      "title": "EvidenceRef",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "action_id": {
+      "format": "uuid",
+      "title": "Action Id",
+      "type": "string"
+    },
+    "action": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Action"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "observation_before": {
+      "format": "uuid",
+      "title": "Observation Before",
+      "type": "string"
+    },
+    "observation_after": {
+      "anyOf": [
+        {
+          "format": "uuid",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Observation After"
+    },
+    "result": {
+      "enum": [
+        "progress",
+        "no_change",
+        "validation_error",
+        "blocked",
+        "agent_error"
+      ],
+      "title": "Result",
+      "type": "string"
+    },
+    "application_seconds": {
+      "minimum": 0,
+      "title": "Application Seconds",
+      "type": "number"
+    },
+    "inference_seconds": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Inference Seconds",
+      "type": "number"
+    },
+    "detail": {
+      "default": "",
+      "maxLength": 2000,
+      "title": "Detail",
+      "type": "string"
+    },
+    "evidence": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/EvidenceRef"
+      },
+      "title": "Evidence",
+      "type": "array"
+    }
+  },
+  "required": [
+    "action_id",
+    "observation_before",
+    "result",
+    "application_seconds"
+  ],
+  "title": "StepResult",
+  "type": "object"
+}

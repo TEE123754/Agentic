@@ -1,0 +1,64 @@
+{
+  "$defs": {
+    "Viewport": {
+      "additionalProperties": false,
+      "properties": {
+        "width": {
+          "maximum": 3840,
+          "minimum": 320,
+          "title": "Width",
+          "type": "integer"
+        },
+        "height": {
+          "maximum": 2160,
+          "minimum": 480,
+          "title": "Height",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "width",
+        "height"
+      ],
+      "title": "Viewport",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "viewport": {
+      "$ref": "#/$defs/Viewport"
+    },
+    "input_mode": {
+      "enum": [
+        "mouse",
+        "touch",
+        "keyboard"
+      ],
+      "title": "Input Mode",
+      "type": "string"
+    },
+    "zoom_percent": {
+      "default": 100,
+      "maximum": 400,
+      "minimum": 100,
+      "title": "Zoom Percent",
+      "type": "integer"
+    },
+    "observation_mode": {
+      "default": "visible",
+      "enum": [
+        "visible",
+        "semantic_keyboard"
+      ],
+      "title": "Observation Mode",
+      "type": "string"
+    }
+  },
+  "required": [
+    "viewport",
+    "input_mode"
+  ],
+  "title": "Device",
+  "type": "object"
+}

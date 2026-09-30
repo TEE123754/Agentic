@@ -1,0 +1,32 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "finding_id": {
+      "format": "uuid",
+      "title": "Finding Id",
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "confirmed",
+        "dismissed",
+        "requires_investigation"
+      ],
+      "title": "Status",
+      "type": "string"
+    },
+    "note": {
+      "maxLength": 2000,
+      "minLength": 1,
+      "title": "Note",
+      "type": "string"
+    }
+  },
+  "required": [
+    "finding_id",
+    "status",
+    "note"
+  ],
+  "title": "ReviewDisposition",
+  "type": "object"
+}

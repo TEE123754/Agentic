@@ -1,0 +1,102 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "phase": {
+      "default": 1,
+      "enum": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "title": "Phase",
+      "type": "integer"
+    },
+    "build_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Build Id"
+    },
+    "environment_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Environment Id"
+    },
+    "personas": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Personas",
+      "type": "array"
+    },
+    "journeys": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Journeys",
+      "type": "array"
+    },
+    "seed": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Seed"
+    },
+    "configuration_hash": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Configuration Hash"
+    },
+    "runtime_metadata": {
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "integer"
+          },
+          {
+            "type": "number"
+          },
+          {
+            "type": "boolean"
+          }
+        ]
+      },
+      "title": "Runtime Metadata",
+      "type": "object"
+    }
+  },
+  "title": "ReportScope",
+  "type": "object"
+}

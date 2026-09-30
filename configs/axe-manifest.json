@@ -1,0 +1,11 @@
+{
+  "repository": "https://github.com/dequelabs/axe-core",
+  "version": "4.13.0",
+  "release": "https://github.com/dequelabs/axe-core/releases/tag/v4.13.0",
+  "distribution": "https://registry.npmjs.org/axe-core/-/axe-core-4.13.0.tgz",
+  "license": "MPL-2.0",
+  "archive_sha1": "f868ecb1bd61d982321760e51d841ab497ab86d0",
+  "script": "vendor/axe-core/axe.min.js",
+  "script_sha256": "c24f097bd2f451d4f933e8bc7d8d539f8672a2ebcb5cc9f9f3eec8ca9470a0c1",
+  "offline_runtime": true
+}

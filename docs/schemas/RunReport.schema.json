@@ -1,0 +1,1199 @@
+{
+  "$defs": {
+    "AbandonmentDiagnosis": {
+      "additionalProperties": false,
+      "properties": {
+        "first_person": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "First Person",
+          "type": "string"
+        },
+        "event_ids": {
+          "items": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Event Ids",
+          "type": "array"
+        },
+        "terminal_observation_id": {
+          "format": "uuid",
+          "title": "Terminal Observation Id",
+          "type": "string"
+        },
+        "evidence": {
+          "items": {
+            "$ref": "#/$defs/EvidenceRef"
+          },
+          "minItems": 1,
+          "title": "Evidence",
+          "type": "array"
+        },
+        "method": {
+          "const": "deterministic_evidence_template",
+          "default": "deterministic_evidence_template",
+          "title": "Method",
+          "type": "string"
+        }
+      },
+      "required": [
+        "first_person",
+        "event_ids",
+        "terminal_observation_id",
+        "evidence"
+      ],
+      "title": "AbandonmentDiagnosis",
+      "type": "object"
+    },
+    "Action": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "format": "uuid",
+          "title": "Id",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "click",
+            "type_text",
+            "press_key",
+            "scroll",
+            "wait",
+            "finish"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "observation_id": {
+          "format": "uuid",
+          "title": "Observation Id",
+          "type": "string"
+        },
+        "candidate_id": {
+          "anyOf": [
+            {
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Candidate Id"
+        },
+        "text_reference": {
+          "anyOf": [
+            {
+              "pattern": "^[a-z][a-z0-9_-]{1,63}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Text Reference"
+        },
+        "key": {
+          "anyOf": [
+            {
+              "enum": [
+                "Tab",
+                "Shift+Tab",
+                "Enter",
+                "Space",
+                "Escape",
+                "ArrowUp",
+                "ArrowDown"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Key"
+        },
+        "direction": {
+          "anyOf": [
+            {
+              "enum": [
+                "up",
+                "down"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Direction"
+        },
+        "amount": {
+          "anyOf": [
+            {
+              "maximum": 800,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Amount"
+        },
+        "timeout_ms": {
+          "anyOf": [
+            {
+              "maximum": 10000,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Timeout Ms"
+        }
+      },
+      "required": [
+        "kind",
+        "observation_id"
+      ],
+      "title": "Action",
+      "type": "object"
+    },
+    "CohortResults": {
+      "additionalProperties": false,
+      "properties": {
+        "requested_sessions": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Requested Sessions",
+          "type": "integer"
+        },
+        "executed_sessions": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Executed Sessions",
+          "type": "integer"
+        },
+        "eligible_sessions": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Eligible Sessions",
+          "type": "integer"
+        },
+        "outcome_counts": {
+          "additionalProperties": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "propertyNames": {
+            "$ref": "#/$defs/SessionOutcome"
+          },
+          "title": "Outcome Counts",
+          "type": "object"
+        }
+      },
+      "title": "CohortResults",
+      "type": "object"
+    },
+    "EvidenceRef": {
+      "additionalProperties": false,
+      "properties": {
+        "path": {
+          "maxLength": 240,
+          "minLength": 1,
+          "title": "Path",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "screenshot",
+            "aria",
+            "dom",
+            "event",
+            "trace",
+            "configuration"
+          ],
+          "title": "Kind",
+          "type": "string"
+        }
+      },
+      "required": [
+        "path",
+        "kind"
+      ],
+      "title": "EvidenceRef",
+      "type": "object"
+    },
+    "ExecutionStatus": {
+      "enum": [
+        "queued",
+        "running",
+        "completed",
+        "blocked",
+        "failed",
+        "cancelled",
+        "interrupted"
+      ],
+      "title": "ExecutionStatus",
+      "type": "string"
+    },
+    "Finding": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "format": "uuid",
+          "title": "Id",
+          "type": "string"
+        },
+        "title": {
+          "maxLength": 160,
+          "minLength": 1,
+          "title": "Title",
+          "type": "string"
+        },
+        "severity": {
+          "enum": [
+            "critical",
+            "high",
+            "medium",
+            "low"
+          ],
+          "title": "Severity",
+          "type": "string"
+        },
+        "observed_behavior": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Observed Behavior",
+          "type": "string"
+        },
+        "inferred_mechanism": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Inferred Mechanism",
+          "type": "string"
+        },
+        "confidence": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Confidence",
+          "type": "number"
+        },
+        "affected_sessions": {
+          "minimum": 1,
+          "title": "Affected Sessions",
+          "type": "integer"
+        },
+        "eligible_sessions": {
+          "minimum": 1,
+          "title": "Eligible Sessions",
+          "type": "integer"
+        },
+        "evidence": {
+          "items": {
+            "$ref": "#/$defs/EvidenceRef"
+          },
+          "minItems": 1,
+          "title": "Evidence",
+          "type": "array"
+        },
+        "recommendation": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Recommendation",
+          "type": "string"
+        },
+        "verification": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Verification",
+          "type": "string"
+        }
+      },
+      "required": [
+        "title",
+        "severity",
+        "observed_behavior",
+        "inferred_mechanism",
+        "confidence",
+        "affected_sessions",
+        "eligible_sessions",
+        "evidence",
+        "recommendation",
+        "verification"
+      ],
+      "title": "Finding",
+      "type": "object"
+    },
+    "FrictionEvent": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "format": "uuid",
+          "title": "Id",
+          "type": "string"
+        },
+        "detector": {
+          "pattern": "^[a-z][a-z0-9_-]{1,63}$",
+          "title": "Detector",
+          "type": "string"
+        },
+        "session_id": {
+          "format": "uuid",
+          "title": "Session Id",
+          "type": "string"
+        },
+        "action_id": {
+          "format": "uuid",
+          "title": "Action Id",
+          "type": "string"
+        },
+        "confidence": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Confidence",
+          "type": "number"
+        },
+        "patience_delta": {
+          "maximum": 0,
+          "minimum": -100,
+          "title": "Patience Delta",
+          "type": "integer"
+        },
+        "evidence": {
+          "items": {
+            "$ref": "#/$defs/EvidenceRef"
+          },
+          "minItems": 1,
+          "title": "Evidence",
+          "type": "array"
+        },
+        "observation_before": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Observation Before"
+        },
+        "observation_after": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Observation After"
+        },
+        "target_name": {
+          "default": "",
+          "maxLength": 120,
+          "title": "Target Name",
+          "type": "string"
+        },
+        "observed_behavior": {
+          "default": "",
+          "maxLength": 500,
+          "title": "Observed Behavior",
+          "type": "string"
+        },
+        "source": {
+          "const": "observed_application",
+          "default": "observed_application",
+          "title": "Source",
+          "type": "string"
+        }
+      },
+      "required": [
+        "detector",
+        "session_id",
+        "action_id",
+        "confidence",
+        "patience_delta",
+        "evidence"
+      ],
+      "title": "FrictionEvent",
+      "type": "object"
+    },
+    "PatienceEntry": {
+      "additionalProperties": false,
+      "properties": {
+        "action_id": {
+          "format": "uuid",
+          "title": "Action Id",
+          "type": "string"
+        },
+        "before": {
+          "maximum": 100,
+          "minimum": 0,
+          "title": "Before",
+          "type": "integer"
+        },
+        "after": {
+          "maximum": 100,
+          "minimum": 0,
+          "title": "After",
+          "type": "integer"
+        },
+        "delta": {
+          "maximum": 100,
+          "minimum": -100,
+          "title": "Delta",
+          "type": "integer"
+        },
+        "kind": {
+          "enum": [
+            "penalty",
+            "progress_credit",
+            "unchanged",
+            "excluded"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "event_ids": {
+          "default": [],
+          "items": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "title": "Event Ids",
+          "type": "array"
+        },
+        "reason": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Reason",
+          "type": "string"
+        },
+        "application_seconds": {
+          "minimum": 0,
+          "title": "Application Seconds",
+          "type": "number"
+        },
+        "inference_seconds": {
+          "minimum": 0,
+          "title": "Inference Seconds",
+          "type": "number"
+        },
+        "queue_seconds": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Queue Seconds",
+          "type": "number"
+        },
+        "behavioral_delay_seconds": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Behavioral Delay Seconds",
+          "type": "number"
+        }
+      },
+      "required": [
+        "action_id",
+        "before",
+        "after",
+        "delta",
+        "kind",
+        "reason",
+        "application_seconds",
+        "inference_seconds"
+      ],
+      "title": "PatienceEntry",
+      "type": "object"
+    },
+    "PlannerDecisionRecord": {
+      "additionalProperties": false,
+      "properties": {
+        "attempt": {
+          "minimum": 1,
+          "title": "Attempt",
+          "type": "integer"
+        },
+        "seed": {
+          "minimum": 0,
+          "title": "Seed",
+          "type": "integer"
+        },
+        "observation_id": {
+          "format": "uuid",
+          "title": "Observation Id",
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "pending",
+            "valid",
+            "failed"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "inference_seconds": {
+          "minimum": 0,
+          "title": "Inference Seconds",
+          "type": "number"
+        },
+        "input_tokens": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Input Tokens"
+        },
+        "raw_output": {
+          "default": "",
+          "maxLength": 4096,
+          "title": "Raw Output",
+          "type": "string"
+        },
+        "usage": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "title": "Usage",
+          "type": "object"
+        },
+        "decision": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Decision"
+        },
+        "category": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Category"
+        },
+        "reason": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reason"
+        }
+      },
+      "required": [
+        "attempt",
+        "seed",
+        "observation_id",
+        "status",
+        "inference_seconds"
+      ],
+      "title": "PlannerDecisionRecord",
+      "type": "object"
+    },
+    "ProtectionEvent": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "format": "uuid",
+          "title": "Id",
+          "type": "string"
+        },
+        "decision": {
+          "enum": [
+            "allowed",
+            "blocked"
+          ],
+          "title": "Decision",
+          "type": "string"
+        },
+        "layer": {
+          "enum": [
+            "configuration",
+            "action",
+            "browser",
+            "network",
+            "cleanup"
+          ],
+          "title": "Layer",
+          "type": "string"
+        },
+        "reason": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Reason",
+          "type": "string"
+        },
+        "occurred_at": {
+          "format": "date-time",
+          "title": "Occurred At",
+          "type": "string"
+        }
+      },
+      "required": [
+        "decision",
+        "layer",
+        "reason"
+      ],
+      "title": "ProtectionEvent",
+      "type": "object"
+    },
+    "ProtectionSummary": {
+      "additionalProperties": false,
+      "properties": {
+        "target_requests": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Target Requests",
+          "type": "integer"
+        },
+        "environment_validated": {
+          "default": false,
+          "title": "Environment Validated",
+          "type": "boolean"
+        },
+        "network_boundary_validated": {
+          "default": false,
+          "title": "Network Boundary Validated",
+          "type": "boolean"
+        },
+        "events": {
+          "items": {
+            "$ref": "#/$defs/ProtectionEvent"
+          },
+          "title": "Events",
+          "type": "array"
+        },
+        "cleanup_outcome": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Cleanup Outcome",
+          "type": "string"
+        },
+        "boundary_scope": {
+          "default": "unvalidated",
+          "enum": [
+            "unvalidated",
+            "owned_fixture_browser_proxy"
+          ],
+          "title": "Boundary Scope",
+          "type": "string"
+        },
+        "traffic_metrics": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "title": "Traffic Metrics",
+          "type": "object"
+        },
+        "sentinel_requests": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Sentinel Requests"
+        },
+        "sentinel_data_unchanged": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Sentinel Data Unchanged"
+        }
+      },
+      "required": [
+        "events",
+        "cleanup_outcome"
+      ],
+      "title": "ProtectionSummary",
+      "type": "object"
+    },
+    "ReportScope": {
+      "additionalProperties": false,
+      "properties": {
+        "phase": {
+          "default": 1,
+          "enum": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "title": "Phase",
+          "type": "integer"
+        },
+        "build_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Build Id"
+        },
+        "environment_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Environment Id"
+        },
+        "personas": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Personas",
+          "type": "array"
+        },
+        "journeys": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Journeys",
+          "type": "array"
+        },
+        "seed": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Seed"
+        },
+        "configuration_hash": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Configuration Hash"
+        },
+        "runtime_metadata": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "boolean"
+              }
+            ]
+          },
+          "title": "Runtime Metadata",
+          "type": "object"
+        }
+      },
+      "title": "ReportScope",
+      "type": "object"
+    },
+    "ReportStatus": {
+      "enum": [
+        "pending",
+        "reviewing",
+        "ready",
+        "partial",
+        "failed"
+      ],
+      "title": "ReportStatus",
+      "type": "string"
+    },
+    "ReviewDisposition": {
+      "additionalProperties": false,
+      "properties": {
+        "finding_id": {
+          "format": "uuid",
+          "title": "Finding Id",
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "confirmed",
+            "dismissed",
+            "requires_investigation"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "note": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Note",
+          "type": "string"
+        }
+      },
+      "required": [
+        "finding_id",
+        "status",
+        "note"
+      ],
+      "title": "ReviewDisposition",
+      "type": "object"
+    },
+    "ReviewSection": {
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "enum": [
+            "configuration_reviewed",
+            "not_reviewed",
+            "evidence_reviewed"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "method": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Method",
+          "type": "string"
+        },
+        "missing_evidence": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Missing Evidence",
+          "type": "array"
+        },
+        "limitations": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Limitations",
+          "type": "array"
+        },
+        "dispositions": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/ReviewDisposition"
+          },
+          "title": "Dispositions",
+          "type": "array"
+        }
+      },
+      "required": [
+        "status",
+        "method",
+        "missing_evidence",
+        "limitations"
+      ],
+      "title": "ReviewSection",
+      "type": "object"
+    },
+    "SessionOutcome": {
+      "enum": [
+        "completed",
+        "abandoned_patience",
+        "abandoned_requirement_unmet",
+        "inconclusive_agent_failure",
+        "blocked_environment",
+        "blocked_protection",
+        "paused_quota",
+        "timed_out",
+        "cancelled",
+        "interrupted"
+      ],
+      "title": "SessionOutcome",
+      "type": "string"
+    },
+    "StepResult": {
+      "additionalProperties": false,
+      "properties": {
+        "action_id": {
+          "format": "uuid",
+          "title": "Action Id",
+          "type": "string"
+        },
+        "action": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Action"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "observation_before": {
+          "format": "uuid",
+          "title": "Observation Before",
+          "type": "string"
+        },
+        "observation_after": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Observation After"
+        },
+        "result": {
+          "enum": [
+            "progress",
+            "no_change",
+            "validation_error",
+            "blocked",
+            "agent_error"
+          ],
+          "title": "Result",
+          "type": "string"
+        },
+        "application_seconds": {
+          "minimum": 0,
+          "title": "Application Seconds",
+          "type": "number"
+        },
+        "inference_seconds": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Inference Seconds",
+          "type": "number"
+        },
+        "detail": {
+          "default": "",
+          "maxLength": 2000,
+          "title": "Detail",
+          "type": "string"
+        },
+        "evidence": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/EvidenceRef"
+          },
+          "title": "Evidence",
+          "type": "array"
+        }
+      },
+      "required": [
+        "action_id",
+        "observation_before",
+        "result",
+        "application_seconds"
+      ],
+      "title": "StepResult",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "run_id": {
+      "format": "uuid",
+      "title": "Run Id",
+      "type": "string"
+    },
+    "revision": {
+      "default": 1,
+      "minimum": 1,
+      "title": "Revision",
+      "type": "integer"
+    },
+    "created_at": {
+      "format": "date-time",
+      "title": "Created At",
+      "type": "string"
+    },
+    "execution_status": {
+      "$ref": "#/$defs/ExecutionStatus"
+    },
+    "report_status": {
+      "$ref": "#/$defs/ReportStatus"
+    },
+    "terminal_reason": {
+      "maxLength": 2000,
+      "minLength": 1,
+      "title": "Terminal Reason",
+      "type": "string"
+    },
+    "executive_summary": {
+      "maxLength": 2000,
+      "minLength": 1,
+      "title": "Executive Summary",
+      "type": "string"
+    },
+    "scope": {
+      "$ref": "#/$defs/ReportScope"
+    },
+    "protection": {
+      "$ref": "#/$defs/ProtectionSummary"
+    },
+    "cohort_results": {
+      "$ref": "#/$defs/CohortResults"
+    },
+    "trajectories": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/StepResult"
+      },
+      "title": "Trajectories",
+      "type": "array"
+    },
+    "planner_decisions": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/PlannerDecisionRecord"
+      },
+      "title": "Planner Decisions",
+      "type": "array"
+    },
+    "friction_events": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/FrictionEvent"
+      },
+      "title": "Friction Events",
+      "type": "array"
+    },
+    "patience_ledger": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/PatienceEntry"
+      },
+      "title": "Patience Ledger",
+      "type": "array"
+    },
+    "abandonment_diagnosis": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/AbandonmentDiagnosis"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "findings": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/Finding"
+      },
+      "title": "Findings",
+      "type": "array"
+    },
+    "visual_evidence": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/EvidenceRef"
+      },
+      "title": "Visual Evidence",
+      "type": "array"
+    },
+    "abandonment_explanations": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Abandonment Explanations",
+      "type": "array"
+    },
+    "recommendations": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Recommendations",
+      "type": "array"
+    },
+    "comparison": {
+      "maxLength": 2000,
+      "minLength": 1,
+      "title": "Comparison",
+      "type": "string"
+    },
+    "review": {
+      "$ref": "#/$defs/ReviewSection"
+    }
+  },
+  "required": [
+    "run_id",
+    "execution_status",
+    "report_status",
+    "terminal_reason",
+    "executive_summary",
+    "scope",
+    "protection",
+    "cohort_results",
+    "recommendations",
+    "comparison",
+    "review"
+  ],
+  "title": "RunReport",
+  "type": "object"
+}

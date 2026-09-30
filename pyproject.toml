@@ -1,0 +1,33 @@
+[project]
+name = "frictionlab"
+version = "0.0.1"
+description = "Local-first synthetic UX audit platform"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+  "browser-use",
+  "playwright",
+  "httpx",
+  "psutil",
+  "pydantic",
+  "fastapi",
+  "uvicorn",
+  "smolagents>=1.26.0",
+]
+
+[project.optional-dependencies]
+vision = ["transformers", "torch", "pillow"]
+
+[dependency-groups]
+dev = ["pytest", "ruff"]
+
+[tool.uv]
+package = false
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = "-ra"

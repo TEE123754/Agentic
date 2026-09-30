@@ -1,0 +1,72 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "candidate_id": {
+      "minimum": 1,
+      "title": "Candidate Id",
+      "type": "integer"
+    },
+    "observation_id": {
+      "format": "uuid",
+      "title": "Observation Id",
+      "type": "string"
+    },
+    "target_id": {
+      "maxLength": 2000,
+      "minLength": 1,
+      "title": "Target Id",
+      "type": "string"
+    },
+    "role": {
+      "maxLength": 60,
+      "minLength": 1,
+      "title": "Role",
+      "type": "string"
+    },
+    "name": {
+      "maxLength": 500,
+      "title": "Name",
+      "type": "string"
+    },
+    "visible": {
+      "title": "Visible",
+      "type": "boolean"
+    },
+    "enabled": {
+      "title": "Enabled",
+      "type": "boolean"
+    },
+    "bounds": {
+      "maxItems": 4,
+      "minItems": 4,
+      "prefixItems": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        }
+      ],
+      "title": "Bounds",
+      "type": "array"
+    }
+  },
+  "required": [
+    "candidate_id",
+    "observation_id",
+    "target_id",
+    "role",
+    "name",
+    "visible",
+    "enabled",
+    "bounds"
+  ],
+  "title": "Candidate",
+  "type": "object"
+}

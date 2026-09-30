@@ -1,0 +1,78 @@
+{
+  "$defs": {
+    "EvidenceRef": {
+      "additionalProperties": false,
+      "properties": {
+        "path": {
+          "maxLength": 240,
+          "minLength": 1,
+          "title": "Path",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "screenshot",
+            "aria",
+            "dom",
+            "event",
+            "trace",
+            "configuration"
+          ],
+          "title": "Kind",
+          "type": "string"
+        }
+      },
+      "required": [
+        "path",
+        "kind"
+      ],
+      "title": "EvidenceRef",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "first_person": {
+      "maxLength": 2000,
+      "minLength": 1,
+      "title": "First Person",
+      "type": "string"
+    },
+    "event_ids": {
+      "items": {
+        "format": "uuid",
+        "type": "string"
+      },
+      "minItems": 1,
+      "title": "Event Ids",
+      "type": "array"
+    },
+    "terminal_observation_id": {
+      "format": "uuid",
+      "title": "Terminal Observation Id",
+      "type": "string"
+    },
+    "evidence": {
+      "items": {
+        "$ref": "#/$defs/EvidenceRef"
+      },
+      "minItems": 1,
+      "title": "Evidence",
+      "type": "array"
+    },
+    "method": {
+      "const": "deterministic_evidence_template",
+      "default": "deterministic_evidence_template",
+      "title": "Method",
+      "type": "string"
+    }
+  },
+  "required": [
+    "first_person",
+    "event_ids",
+    "terminal_observation_id",
+    "evidence"
+  ],
+  "title": "AbandonmentDiagnosis",
+  "type": "object"
+}

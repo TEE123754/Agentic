@@ -1,0 +1,81 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "mode": {
+      "const": "typed_tools",
+      "default": "typed_tools",
+      "title": "Mode",
+      "type": "string"
+    },
+    "max_steps": {
+      "default": 24,
+      "maximum": 30,
+      "minimum": 1,
+      "title": "Max Steps",
+      "type": "integer"
+    },
+    "max_tool_calls": {
+      "default": 24,
+      "maximum": 30,
+      "minimum": 1,
+      "title": "Max Tool Calls",
+      "type": "integer"
+    },
+    "max_runtime_seconds": {
+      "default": 240,
+      "maximum": 300,
+      "minimum": 1,
+      "title": "Max Runtime Seconds",
+      "type": "integer"
+    },
+    "request_timeout_seconds": {
+      "default": 45,
+      "maximum": 60,
+      "minimum": 1,
+      "title": "Request Timeout Seconds",
+      "type": "integer"
+    },
+    "max_input_tokens": {
+      "default": 2800,
+      "maximum": 3000,
+      "minimum": 100,
+      "title": "Max Input Tokens",
+      "type": "integer"
+    },
+    "max_output_tokens": {
+      "default": 256,
+      "maximum": 384,
+      "minimum": 96,
+      "title": "Max Output Tokens",
+      "type": "integer"
+    },
+    "max_memory_characters": {
+      "default": 10000,
+      "maximum": 12000,
+      "minimum": 1000,
+      "title": "Max Memory Characters",
+      "type": "integer"
+    },
+    "recent_actions": {
+      "default": 6,
+      "maximum": 8,
+      "minimum": 1,
+      "title": "Recent Actions",
+      "type": "integer"
+    },
+    "provider_retries": {
+      "const": 0,
+      "default": 0,
+      "title": "Provider Retries",
+      "type": "integer"
+    },
+    "vision_enabled": {
+      "const": false,
+      "default": false,
+      "title": "Vision Enabled",
+      "type": "boolean"
+    }
+  },
+  "title": "AgentLimits",
+  "type": "object"
+}

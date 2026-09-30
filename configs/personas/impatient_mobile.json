@@ -1,0 +1,9 @@
+{
+  "id": "impatient_mobile",
+  "name": "Impatient mobile shopper",
+  "description": "Uses touch on a narrow viewport, reads short explanations, and has limited tolerance for repeated corrections.",
+  "version": 1,
+  "device": {"viewport": {"width": 390, "height": 844}, "input_mode": "touch", "zoom_percent": 100, "observation_mode": "visible"},
+  "behavior": {"patience_initial": 55, "retry_limit": 2, "reading_budget_words_per_state": 120, "exploration_tendency": 0.35, "required_information": ["total_price", "delivery_estimate"]},
+  "friction_weights": {"dead_interaction": 1.5, "unclear_validation": 1.4, "unexpected_cost": 1.8, "navigation_loop": 1.2}
+}

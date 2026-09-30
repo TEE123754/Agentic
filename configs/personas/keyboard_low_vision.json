@@ -1,0 +1,9 @@
+{
+  "id": "keyboard_low_vision",
+  "name": "Keyboard user with low-vision requirements",
+  "description": "Uses keyboard actions, increased zoom, and semantic focus/label observations. No age or disability stereotype is assumed.",
+  "version": 1,
+  "device": {"viewport": {"width": 1280, "height": 800}, "input_mode": "keyboard", "zoom_percent": 200, "observation_mode": "semantic_keyboard"},
+  "behavior": {"patience_initial": 75, "retry_limit": 3, "reading_budget_words_per_state": 300, "exploration_tendency": 0.2, "required_information": ["field_guidance", "delivery_estimate"]},
+  "friction_weights": {"keyboard_trap": 2.0, "unclear_validation": 1.7, "missing_label": 1.8, "navigation_loop": 1.1}
+}

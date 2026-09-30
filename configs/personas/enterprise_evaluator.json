@@ -1,0 +1,9 @@
+{
+  "id": "enterprise_evaluator",
+  "name": "Skeptical enterprise evaluator",
+  "description": "Reads supporting information and requires explicit pricing and delivery terms before moving forward.",
+  "version": 1,
+  "device": {"viewport": {"width": 1440, "height": 900}, "input_mode": "mouse", "zoom_percent": 100, "observation_mode": "visible"},
+  "behavior": {"patience_initial": 90, "retry_limit": 3, "reading_budget_words_per_state": 600, "exploration_tendency": 0.6, "required_information": ["total_price", "delivery_estimate", "return_policy"]},
+  "friction_weights": {"hidden_information": 1.7, "unexpected_cost": 2.0, "unclear_validation": 1.1, "navigation_loop": 1.0}
+}

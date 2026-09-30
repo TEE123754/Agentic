@@ -1,0 +1,70 @@
+name: Phase 3 owned-fixture isolation gate
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: phase3-isolation
+  cancel-in-progress: false
+
+jobs:
+  isolated-code:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install locked Python dependencies
+        run: |
+          python -m pip install uv==0.11.18
+          uv sync --locked --group dev
+          mkdir -p artifacts/phase3 .runtime
+
+      - name: Build locally pinned rootless worker image
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(podman info --format '{{.Host.Security.Rootless}}')" = true
+          podman pull ghcr.io/astral-sh/uv:python3.12-alpine
+          base_image="$(podman image inspect ghcr.io/astral-sh/uv:python3.12-alpine --format '{{index .RepoDigests 0}}')"
+          test -n "$base_image"
+          printf '%s\n' "$base_image" > artifacts/phase3/worker-base-digest.txt
+          podman build --pull=never --build-arg "BASE_IMAGE=$base_image" --iidfile artifacts/phase3/worker-image-id.txt -f Containerfile.code-worker .
+          image_id="$(cat artifacts/phase3/worker-image-id.txt)"
+          [[ "$image_id" =~ ^sha256:[0-9a-f]{64}$ ]]
+          printf 'FRICTIONLAB_CODE_IMAGE_ID=%s\n' "$image_id" >> "$GITHUB_ENV"
+
+      - name: Validate real worker boundary once
+        run: uv run python scripts/validate_code_worker.py
+
+      - name: Download checksum-pinned local inference resources
+        run: uv run python scripts/setup_resources.py --download
+
+      - name: Attempt one owned-fixture CodeAgent journey
+        env:
+          FRICTIONLAB_BROWSER_PATH: /usr/bin/google-chrome
+        run: uv run python -m frictionlab autonomous --persona enterprise_evaluator --journey delivery_information --variant healthy --mode isolated_code
+
+      - name: Review saved report without reopening the browser
+        if: always()
+        env:
+          FRICTIONLAB_CODE_IMAGE_ID: ${{ env.FRICTIONLAB_CODE_IMAGE_ID }}
+        run: uv run python scripts/review_phase3_code_run.py
+
+      - name: Upload synthetic gate evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: phase3-owned-fixture-evidence
+          path: artifacts/phase3/
+          if-no-files-found: warn
+          retention-days: 7

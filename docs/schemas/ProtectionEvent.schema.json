@@ -1,0 +1,47 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "format": "uuid",
+      "title": "Id",
+      "type": "string"
+    },
+    "decision": {
+      "enum": [
+        "allowed",
+        "blocked"
+      ],
+      "title": "Decision",
+      "type": "string"
+    },
+    "layer": {
+      "enum": [
+        "configuration",
+        "action",
+        "browser",
+        "network",
+        "cleanup"
+      ],
+      "title": "Layer",
+      "type": "string"
+    },
+    "reason": {
+      "maxLength": 2000,
+      "minLength": 1,
+      "title": "Reason",
+      "type": "string"
+    },
+    "occurred_at": {
+      "format": "date-time",
+      "title": "Occurred At",
+      "type": "string"
+    }
+  },
+  "required": [
+    "decision",
+    "layer",
+    "reason"
+  ],
+  "title": "ProtectionEvent",
+  "type": "object"
+}

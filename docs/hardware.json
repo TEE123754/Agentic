@@ -1,0 +1,32 @@
+{
+  "ram_bytes": 34053414912,
+  "cpu": [
+    {
+      "Name": "Intel(R) Core(TM) i7-14700HX",
+      "NumberOfCores": 20,
+      "NumberOfLogicalProcessors": 28
+    }
+  ],
+  "gpu": [
+    {
+      "Name": "Intel(R) UHD Graphics",
+      "AdapterRAM": 2147479552
+    },
+    {
+      "Name": "NVIDIA GeForce RTX 5050 Laptop GPU",
+      "AdapterRAM": 4293918720
+    }
+  ],
+  "os": {
+    "Caption": "Microsoft Windows 11 Home Single Language",
+    "Version": "10.0.26200",
+    "OSArchitecture": "64-bit"
+  },
+  "disk_free_bytes": 49827090432,
+  "tools": [
+    {
+      "Name": "nvidia-smi.exe",
+      "Source": "C:\\Windows\\system32\\nvidia-smi.exe"
+    }
+  ]
+}

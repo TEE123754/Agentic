@@ -1,0 +1,130 @@
+{
+  "$defs": {
+    "EvidenceRef": {
+      "additionalProperties": false,
+      "properties": {
+        "path": {
+          "maxLength": 240,
+          "minLength": 1,
+          "title": "Path",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "screenshot",
+            "aria",
+            "dom",
+            "event",
+            "trace",
+            "configuration"
+          ],
+          "title": "Kind",
+          "type": "string"
+        }
+      },
+      "required": [
+        "path",
+        "kind"
+      ],
+      "title": "EvidenceRef",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "format": "uuid",
+      "title": "Id",
+      "type": "string"
+    },
+    "detector": {
+      "pattern": "^[a-z][a-z0-9_-]{1,63}$",
+      "title": "Detector",
+      "type": "string"
+    },
+    "session_id": {
+      "format": "uuid",
+      "title": "Session Id",
+      "type": "string"
+    },
+    "action_id": {
+      "format": "uuid",
+      "title": "Action Id",
+      "type": "string"
+    },
+    "confidence": {
+      "maximum": 1,
+      "minimum": 0,
+      "title": "Confidence",
+      "type": "number"
+    },
+    "patience_delta": {
+      "maximum": 0,
+      "minimum": -100,
+      "title": "Patience Delta",
+      "type": "integer"
+    },
+    "evidence": {
+      "items": {
+        "$ref": "#/$defs/EvidenceRef"
+      },
+      "minItems": 1,
+      "title": "Evidence",
+      "type": "array"
+    },
+    "observation_before": {
+      "anyOf": [
+        {
+          "format": "uuid",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Observation Before"
+    },
+    "observation_after": {
+      "anyOf": [
+        {
+          "format": "uuid",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Observation After"
+    },
+    "target_name": {
+      "default": "",
+      "maxLength": 120,
+      "title": "Target Name",
+      "type": "string"
+    },
+    "observed_behavior": {
+      "default": "",
+      "maxLength": 500,
+      "title": "Observed Behavior",
+      "type": "string"
+    },
+    "source": {
+      "const": "observed_application",
+      "default": "observed_application",
+      "title": "Source",
+      "type": "string"
+    }
+  },
+  "required": [
+    "detector",
+    "session_id",
+    "action_id",
+    "confidence",
+    "patience_delta",
+    "evidence"
+  ],
+  "title": "FrictionEvent",
+  "type": "object"
+}

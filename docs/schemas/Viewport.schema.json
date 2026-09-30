@@ -1,0 +1,23 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "width": {
+      "maximum": 3840,
+      "minimum": 320,
+      "title": "Width",
+      "type": "integer"
+    },
+    "height": {
+      "maximum": 2160,
+      "minimum": 480,
+      "title": "Height",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "width",
+    "height"
+  ],
+  "title": "Viewport",
+  "type": "object"
+}

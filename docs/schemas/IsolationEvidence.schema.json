@@ -1,0 +1,35 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "boundary": {
+      "const": "bundled_fixture_only",
+      "title": "Boundary",
+      "type": "string"
+    },
+    "separate_database": {
+      "title": "Separate Database",
+      "type": "boolean"
+    },
+    "disposable_data": {
+      "title": "Disposable Data",
+      "type": "boolean"
+    },
+    "no_live_credentials": {
+      "title": "No Live Credentials",
+      "type": "boolean"
+    },
+    "external_integrations_mocked": {
+      "title": "External Integrations Mocked",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "boundary",
+    "separate_database",
+    "disposable_data",
+    "no_live_credentials",
+    "external_integrations_mocked"
+  ],
+  "title": "IsolationEvidence",
+  "type": "object"
+}

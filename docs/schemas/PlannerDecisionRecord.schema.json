@@ -1,0 +1,106 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "attempt": {
+      "minimum": 1,
+      "title": "Attempt",
+      "type": "integer"
+    },
+    "seed": {
+      "minimum": 0,
+      "title": "Seed",
+      "type": "integer"
+    },
+    "observation_id": {
+      "format": "uuid",
+      "title": "Observation Id",
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "pending",
+        "valid",
+        "failed"
+      ],
+      "title": "Status",
+      "type": "string"
+    },
+    "inference_seconds": {
+      "minimum": 0,
+      "title": "Inference Seconds",
+      "type": "number"
+    },
+    "input_tokens": {
+      "anyOf": [
+        {
+          "minimum": 0,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Input Tokens"
+    },
+    "raw_output": {
+      "default": "",
+      "maxLength": 4096,
+      "title": "Raw Output",
+      "type": "string"
+    },
+    "usage": {
+      "additionalProperties": {
+        "type": "integer"
+      },
+      "title": "Usage",
+      "type": "object"
+    },
+    "decision": {
+      "anyOf": [
+        {
+          "additionalProperties": true,
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Decision"
+    },
+    "category": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Category"
+    },
+    "reason": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Reason"
+    }
+  },
+  "required": [
+    "attempt",
+    "seed",
+    "observation_id",
+    "status",
+    "inference_seconds"
+  ],
+  "title": "PlannerDecisionRecord",
+  "type": "object"
+}

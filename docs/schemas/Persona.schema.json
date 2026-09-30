@@ -1,0 +1,165 @@
+{
+  "$defs": {
+    "Behavior": {
+      "additionalProperties": false,
+      "properties": {
+        "patience_initial": {
+          "maximum": 100,
+          "minimum": 1,
+          "title": "Patience Initial",
+          "type": "integer"
+        },
+        "retry_limit": {
+          "maximum": 5,
+          "minimum": 0,
+          "title": "Retry Limit",
+          "type": "integer"
+        },
+        "reading_budget_words_per_state": {
+          "maximum": 2000,
+          "minimum": 20,
+          "title": "Reading Budget Words Per State",
+          "type": "integer"
+        },
+        "exploration_tendency": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Exploration Tendency",
+          "type": "number"
+        },
+        "required_information": {
+          "default": [],
+          "items": {
+            "pattern": "^[a-z][a-z0-9_-]{1,63}$",
+            "type": "string"
+          },
+          "title": "Required Information",
+          "type": "array"
+        }
+      },
+      "required": [
+        "patience_initial",
+        "retry_limit",
+        "reading_budget_words_per_state",
+        "exploration_tendency"
+      ],
+      "title": "Behavior",
+      "type": "object"
+    },
+    "Device": {
+      "additionalProperties": false,
+      "properties": {
+        "viewport": {
+          "$ref": "#/$defs/Viewport"
+        },
+        "input_mode": {
+          "enum": [
+            "mouse",
+            "touch",
+            "keyboard"
+          ],
+          "title": "Input Mode",
+          "type": "string"
+        },
+        "zoom_percent": {
+          "default": 100,
+          "maximum": 400,
+          "minimum": 100,
+          "title": "Zoom Percent",
+          "type": "integer"
+        },
+        "observation_mode": {
+          "default": "visible",
+          "enum": [
+            "visible",
+            "semantic_keyboard"
+          ],
+          "title": "Observation Mode",
+          "type": "string"
+        }
+      },
+      "required": [
+        "viewport",
+        "input_mode"
+      ],
+      "title": "Device",
+      "type": "object"
+    },
+    "Viewport": {
+      "additionalProperties": false,
+      "properties": {
+        "width": {
+          "maximum": 3840,
+          "minimum": 320,
+          "title": "Width",
+          "type": "integer"
+        },
+        "height": {
+          "maximum": 2160,
+          "minimum": 480,
+          "title": "Height",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "width",
+        "height"
+      ],
+      "title": "Viewport",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "pattern": "^[a-z][a-z0-9_-]{1,63}$",
+      "title": "Id",
+      "type": "string"
+    },
+    "name": {
+      "maxLength": 120,
+      "minLength": 1,
+      "title": "Name",
+      "type": "string"
+    },
+    "description": {
+      "maxLength": 2000,
+      "minLength": 1,
+      "title": "Description",
+      "type": "string"
+    },
+    "version": {
+      "default": 1,
+      "minimum": 1,
+      "title": "Version",
+      "type": "integer"
+    },
+    "device": {
+      "$ref": "#/$defs/Device"
+    },
+    "behavior": {
+      "$ref": "#/$defs/Behavior"
+    },
+    "friction_weights": {
+      "patternProperties": {
+        "^[a-z][a-z0-9_-]{1,63}$": {
+          "maximum": 3,
+          "minimum": 0,
+          "type": "number"
+        }
+      },
+      "title": "Friction Weights",
+      "type": "object"
+    }
+  },
+  "required": [
+    "id",
+    "name",
+    "description",
+    "device",
+    "behavior",
+    "friction_weights"
+  ],
+  "title": "Persona",
+  "type": "object"
+}

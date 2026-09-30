@@ -1,0 +1,37 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "pattern": "^[a-z][a-z0-9_-]{1,63}$",
+      "title": "Id",
+      "type": "string"
+    },
+    "kind": {
+      "enum": [
+        "heading_visible",
+        "text_visible",
+        "route_matches"
+      ],
+      "title": "Kind",
+      "type": "string"
+    },
+    "value": {
+      "maxLength": 2000,
+      "minLength": 1,
+      "title": "Value",
+      "type": "string"
+    },
+    "exact": {
+      "default": true,
+      "title": "Exact",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "id",
+    "kind",
+    "value"
+  ],
+  "title": "CompletionCriterion",
+  "type": "object"
+}

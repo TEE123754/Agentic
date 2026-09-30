@@ -1,0 +1,43 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "offset_x": {
+      "title": "Offset X",
+      "type": "number"
+    },
+    "offset_y": {
+      "title": "Offset Y",
+      "type": "number"
+    },
+    "css_width": {
+      "exclusiveMinimum": 0,
+      "title": "Css Width",
+      "type": "number"
+    },
+    "css_height": {
+      "exclusiveMinimum": 0,
+      "title": "Css Height",
+      "type": "number"
+    },
+    "pixel_width": {
+      "exclusiveMinimum": 0,
+      "title": "Pixel Width",
+      "type": "integer"
+    },
+    "pixel_height": {
+      "exclusiveMinimum": 0,
+      "title": "Pixel Height",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "offset_x",
+    "offset_y",
+    "css_width",
+    "css_height",
+    "pixel_width",
+    "pixel_height"
+  ],
+  "title": "CoordinateSpace",
+  "type": "object"
+}

@@ -1,0 +1,10 @@
+{
+  "id": "keyboard_checkout",
+  "name": "Reach review using the keyboard",
+  "goal": "Use only keyboard actions to read delivery terms, close that dialog, and reach Order review with the generated synthetic email.",
+  "start_path": "/",
+  "completion": [
+    {"id": "review_heading", "kind": "heading_visible", "value": "Order review", "exact": true}
+  ],
+  "prohibited_operations": ["place_order", "real_payment", "external_dispatch", "delete_user"]
+}

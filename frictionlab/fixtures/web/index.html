@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>FrictionLab — Local test storefront</title>
+  <link rel="stylesheet" href="/assets/style.css">
+  <script src="/assets/app.js" defer></script>
+</head>
+<body>
+  <header><strong>FrictionLab fixture</strong><span>Local synthetic data · No real orders</span></header>
+  <main>
+    <p class="eyebrow">CONTROLLED TEST APPLICATION</p>
+    <h1>Trail backpack</h1>
+    <p class="intro">A simple shopping journey for comparing healthy behavior with known usability defects.</p>
+    <section aria-label="Fixture settings" class="settings">
+      <label for="variant">Fixture variant</label>
+      <select id="variant">
+        <option value="healthy">Healthy</option>
+        <option value="generic_validation">Generic validation</option>
+        <option value="dead_button">Dead checkout button</option>
+        <option value="delayed_feedback">Delayed feedback</option>
+        <option value="hidden_shipping">Hidden shipping cost</option>
+        <option value="focus_trap">Keyboard focus trap</option>
+      </select>
+      <button id="switch-variant" class="secondary" type="button">Open variant</button>
+      <button id="reset" class="secondary" type="button">Reset this test run</button>
+      <p id="setup-status" role="status">Preparing a disposable test account…</p>
+    </section>
+    <section id="product" class="product" aria-label="Product details">
+      <div class="illustration" aria-hidden="true"><div class="backpack"></div></div>
+      <div>
+        <span class="tag">TEST PRODUCT</span><h2>One backpack. One clear journey.</h2>
+        <p>Lightweight daypack with a padded laptop compartment.</p>
+        <p class="price">$65</p><p id="price-details"></p>
+        <p>Delivery in 3 days.</p>
+        <button id="delivery" class="secondary" type="button">Read delivery policy</button>
+        <button id="start" type="button" disabled>Start checkout</button>
+      </div>
+    </section>
+    <section id="checkout" class="panel" hidden>
+      <h2>Checkout details</h2>
+      <form id="checkout-form" novalidate>
+        <label for="email">Synthetic email</label>
+        <input id="email" name="email" type="email" autocomplete="off" aria-describedby="email-help validation">
+        <p id="email-help">Use the generated test email ending in @fixture.invalid.</p>
+        <p id="validation" role="alert"></p>
+        <button id="continue" type="submit">Continue to order review</button>
+      </form>
+    </section>
+    <section id="review" class="panel" hidden>
+      <h2>Order review</h2>
+      <p>Backpack $65 + shipping $5 = $70.</p>
+      <p>No order has been placed.</p>
+    </section>
+    <dialog id="delivery-dialog" aria-labelledby="delivery-title">
+      <h2 id="delivery-title">Delivery and returns</h2>
+      <p>Delivery takes 3 days. Shipping costs $5.</p>
+      <p>Returns are accepted within 30 days.</p>
+      <button id="close-delivery" type="button">Close delivery policy</button>
+    </dialog>
+  </main>
+  <footer>This fixture uses in-memory accounts and mock integrations. Autonomous cohorts are not enabled.</footer>
+</body>
+</html>

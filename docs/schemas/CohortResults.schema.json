@@ -1,0 +1,54 @@
+{
+  "$defs": {
+    "SessionOutcome": {
+      "enum": [
+        "completed",
+        "abandoned_patience",
+        "abandoned_requirement_unmet",
+        "inconclusive_agent_failure",
+        "blocked_environment",
+        "blocked_protection",
+        "paused_quota",
+        "timed_out",
+        "cancelled",
+        "interrupted"
+      ],
+      "title": "SessionOutcome",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "requested_sessions": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Requested Sessions",
+      "type": "integer"
+    },
+    "executed_sessions": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Executed Sessions",
+      "type": "integer"
+    },
+    "eligible_sessions": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Eligible Sessions",
+      "type": "integer"
+    },
+    "outcome_counts": {
+      "additionalProperties": {
+        "minimum": 0,
+        "type": "integer"
+      },
+      "propertyNames": {
+        "$ref": "#/$defs/SessionOutcome"
+      },
+      "title": "Outcome Counts",
+      "type": "object"
+    }
+  },
+  "title": "CohortResults",
+  "type": "object"
+}

@@ -1,0 +1,11 @@
+{
+  "id": "checkout_review",
+  "name": "Reach checkout review",
+  "goal": "Find the backpack, understand its total cost and delivery date, and reach Order review with a synthetic email. Stop before placing an order.",
+  "start_path": "/",
+  "completion": [
+    {"id": "review_heading", "kind": "heading_visible", "value": "Order review", "exact": true},
+    {"id": "no_order", "kind": "text_visible", "value": "No order has been placed.", "exact": true}
+  ],
+  "prohibited_operations": ["place_order", "real_payment", "external_dispatch", "delete_user"]
+}

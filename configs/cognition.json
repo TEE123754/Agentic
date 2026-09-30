@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "base_penalties": {
+    "dead_interaction": 40,
+    "unclear_validation": 20,
+    "repeated_failed_correction": 24,
+    "navigation_loop": 18,
+    "loading_failure": 20,
+    "keyboard_trap": 32
+  },
+  "progress_credit": 4,
+  "max_total_progress_credit": 12,
+  "minimum_confidence": 0.7,
+  "keyboard_trap_repetitions": 2
+}

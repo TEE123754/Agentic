@@ -1,0 +1,188 @@
+{
+  "$defs": {
+    "IsolationEvidence": {
+      "additionalProperties": false,
+      "properties": {
+        "boundary": {
+          "const": "bundled_fixture_only",
+          "title": "Boundary",
+          "type": "string"
+        },
+        "separate_database": {
+          "title": "Separate Database",
+          "type": "boolean"
+        },
+        "disposable_data": {
+          "title": "Disposable Data",
+          "type": "boolean"
+        },
+        "no_live_credentials": {
+          "title": "No Live Credentials",
+          "type": "boolean"
+        },
+        "external_integrations_mocked": {
+          "title": "External Integrations Mocked",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "boundary",
+        "separate_database",
+        "disposable_data",
+        "no_live_credentials",
+        "external_integrations_mocked"
+      ],
+      "title": "IsolationEvidence",
+      "type": "object"
+    },
+    "TrafficLimits": {
+      "additionalProperties": false,
+      "properties": {
+        "concurrency": {
+          "default": 1,
+          "maximum": 2,
+          "minimum": 1,
+          "title": "Concurrency",
+          "type": "integer"
+        },
+        "requests_per_second": {
+          "default": 2,
+          "maximum": 10,
+          "minimum": 1,
+          "title": "Requests Per Second",
+          "type": "integer"
+        },
+        "max_steps": {
+          "default": 30,
+          "maximum": 100,
+          "minimum": 1,
+          "title": "Max Steps",
+          "type": "integer"
+        },
+        "max_runtime_seconds": {
+          "default": 300,
+          "maximum": 1800,
+          "minimum": 10,
+          "title": "Max Runtime Seconds",
+          "type": "integer"
+        }
+      },
+      "title": "TrafficLimits",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "pattern": "^[a-z][a-z0-9_-]{1,63}$",
+      "title": "Id",
+      "type": "string"
+    },
+    "execution_scope": {
+      "const": "bundled_fixture",
+      "title": "Execution Scope",
+      "type": "string"
+    },
+    "build_id": {
+      "const": "storefront-phase1-v1",
+      "title": "Build Id",
+      "type": "string"
+    },
+    "replica_origins": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 1,
+      "minItems": 1,
+      "title": "Replica Origins",
+      "type": "array"
+    },
+    "dependency_origins": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Dependency Origins",
+      "type": "array"
+    },
+    "blocked_live_origins": {
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1,
+      "title": "Blocked Live Origins",
+      "type": "array"
+    },
+    "data_mode": {
+      "const": "synthetic_only",
+      "title": "Data Mode",
+      "type": "string"
+    },
+    "credential_reference": {
+      "pattern": "^fixture://[a-z0-9_-]{1,64}$",
+      "title": "Credential Reference",
+      "type": "string"
+    },
+    "integration_mocks": {
+      "items": {
+        "enum": [
+          "payment",
+          "email",
+          "sms",
+          "webhook",
+          "inventory",
+          "analytics"
+        ],
+        "type": "string"
+      },
+      "title": "Integration Mocks",
+      "type": "array"
+    },
+    "isolation": {
+      "$ref": "#/$defs/IsolationEvidence"
+    },
+    "service_workers": {
+      "const": "blocked",
+      "default": "blocked",
+      "title": "Service Workers",
+      "type": "string"
+    },
+    "cleanup_scope": {
+      "const": "run_owned_data_only",
+      "title": "Cleanup Scope",
+      "type": "string"
+    },
+    "limits": {
+      "$ref": "#/$defs/TrafficLimits"
+    },
+    "prohibited_operations": {
+      "items": {
+        "enum": [
+          "place_order",
+          "real_payment",
+          "external_dispatch",
+          "delete_user"
+        ],
+        "type": "string"
+      },
+      "title": "Prohibited Operations",
+      "type": "array"
+    }
+  },
+  "required": [
+    "id",
+    "execution_scope",
+    "build_id",
+    "replica_origins",
+    "blocked_live_origins",
+    "data_mode",
+    "credential_reference",
+    "integration_mocks",
+    "isolation",
+    "cleanup_scope",
+    "limits",
+    "prohibited_operations"
+  ],
+  "title": "EnvironmentPolicy",
+  "type": "object"
+}

@@ -1,0 +1,5 @@
+**
+!frictionlab
+!frictionlab/planning
+!frictionlab/planning/container_worker.py
+!Containerfile.code-worker

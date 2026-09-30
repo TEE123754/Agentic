@@ -1,0 +1,22 @@
+{
+  "id": "local_storefront",
+  "execution_scope": "bundled_fixture",
+  "build_id": "storefront-phase1-v1",
+  "replica_origins": ["http://127.0.0.1:8765"],
+  "dependency_origins": [],
+  "blocked_live_origins": ["https://production.example.invalid"],
+  "data_mode": "synthetic_only",
+  "credential_reference": "fixture://synthetic_accounts",
+  "integration_mocks": ["payment", "email", "sms", "webhook", "inventory", "analytics"],
+  "isolation": {
+    "boundary": "bundled_fixture_only",
+    "separate_database": true,
+    "disposable_data": true,
+    "no_live_credentials": true,
+    "external_integrations_mocked": true
+  },
+  "service_workers": "blocked",
+  "cleanup_scope": "run_owned_data_only",
+  "limits": {"concurrency": 1, "requests_per_second": 2, "max_steps": 30, "max_runtime_seconds": 300},
+  "prohibited_operations": ["place_order", "real_payment", "external_dispatch", "delete_user"]
+}

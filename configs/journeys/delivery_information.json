@@ -1,0 +1,11 @@
+{
+  "id": "delivery_information",
+  "name": "Find delivery and return terms",
+  "goal": "Find delivery and return terms for the backpack before deciding whether to begin checkout.",
+  "start_path": "/",
+  "completion": [
+    {"id": "delivery_heading", "kind": "heading_visible", "value": "Delivery and returns", "exact": true},
+    {"id": "return_terms", "kind": "text_visible", "value": "Returns are accepted within 30 days.", "exact": true}
+  ],
+  "prohibited_operations": ["place_order", "real_payment", "external_dispatch", "delete_user"]
+}

@@ -1,0 +1,26 @@
+{
+  "planner": {
+    "repository": "Qwen/Qwen3-4B-GGUF",
+    "filename": "Qwen3-4B-Q4_K_M.gguf",
+    "revision": "bc640142c66e1fdd12af0bd68f40445458f3869b",
+    "license": "Apache-2.0",
+    "runtime": "llama.cpp CPU",
+    "context_tokens": 4096,
+    "max_output_tokens": 192,
+    "request_timeout_seconds": 180,
+    "startup_timeout_seconds": 240,
+    "memory_budget_gib": 8,
+    "parallel_requests": 1,
+    "endpoint": "http://127.0.0.1:8766"
+  },
+  "vision": {
+    "enabled": false,
+    "repository": "HuggingFaceTB/SmolVLM-Instruct",
+    "revision": null,
+    "local_files_only": true,
+    "max_image_edge": 768,
+    "max_output_tokens": 128,
+    "request_timeout_seconds": 180,
+    "status": "optional; configured but not downloaded or validated"
+  }
+}

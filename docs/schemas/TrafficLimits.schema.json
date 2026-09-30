@@ -1,0 +1,35 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "concurrency": {
+      "default": 1,
+      "maximum": 2,
+      "minimum": 1,
+      "title": "Concurrency",
+      "type": "integer"
+    },
+    "requests_per_second": {
+      "default": 2,
+      "maximum": 10,
+      "minimum": 1,
+      "title": "Requests Per Second",
+      "type": "integer"
+    },
+    "max_steps": {
+      "default": 30,
+      "maximum": 100,
+      "minimum": 1,
+      "title": "Max Steps",
+      "type": "integer"
+    },
+    "max_runtime_seconds": {
+      "default": 300,
+      "maximum": 1800,
+      "minimum": 10,
+      "title": "Max Runtime Seconds",
+      "type": "integer"
+    }
+  },
+  "title": "TrafficLimits",
+  "type": "object"
+}

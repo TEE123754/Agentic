@@ -1,0 +1,180 @@
+{
+  "$defs": {
+    "Candidate": {
+      "additionalProperties": false,
+      "properties": {
+        "candidate_id": {
+          "minimum": 1,
+          "title": "Candidate Id",
+          "type": "integer"
+        },
+        "observation_id": {
+          "format": "uuid",
+          "title": "Observation Id",
+          "type": "string"
+        },
+        "target_id": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Target Id",
+          "type": "string"
+        },
+        "role": {
+          "maxLength": 60,
+          "minLength": 1,
+          "title": "Role",
+          "type": "string"
+        },
+        "name": {
+          "maxLength": 500,
+          "title": "Name",
+          "type": "string"
+        },
+        "visible": {
+          "title": "Visible",
+          "type": "boolean"
+        },
+        "enabled": {
+          "title": "Enabled",
+          "type": "boolean"
+        },
+        "bounds": {
+          "maxItems": 4,
+          "minItems": 4,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Bounds",
+          "type": "array"
+        }
+      },
+      "required": [
+        "candidate_id",
+        "observation_id",
+        "target_id",
+        "role",
+        "name",
+        "visible",
+        "enabled",
+        "bounds"
+      ],
+      "title": "Candidate",
+      "type": "object"
+    },
+    "EvidenceRef": {
+      "additionalProperties": false,
+      "properties": {
+        "path": {
+          "maxLength": 240,
+          "minLength": 1,
+          "title": "Path",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "screenshot",
+            "aria",
+            "dom",
+            "event",
+            "trace",
+            "configuration"
+          ],
+          "title": "Kind",
+          "type": "string"
+        }
+      },
+      "required": [
+        "path",
+        "kind"
+      ],
+      "title": "EvidenceRef",
+      "type": "object"
+    },
+    "Viewport": {
+      "additionalProperties": false,
+      "properties": {
+        "width": {
+          "maximum": 3840,
+          "minimum": 320,
+          "title": "Width",
+          "type": "integer"
+        },
+        "height": {
+          "maximum": 2160,
+          "minimum": 480,
+          "title": "Height",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "width",
+        "height"
+      ],
+      "title": "Viewport",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "format": "uuid",
+      "title": "Id",
+      "type": "string"
+    },
+    "target_id": {
+      "maxLength": 2000,
+      "minLength": 1,
+      "title": "Target Id",
+      "type": "string"
+    },
+    "route": {
+      "maxLength": 2000,
+      "minLength": 1,
+      "title": "Route",
+      "type": "string"
+    },
+    "viewport": {
+      "$ref": "#/$defs/Viewport"
+    },
+    "candidates": {
+      "items": {
+        "$ref": "#/$defs/Candidate"
+      },
+      "title": "Candidates",
+      "type": "array"
+    },
+    "semantic_text": {
+      "maxLength": 16000,
+      "title": "Semantic Text",
+      "type": "string"
+    },
+    "evidence": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/EvidenceRef"
+      },
+      "title": "Evidence",
+      "type": "array"
+    }
+  },
+  "required": [
+    "target_id",
+    "route",
+    "viewport",
+    "candidates",
+    "semantic_text"
+  ],
+  "title": "Observation",
+  "type": "object"
+}

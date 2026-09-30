@@ -1,0 +1,1372 @@
+[
+  {
+    "name": "aiofiles",
+    "version": "25.1.0",
+    "license_expression": null,
+    "license": "Apache-2.0",
+    "project_urls": [
+      "Changelog, https://github.com/Tinche/aiofiles#history",
+      "Bug Tracker, https://github.com/Tinche/aiofiles/issues",
+      "Repository, https://github.com/Tinche/aiofiles"
+    ]
+  },
+  {
+    "name": "aiohappyeyeballs",
+    "version": "2.7.1",
+    "license_expression": null,
+    "license": "PSF-2.0",
+    "project_urls": [
+      "Bug Tracker, https://github.com/aio-libs/aiohappyeyeballs/issues",
+      "Changelog, https://github.com/aio-libs/aiohappyeyeballs/blob/main/CHANGELOG.md",
+      "Documentation, https://aiohappyeyeballs.readthedocs.io",
+      "Repository, https://github.com/aio-libs/aiohappyeyeballs"
+    ]
+  },
+  {
+    "name": "aiohttp",
+    "version": "3.14.3",
+    "license_expression": null,
+    "license": "Apache-2.0 AND MIT",
+    "project_urls": [
+      "Homepage, https://github.com/aio-libs/aiohttp",
+      "Chat: Matrix, https://matrix.to/#/#aio-libs:matrix.org",
+      "Chat: Matrix Space, https://matrix.to/#/#aio-libs-space:matrix.org",
+      "CI: GitHub Actions, https://github.com/aio-libs/aiohttp/actions?query=workflow%3ACI",
+      "Coverage: codecov, https://codecov.io/github/aio-libs/aiohttp",
+      "Docs: Changelog, https://docs.aiohttp.org/en/stable/changes.html",
+      "Docs: RTD, https://docs.aiohttp.org",
+      "GitHub: issues, https://github.com/aio-libs/aiohttp/issues",
+      "GitHub: repo, https://github.com/aio-libs/aiohttp"
+    ]
+  },
+  {
+    "name": "aiosignal",
+    "version": "1.4.0",
+    "license_expression": null,
+    "license": "Apache 2.0",
+    "project_urls": [
+      "Chat: Gitter, https://gitter.im/aio-libs/Lobby",
+      "CI: GitHub Actions, https://github.com/aio-libs/aiosignal/actions",
+      "Coverage: codecov, https://codecov.io/github/aio-libs/aiosignal",
+      "Docs: RTD, https://docs.aiosignal.org",
+      "GitHub: issues, https://github.com/aio-libs/aiosignal/issues",
+      "GitHub: repo, https://github.com/aio-libs/aiosignal"
+    ]
+  },
+  {
+    "name": "annotated-doc",
+    "version": "0.0.5",
+    "license_expression": "MIT",
+    "license": null,
+    "project_urls": [
+      "Homepage, https://github.com/fastapi/annotated-doc",
+      "Documentation, https://github.com/fastapi/annotated-doc",
+      "Repository, https://github.com/fastapi/annotated-doc",
+      "Issues, https://github.com/fastapi/annotated-doc/issues",
+      "Changelog, https://github.com/fastapi/annotated-doc/release-notes.md"
+    ]
+  },
+  {
+    "name": "annotated-types",
+    "version": "0.8.0",
+    "license_expression": "MIT",
+    "license": null,
+    "project_urls": [
+      "Homepage, https://github.com/annotated-types/annotated-types",
+      "Source, https://github.com/annotated-types/annotated-types",
+      "Changelog, https://github.com/annotated-types/annotated-types/releases"
+    ]
+  },
+  {
+    "name": "anthropic",
+    "version": "0.76.0",
+    "license_expression": null,
+    "license": "MIT",
+    "project_urls": [
+      "Homepage, https://github.com/anthropics/anthropic-sdk-python",
+      "Repository, https://github.com/anthropics/anthropic-sdk-python"
+    ]
+  },
+  {
+    "name": "anyio",
+    "version": "4.12.1",
+    "license_expression": "MIT",
+    "license": null,
+    "project_urls": [
+      "Documentation, https://anyio.readthedocs.io/en/latest/",
+      "Changelog, https://anyio.readthedocs.io/en/stable/versionhistory.html",
+      "Source code, https://github.com/agronholm/anyio",
+      "Issue tracker, https://github.com/agronholm/anyio/issues"
+    ]
+  },
+  {
+    "name": "attrs",
+    "version": "26.1.0",
+    "license_expression": "MIT",
+    "license": null,
+    "project_urls": [
+      "Documentation, https://www.attrs.org/",
+      "Changelog, https://www.attrs.org/en/stable/changelog.html",
+      "GitHub, https://github.com/python-attrs/attrs",
+      "Funding, https://github.com/sponsors/hynek",
+      "Tidelift, https://tidelift.com/subscription/pkg/pypi-attrs?utm_source=pypi-attrs&utm_medium=pypi"
+    ]
+  },
+  {
+    "name": "backoff",
+    "version": "2.2.1",
+    "license_expression": null,
+    "license": "MIT",
+    "project_urls": [
+      "Repository, https://github.com/litl/backoff"
+    ]
+  },
+  {
+    "name": "beautifulsoup4",
+    "version": "4.15.0",
+    "license_expression": null,
+    "license": "MIT License",
+    "project_urls": [
+      "Download, https://www.crummy.com/software/BeautifulSoup/bs4/download/",
+      "Homepage, https://www.crummy.com/software/BeautifulSoup/bs4/"
+    ]
+  },
+  {
+    "name": "browser-harness",
+    "version": "0.1.13",
+    "license_expression": "MIT",
+    "license": null,
+    "project_urls": [
+      "Homepage, https://github.com/browser-use/browser-harness",
+      "Repository, https://github.com/browser-use/browser-harness",
+      "Issues, https://github.com/browser-use/browser-harness/issues"
+    ]
+  },
+  {
+    "name": "browser-use",
+    "version": "0.13.10",
+    "license_expression": null,
+    "license": null,
+    "project_urls": [
+      "Homepage, https://browser-use.com",
+      "Documentation, https://docs.browser-use.com",
+      "Repository, https://github.com/browser-use/browser-use",
+      "Telemetry, https://docs.browser-use.com/development/monitoring/telemetry",
+      "Terms of Service, https://browser-use.com/legal/terms-of-service",
+      "Privacy Policy, https://browser-use.com/privacy/"
+    ]
+  },
+  {
+    "name": "browser-use-sdk",
+    "version": "3.4.2",
+    "license_expression": "MIT",
+    "license": null,
+    "project_urls": []
+  },
+  {
+    "name": "bubus",
+    "version": "1.5.6",
+    "license_expression": null,
+    "license": null,
+    "project_urls": [
+      "Repository, https://github.com/browser-use/bubus"
+    ]
+  },
+  {
+    "name": "cdp-use",
+    "version": "1.4.5",
+    "license_expression": null,
+    "license": "MIT",
+    "project_urls": [
+      "Repository, https://github.com/browser-use/cdp-use"
+    ]
+  },
+  {
+    "name": "certifi",
+    "version": "2026.7.22",
+    "license_expression": null,
+    "license": "MPL-2.0",
+    "project_urls": [
+      "Source, https://github.com/certifi/python-certifi"
+    ]
+  },
+  {
+    "name": "cffi",
+    "version": "2.1.1",
+    "license_expression": "MIT-0",
+    "license": null,
+    "project_urls": [
+      "Documentation, https://cffi.readthedocs.io/",
+      "Changelog, https://cffi.readthedocs.io/en/latest/whatsnew.html",
+      "Download, https://github.com/python-cffi/cffi/releases",
+      "Contact, https://groups.google.com/forum/#!forum/python-cffi",
+      "Source Code, https://github.com/python-cffi/cffi",
+      "Issue Tracker, https://github.com/python-cffi/cffi/issues"
+    ]
+  },
+  {
+    "name": "charset-normalizer",
+    "version": "3.5.1",
+    "license_expression": null,
+    "license": "MIT",
+    "project_urls": [
+      "Changelog, https://github.com/jawah/charset_normalizer/blob/master/CHANGELOG.md",
+      "Documentation, https://charset-normalizer.readthedocs.io/",
+      "Code, https://github.com/jawah/charset_normalizer",
+      "Issue tracker, https://github.com/jawah/charset_normalizer/issues"
+    ]
+  },
+  {
+    "name": "click",
+    "version": "8.3.3",
+    "license_expression": "BSD-3-Clause",
+    "license": null,
+    "project_urls": [
+      "Changes, https://click.palletsprojects.com/page/changes/",
+      "Chat, https://discord.gg/pallets",
+      "Documentation, https://click.palletsprojects.com/",
+      "Donate, https://palletsprojects.com/donate",
+      "Source, https://github.com/pallets/click/"
+    ]
+  },
+  {
+    "name": "cloudpickle",
+    "version": "3.1.2",
+    "license_expression": null,
+    "license": "BSD-3-Clause",
+    "project_urls": []
+  },
+  {
+    "name": "colorama",
+    "version": "0.4.6",
+    "license_expression": null,
+    "license": null,
+    "project_urls": [
+      "Homepage, https://github.com/tartley/colorama"
+    ]
+  },
+  {
+    "name": "cryptography",
+    "version": "50.0.1",
+    "license_expression": "Apache-2.0 OR BSD-3-Clause",
+    "license": null,
+    "project_urls": [
+      "changelog, https://cryptography.io/en/latest/changelog/",
+      "documentation, https://cryptography.io/",
+      "homepage, https://github.com/pyca/cryptography",
+      "issues, https://github.com/pyca/cryptography/issues",
+      "source, https://github.com/pyca/cryptography/"
+    ]
+  },
+  {
+    "name": "distro",
+    "version": "1.9.0",
+    "license_expression": null,
+    "license": "Apache License, Version 2.0",
+    "project_urls": []
+  },
+  {
+    "name": "docstring_parser",
+    "version": "0.18.0",
+    "license_expression": null,
+    "license": "MIT",
+    "project_urls": [
+      "homepage, https://github.com/rr-/docstring_parser",
+      "repository, https://github.com/rr-/docstring_parser",
+      "changelog, https://github.com/rr-/docstring_parser/blob/master/CHANGELOG.md"
+    ]
+  },
+  {
+    "name": "fastapi",
+    "version": "0.141.1",
+    "license_expression": "MIT",
+    "license": null,
+    "project_urls": [
+      "Homepage, https://github.com/fastapi/fastapi",
+      "Documentation, https://fastapi.tiangolo.com/",
+      "Repository, https://github.com/fastapi/fastapi",
+      "Issues, https://github.com/fastapi/fastapi/issues",
+      "Changelog, https://fastapi.tiangolo.com/release-notes/"
+    ]
+  },
+  {
+    "name": "fetch-use",
+    "version": "0.4.0",
+    "license_expression": null,
+    "license": "MIT",
+    "project_urls": [
+      "Homepage, https://browser-use.com",
+      "Documentation, https://docs.browser-use.com",
+      "Repository, https://github.com/browser-use/fetch-use"
+    ]
+  },
+  {
+    "name": "filelock",
+    "version": "4.0.6",
+    "license_expression": "MIT",
+    "license": null,
+    "project_urls": [
+      "Documentation, https://py-filelock.readthedocs.io",
+      "Homepage, https://github.com/tox-dev/py-filelock",
+      "Source, https://github.com/tox-dev/py-filelock",
+      "Tracker, https://github.com/tox-dev/py-filelock/issues"
+    ]
+  },
+  {
+    "name": "frozenlist",
+    "version": "1.8.0",
+    "license_expression": null,
+    "license": "Apache-2.0",
+    "project_urls": [
+      "Chat: Matrix, https://matrix.to/#/#aio-libs:matrix.org",
+      "Chat: Matrix Space, https://matrix.to/#/#aio-libs-space:matrix.org",
+      "CI: Github Actions, https://github.com/aio-libs/frozenlist/actions",
+      "Code of Conduct, https://github.com/aio-libs/.github/blob/master/CODE_OF_CONDUCT.md",
+      "Coverage: codecov, https://codecov.io/github/aio-libs/frozenlist",
+      "Docs: Changelog, https://github.com/aio-libs/frozenlist/blob/master/CHANGES.rst#changelog",
+      "Docs: RTD, https://frozenlist.aio-libs.org",
+      "GitHub: issues, https://github.com/aio-libs/frozenlist/issues",
+      "GitHub: repo, https://github.com/aio-libs/frozenlist"
+    ]
+  },
+  {
+    "name": "fsspec",
+    "version": "2026.9.0",
+    "license_expression": "BSD-3-Clause",
+    "license": null,
+    "project_urls": [
+      "Changelog, https://filesystem-spec.readthedocs.io/en/latest/changelog.html",
+      "Documentation, https://filesystem-spec.readthedocs.io/en/latest/",
+      "Homepage, https://github.com/fsspec/filesystem_spec"
+    ]
+  },
+  {
+    "name": "google-api-core",
+    "version": "2.29.0",
+    "license_expression": null,
+    "license": "Apache 2.0",
+    "project_urls": [
+      "Documentation, https://googleapis.dev/python/google-api-core/latest/",
+      "Repository, https://github.com/googleapis/python-api-core"
+    ]
+  },
+  {
+    "name": "google-api-python-client",
+    "version": "2.188.0",
+    "license_expression": null,
+    "license": "Apache 2.0",
+    "project_urls": []
+  },
+  {
+    "name": "google-auth",
+    "version": "2.48.0",
+    "license_expression": null,
+    "license": "Apache 2.0",
+    "project_urls": []
+  },
+  {
+    "name": "google-auth-httplib2",
+    "version": "0.4.2",
+    "license_expression": null,
+    "license": "Apache 2.0",
+    "project_urls": []
+  },
+  {
+    "name": "google-auth-oauthlib",
+    "version": "1.2.4",
+    "license_expression": null,
+    "license": "Apache 2.0",
+    "project_urls": []
+  },
+  {
+    "name": "google-genai",
+    "version": "1.65.0",
+    "license_expression": "Apache-2.0",
+    "license": null,
+    "project_urls": [
+      "Homepage, https://github.com/googleapis/python-genai"
+    ]
+  },
+  {
+    "name": "googleapis-common-protos",
+    "version": "1.75.4",
+    "license_expression": "Apache-2.0",
+    "license": null,
+    "project_urls": [
+      "Repository, https://github.com/googleapis/google-cloud-python/tree/main/packages/googleapis-common-protos"
+    ]
+  },
+  {
+    "name": "greenlet",
+    "version": "3.5.6",
+    "license_expression": "MIT AND PSF-2.0",
+    "license": null,
+    "project_urls": [
+      "Homepage, https://greenlet.readthedocs.io",
+      "Documentation, https://greenlet.readthedocs.io",
+      "Repository, https://github.com/python-greenlet/greenlet",
+      "Issues, https://github.com/python-greenlet/greenlet/issues",
+      "Changelog, https://greenlet.readthedocs.io/en/latest/changes.html"
+    ]
+  },
+  {
+    "name": "groq",
+    "version": "1.0.0",
+    "license_expression": null,
+    "license": "Apache-2.0",
+    "project_urls": [
+      "Homepage, https://github.com/groq/groq-python",
+      "Repository, https://github.com/groq/groq-python"
+    ]
+  },
+  {
+    "name": "h11",
+    "version": "0.16.0",
+    "license_expression": null,
+    "license": "MIT",
+    "project_urls": []
+  },
+  {
+    "name": "hf-xet",
+    "version": "1.6.0",
+    "license_expression": "Apache-2.0",
+    "license": null,
+    "project_urls": [
+      "Documentation, https://huggingface.co/docs/hub/xet/index",
+      "Homepage, https://github.com/huggingface/xet-core",
+      "Issues, https://github.com/huggingface/xet-core/issues",
+      "Repository, https://github.com/huggingface/xet-core.git"
+    ]
+  },
+  {
+    "name": "httpcore",
+    "version": "1.0.9",
+    "license_expression": "BSD-3-Clause",
+    "license": null,
+    "project_urls": [
+      "Documentation, https://www.encode.io/httpcore",
+      "Homepage, https://www.encode.io/httpcore/",
+      "Source, https://github.com/encode/httpcore"
+    ]
+  },
+  {
+    "name": "httpcore2",
+    "version": "2.13.1",
+    "license_expression": "BSD-3-Clause",
+    "license": null,
+    "project_urls": [
+      "Changelog, https://github.com/pydantic/httpx2/blob/main/src/httpcore2/CHANGELOG.md",
+      "Homepage, https://github.com/pydantic/httpx2",
+      "Source, https://github.com/pydantic/httpx2/blob/main/src/httpcore2"
+    ]
+  },
+  {
+    "name": "httplib2",
+    "version": "0.32.0",
+    "license_expression": null,
+    "license": "MIT",
+    "project_urls": []
+  },
+  {
+    "name": "httpx",
+    "version": "0.28.1",
+    "license_expression": null,
+    "license": "BSD-3-Clause",
+    "project_urls": [
+      "Changelog, https://github.com/encode/httpx/blob/master/CHANGELOG.md",
+      "Documentation, https://www.python-httpx.org",
+      "Homepage, https://github.com/encode/httpx",
+      "Source, https://github.com/encode/httpx"
+    ]
+  },
+  {
+    "name": "httpx2",
+    "version": "2.13.1",
+    "license_expression": "BSD-3-Clause",
+    "license": null,
+    "project_urls": [
+      "Changelog, https://github.com/pydantic/httpx2/blob/main/src/httpx2/CHANGELOG.md",
+      "Homepage, https://github.com/pydantic/httpx2",
+      "Source, https://github.com/pydantic/httpx2"
+    ]
+  },
+  {
+    "name": "huggingface_hub",
+    "version": "1.16.1",
+    "license_expression": null,
+    "license": "Apache-2.0",
+    "project_urls": []
+  },
+  {
+    "name": "idna",
+    "version": "3.20",
+    "license_expression": "BSD-3-Clause",
+    "license": null,
+    "project_urls": [
+      "Changelog, https://github.com/kjd/idna/blob/master/HISTORY.md",
+      "Issue tracker, https://github.com/kjd/idna/issues",
+      "Source, https://github.com/kjd/idna"
+    ]
+  },
+  {
+    "name": "iniconfig",
+    "version": "2.3.0",
+    "license_expression": "MIT",
+    "license": null,
+    "project_urls": [
+      "Homepage, https://github.com/pytest-dev/iniconfig"
+    ]
+  },
+  {
+    "name": "inquirerpy",
+    "version": "0.3.4",
+    "license_expression": null,
+    "license": "MIT",
+    "project_urls": [
+      "Documentation, https://inquirerpy.readthedocs.io",
+      "Repository, https://github.com/kazhala/InquirerPy"
+    ]
+  },
+  {
+    "name": "Jinja2",
+    "version": "3.1.6",
+    "license_expression": null,
+    "license": null,
+    "project_urls": [
+      "Changes, https://jinja.palletsprojects.com/changes/",
+      "Chat, https://discord.gg/pallets",
+      "Documentation, https://jinja.palletsprojects.com/",
+      "Donate, https://palletsprojects.com/donate",
+      "Source, https://github.com/pallets/jinja/"
+    ]
+  },
+  {
+    "name": "jiter",
+    "version": "0.17.0",
+    "license_expression": "MIT",
+    "license": null,
+    "project_urls": []
+  },
+  {
+    "name": "jsonschema",
+    "version": "4.26.0",
+    "license_expression": "MIT",
+    "license": null,
+    "project_urls": [
+      "Homepage, https://github.com/python-jsonschema/jsonschema",
+      "Documentation, https://python-jsonschema.readthedocs.io/",
+      "Issues, https://github.com/python-jsonschema/jsonschema/issues/",
+      "Funding, https://github.com/sponsors/Julian",
+      "Tidelift, https://tidelift.com/subscription/pkg/pypi-jsonschema?utm_source=pypi-jsonschema&utm_medium=referral&utm_campaign=pypi-link",
+      "Changelog, https://github.com/python-jsonschema/jsonschema/blob/main/CHANGELOG.rst",
+      "Source, https://github.com/python-jsonschema/jsonschema"
+    ]
+  },
+  {
+    "name": "jsonschema-specifications",
+    "version": "2025.9.1",
+    "license_expression": "MIT",
+    "license": null,
+    "project_urls": [
+      "Documentation, https://jsonschema-specifications.readthedocs.io/",
+      "Homepage, https://github.com/python-jsonschema/jsonschema-specifications",
+      "Issues, https://github.com/python-jsonschema/jsonschema-specifications/issues/",
+      "Funding, https://github.com/sponsors/Julian",
+      "Tidelift, https://tidelift.com/subscription/pkg/pypi-jsonschema-specifications?utm_source=pypi-jsonschema-specifications&utm_medium=referral&utm_campaign=pypi-link",
+      "Source, https://github.com/python-jsonschema/jsonschema-specifications"
+    ]
+  },
+  {
+    "name": "lxml",
+    "version": "6.1.3",
+    "license_expression": null,
+    "license": "BSD-3-Clause",
+    "project_urls": [
+      "Source, https://github.com/lxml/lxml",
+      "Bug Tracker, https://bugs.launchpad.net/lxml"
+    ]
+  },
+  {
+    "name": "markdown-it-py",
+    "version": "4.2.0",
+    "license_expression": null,
+    "license": null,
+    "project_urls": [
+      "Documentation, https://markdown-it-py.readthedocs.io",
+      "Homepage, https://github.com/executablebooks/markdown-it-py"
+    ]
+  },
+  {
+    "name": "markdownify",
+    "version": "1.2.2",
+    "license_expression": null,
+    "license": null,
+    "project_urls": [
+      "Homepage, http://github.com/matthewwithanm/python-markdownify",
+      "Download, http://github.com/matthewwithanm/python-markdownify/tarball/master"
+    ]
+  },
+  {
+    "name": "MarkupSafe",
+    "version": "3.0.3",
+    "license_expression": "BSD-3-Clause",
+    "license": null,
+    "project_urls": [
+      "Donate, https://palletsprojects.com/donate",
+      "Documentation, https://markupsafe.palletsprojects.com/",
+      "Changes, https://markupsafe.palletsprojects.com/page/changes/",
+      "Source, https://github.com/pallets/markupsafe/",
+      "Chat, https://discord.gg/pallets"
+    ]
+  },
+  {
+    "name": "mcp",
+    "version": "2.1.1",
+    "license_expression": null,
+    "license": "MIT",
+    "project_urls": [
+      "Homepage, https://modelcontextprotocol.io",
+      "Documentation, https://py.sdk.modelcontextprotocol.io/",
+      "Repository, https://github.com/modelcontextprotocol/python-sdk",
+      "Issues, https://github.com/modelcontextprotocol/python-sdk/issues"
+    ]
+  },
+  {
+    "name": "mcp-types",
+    "version": "2.1.1",
+    "license_expression": null,
+    "license": "MIT",
+    "project_urls": [
+      "Homepage, https://modelcontextprotocol.io",
+      "Documentation, https://py.sdk.modelcontextprotocol.io/",
+      "Repository, https://github.com/modelcontextprotocol/python-sdk",
+      "Issues, https://github.com/modelcontextprotocol/python-sdk/issues"
+    ]
+  },
+  {
+    "name": "mdurl",
+    "version": "0.1.2",
+    "license_expression": null,
+    "license": null,
+    "project_urls": [
+      "Homepage, https://github.com/executablebooks/mdurl"
+    ]
+  },
+  {
+    "name": "multidict",
+    "version": "6.9.1",
+    "license_expression": null,
+    "license": "Apache License 2.0",
+    "project_urls": [
+      "Chat: Matrix, https://matrix.to/#/#aio-libs:matrix.org",
+      "Chat: Matrix Space, https://matrix.to/#/#aio-libs-space:matrix.org",
+      "CI: GitHub, https://github.com/aio-libs/multidict/actions",
+      "Code of Conduct, https://github.com/aio-libs/.github/blob/master/CODE_OF_CONDUCT.md",
+      "Coverage: codecov, https://codecov.io/github/aio-libs/multidict",
+      "Docs: Changelog, https://multidict.aio-libs.org/en/latest/changes/",
+      "Docs: RTD, https://multidict.aio-libs.org",
+      "GitHub: issues, https://github.com/aio-libs/multidict/issues",
+      "GitHub: repo, https://github.com/aio-libs/multidict"
+    ]
+  },
+  {
+    "name": "oauthlib",
+    "version": "4.0.0",
+    "license_expression": null,
+    "license": "BSD-3-Clause",
+    "project_urls": [
+      "Changelog, https://github.com/oauthlib/oauthlib/blob/master/CHANGELOG.rst",
+      "Documentation, https://oauthlib.readthedocs.io/",
+      "Gitter, https://gitter.im/oauthlib/Lobby",
+      "Issues, https://github.com/oauthlib/oauthlib/issues",
+      "Source, https://github.com/oauthlib/oauthlib",
+      "Sponsor, https://github.com/sponsors/JonathanHuot"
+    ]
+  },
+  {
+    "name": "ollama",
+    "version": "0.6.1",
+    "license_expression": "MIT",
+    "license": null,
+    "project_urls": [
+      "homepage, https://ollama.com",
+      "repository, https://github.com/ollama/ollama-python",
+      "issues, https://github.com/ollama/ollama-python/issues"
+    ]
+  },
+  {
+    "name": "openai",
+    "version": "2.26.0",
+    "license_expression": null,
+    "license": "Apache-2.0",
+    "project_urls": [
+      "Homepage, https://github.com/openai/openai-python",
+      "Repository, https://github.com/openai/openai-python"
+    ]
+  },
+  {
+    "name": "opentelemetry-api",
+    "version": "1.45.0",
+    "license_expression": "Apache-2.0",
+    "license": null,
+    "project_urls": [
+      "Homepage, https://github.com/open-telemetry/opentelemetry-python/tree/main/opentelemetry-api",
+      "Repository, https://github.com/open-telemetry/opentelemetry-python"
+    ]
+  },
+  {
+    "name": "packaging",
+    "version": "26.3",
+    "license_expression": "Apache-2.0 OR BSD-2-Clause",
+    "license": null,
+    "project_urls": [
+      "Documentation, https://packaging.pypa.io/",
+      "Source, https://github.com/pypa/packaging"
+    ]
+  },
+  {
+    "name": "pfzy",
+    "version": "0.3.4",
+    "license_expression": null,
+    "license": "MIT",
+    "project_urls": [
+      "Documentation, https://pfzy.readthedocs.io/",
+      "Repository, https://github.com/kazhala/pfzy"
+    ]
+  },
+  {
+    "name": "pillow",
+    "version": "12.3.0",
+    "license_expression": "MIT-CMU",
+    "license": null,
+    "project_urls": [
+      "Release notes, https://pillow.readthedocs.io/en/stable/releasenotes/index.html",
+      "Changelog, https://github.com/python-pillow/Pillow/releases",
+      "Documentation, https://pillow.readthedocs.io",
+      "Funding, https://tidelift.com/subscription/pkg/pypi-pillow?utm_source=pypi-pillow&utm_medium=pypi",
+      "Homepage, https://python-pillow.github.io",
+      "Mastodon, https://fosstodon.org/@pillow",
+      "Source, https://github.com/python-pillow/Pillow"
+    ]
+  },
+  {
+    "name": "playwright",
+    "version": "1.63.0",
+    "license_expression": "Apache-2.0",
+    "license": null,
+    "project_urls": [
+      "homepage, https://github.com/Microsoft/playwright-python",
+      "Release notes, https://github.com/microsoft/playwright-python/releases"
+    ]
+  },
+  {
+    "name": "pluggy",
+    "version": "1.6.0",
+    "license_expression": null,
+    "license": "MIT",
+    "project_urls": []
+  },
+  {
+    "name": "portalocker",
+    "version": "4.4.0",
+    "license_expression": "BSD-3-Clause",
+    "license": null,
+    "project_urls": [
+      "homepage, https://github.com/wolph/portalocker/",
+      "documentation, https://portalocker.readthedocs.io/en/latest/",
+      "repository, https://github.com/wolph/portalocker/",
+      "Funding, https://github.com/sponsors/wolph"
+    ]
+  },
+  {
+    "name": "posthog",
+    "version": "7.7.0",
+    "license_expression": null,
+    "license": "MIT",
+    "project_urls": [
+      "Homepage, https://github.com/posthog/posthog-python",
+      "Repository, https://github.com/posthog/posthog-python"
+    ]
+  },
+  {
+    "name": "prompt_toolkit",
+    "version": "3.0.53",
+    "license_expression": null,
+    "license": null,
+    "project_urls": [
+      "Homepage, https://github.com/prompt-toolkit/python-prompt-toolkit",
+      "Documentation, https://python-prompt-toolkit.readthedocs.io/en/stable/"
+    ]
+  },
+  {
+    "name": "propcache",
+    "version": "0.5.4",
+    "license_expression": null,
+    "license": "Apache-2.0",
+    "project_urls": [
+      "Chat: Matrix, https://matrix.to/#/#aio-libs:matrix.org",
+      "Chat: Matrix Space, https://matrix.to/#/#aio-libs-space:matrix.org",
+      "CI: GitHub Workflows, https://github.com/aio-libs/propcache/actions?query=branch:master",
+      "Code of Conduct, https://github.com/aio-libs/.github/blob/master/CODE_OF_CONDUCT.md",
+      "Coverage: codecov, https://codecov.io/github/aio-libs/propcache",
+      "Docs: Changelog, https://propcache.readthedocs.io/en/latest/changes/",
+      "Docs: RTD, https://propcache.readthedocs.io",
+      "GitHub: issues, https://github.com/aio-libs/propcache/issues",
+      "GitHub: repo, https://github.com/aio-libs/propcache"
+    ]
+  },
+  {
+    "name": "proto-plus",
+    "version": "1.28.4",
+    "license_expression": null,
+    "license": "Apache 2.0",
+    "project_urls": [
+      "Documentation, https://googleapis.dev/python/proto-plus/latest/",
+      "Repository, https://github.com/googleapis/google-cloud-python",
+      "Homepage, https://github.com/googleapis/google-cloud-python/tree/main/packages/proto-plus"
+    ]
+  },
+  {
+    "name": "protobuf",
+    "version": "6.33.6",
+    "license_expression": null,
+    "license": "3-Clause BSD License",
+    "project_urls": []
+  },
+  {
+    "name": "psutil",
+    "version": "7.2.2",
+    "license_expression": null,
+    "license": "BSD-3-Clause",
+    "project_urls": []
+  },
+  {
+    "name": "pyasn1",
+    "version": "0.6.4",
+    "license_expression": null,
+    "license": "BSD-2-Clause",
+    "project_urls": [
+      "Homepage, https://github.com/pyasn1/pyasn1",
+      "Documentation, https://pyasn1.readthedocs.io",
+      "Source, https://github.com/pyasn1/pyasn1",
+      "Issues, https://github.com/pyasn1/pyasn1/issues",
+      "Changelog, https://pyasn1.readthedocs.io/en/latest/changelog.html"
+    ]
+  },
+  {
+    "name": "pyasn1_modules",
+    "version": "0.4.2",
+    "license_expression": null,
+    "license": "BSD",
+    "project_urls": [
+      "Source, https://github.com/pyasn1/pyasn1-modules",
+      "Issues, https://github.com/pyasn1/pyasn1-modules/issues",
+      "Changelog, https://github.com/pyasn1/pyasn1-modules/blob/master/CHANGES.txt"
+    ]
+  },
+  {
+    "name": "pycparser",
+    "version": "3.0",
+    "license_expression": "BSD-3-Clause",
+    "license": null,
+    "project_urls": [
+      "Homepage, https://github.com/eliben/pycparser"
+    ]
+  },
+  {
+    "name": "pydantic",
+    "version": "2.13.5",
+    "license_expression": "MIT",
+    "license": null,
+    "project_urls": [
+      "Homepage, https://github.com/pydantic/pydantic",
+      "Documentation, https://docs.pydantic.dev",
+      "Funding, https://github.com/sponsors/samuelcolvin",
+      "Source, https://github.com/pydantic/pydantic",
+      "Changelog, https://docs.pydantic.dev/latest/changelog/"
+    ]
+  },
+  {
+    "name": "pydantic-settings",
+    "version": "2.15.0",
+    "license_expression": "MIT",
+    "license": null,
+    "project_urls": [
+      "Homepage, https://github.com/pydantic/pydantic-settings",
+      "Funding, https://github.com/sponsors/samuelcolvin",
+      "Source, https://github.com/pydantic/pydantic-settings",
+      "Changelog, https://github.com/pydantic/pydantic-settings/releases",
+      "Documentation, https://docs.pydantic.dev/dev-v2/concepts/pydantic_settings/"
+    ]
+  },
+  {
+    "name": "pydantic_core",
+    "version": "2.46.5",
+    "license_expression": "MIT",
+    "license": null,
+    "project_urls": [
+      "Funding, https://github.com/sponsors/samuelcolvin",
+      "Homepage, https://github.com/pydantic",
+      "Source, https://github.com/pydantic/pydantic/tree/main/pydantic-core"
+    ]
+  },
+  {
+    "name": "pyee",
+    "version": "13.0.1",
+    "license_expression": null,
+    "license": "MIT",
+    "project_urls": [
+      "Repository, https://github.com/jfhbrook/pyee",
+      "Documentation, https://pyee.readthedocs.io"
+    ]
+  },
+  {
+    "name": "Pygments",
+    "version": "2.21.0",
+    "license_expression": "BSD-2-Clause",
+    "license": null,
+    "project_urls": [
+      "Homepage, https://pygments.org",
+      "Documentation, https://pygments.org/docs",
+      "Source, https://github.com/pygments/pygments",
+      "Bug Tracker, https://github.com/pygments/pygments/issues",
+      "Changelog, https://github.com/pygments/pygments/blob/master/CHANGES"
+    ]
+  },
+  {
+    "name": "PyJWT",
+    "version": "2.15.1",
+    "license_expression": "MIT",
+    "license": null,
+    "project_urls": [
+      "Homepage, https://github.com/jpadilla/pyjwt"
+    ]
+  },
+  {
+    "name": "pyotp",
+    "version": "2.9.0",
+    "license_expression": null,
+    "license": "MIT License",
+    "project_urls": [
+      "Documentation, https://pyauth.github.io/pyotp",
+      "Source Code, https://github.com/pyauth/pyotp",
+      "Issue Tracker, https://github.com/pyauth/pyotp/issues",
+      "Change Log, https://github.com/pyauth/pyotp/blob/master/Changes.rst"
+    ]
+  },
+  {
+    "name": "pyparsing",
+    "version": "3.3.3",
+    "license_expression": "MIT",
+    "license": null,
+    "project_urls": [
+      "Documentation, https://pyparsing-docs.readthedocs.io/en/latest/",
+      "Homepage, https://github.com/pyparsing/pyparsing/",
+      "Source, https://github.com/pyparsing/pyparsing.git"
+    ]
+  },
+  {
+    "name": "pypdf",
+    "version": "6.16.2",
+    "license_expression": "BSD-3-Clause",
+    "license": null,
+    "project_urls": [
+      "Bug Reports, https://github.com/py-pdf/pypdf/issues",
+      "Changelog, https://pypdf.readthedocs.io/en/latest/meta/CHANGELOG.html",
+      "Documentation, https://pypdf.readthedocs.io/en/latest/",
+      "Source, https://github.com/py-pdf/pypdf"
+    ]
+  },
+  {
+    "name": "pytest",
+    "version": "9.1.1",
+    "license_expression": "MIT",
+    "license": null,
+    "project_urls": [
+      "Changelog, https://docs.pytest.org/en/stable/changelog.html",
+      "Contact, https://docs.pytest.org/en/stable/contact.html",
+      "Funding, https://docs.pytest.org/en/stable/sponsor.html",
+      "Homepage, https://docs.pytest.org/en/latest/",
+      "Source, https://github.com/pytest-dev/pytest",
+      "Tracker, https://github.com/pytest-dev/pytest/issues"
+    ]
+  },
+  {
+    "name": "python-dateutil",
+    "version": "2.9.0.post0",
+    "license_expression": null,
+    "license": "Dual License",
+    "project_urls": [
+      "Documentation, https://dateutil.readthedocs.io/en/stable/",
+      "Source, https://github.com/dateutil/dateutil"
+    ]
+  },
+  {
+    "name": "python-docx",
+    "version": "1.2.0",
+    "license_expression": null,
+    "license": "MIT",
+    "project_urls": [
+      "Changelog, https://github.com/python-openxml/python-docx/blob/master/HISTORY.rst",
+      "Documentation, https://python-docx.readthedocs.org/en/latest/",
+      "Homepage, https://github.com/python-openxml/python-docx",
+      "Repository, https://github.com/python-openxml/python-docx"
+    ]
+  },
+  {
+    "name": "python-dotenv",
+    "version": "1.2.2",
+    "license_expression": null,
+    "license": "BSD-3-Clause",
+    "project_urls": [
+      "Source, https://github.com/theskumar/python-dotenv"
+    ]
+  },
+  {
+    "name": "python-multipart",
+    "version": "0.0.32",
+    "license_expression": "Apache-2.0",
+    "license": null,
+    "project_urls": [
+      "Homepage, https://github.com/Kludex/python-multipart",
+      "Documentation, https://kludex.github.io/python-multipart/",
+      "Changelog, https://github.com/Kludex/python-multipart/blob/master/CHANGELOG.md",
+      "Source, https://github.com/Kludex/python-multipart"
+    ]
+  },
+  {
+    "name": "pywin32",
+    "version": "312",
+    "license_expression": null,
+    "license": "PSF",
+    "project_urls": [
+      "Homepage, https://github.com/mhammond/pywin32",
+      "Changes, https://github.com/mhammond/pywin32/blob/main/CHANGES.md",
+      "Docs, https://mhammond.github.io/pywin32/",
+      "Bugs, https://github.com/mhammond/pywin32/issues",
+      "Support Requests, https://github.com/mhammond/pywin32/discussions",
+      "Mailing List, https://mail.python.org/mailman/listinfo/python-win32"
+    ]
+  },
+  {
+    "name": "PyYAML",
+    "version": "6.0.3",
+    "license_expression": null,
+    "license": "MIT",
+    "project_urls": [
+      "Bug Tracker, https://github.com/yaml/pyyaml/issues",
+      "CI, https://github.com/yaml/pyyaml/actions",
+      "Documentation, https://pyyaml.org/wiki/PyYAMLDocumentation",
+      "Mailing lists, http://lists.sourceforge.net/lists/listinfo/yaml-core",
+      "Source Code, https://github.com/yaml/pyyaml"
+    ]
+  },
+  {
+    "name": "referencing",
+    "version": "0.37.0",
+    "license_expression": "MIT",
+    "license": null,
+    "project_urls": [
+      "Documentation, https://referencing.readthedocs.io/",
+      "Homepage, https://github.com/python-jsonschema/referencing",
+      "Issues, https://github.com/python-jsonschema/referencing/issues/",
+      "Funding, https://github.com/sponsors/Julian",
+      "Tidelift, https://tidelift.com/subscription/pkg/pypi-referencing?utm_source=pypi-referencing&utm_medium=referral&utm_campaign=pypi-link",
+      "Changelog, https://referencing.readthedocs.io/en/stable/changes/",
+      "Source, https://github.com/python-jsonschema/referencing"
+    ]
+  },
+  {
+    "name": "reportlab",
+    "version": "4.4.9",
+    "license_expression": null,
+    "license": "BSD license (see license.txt for details), Copyright (c) 2000-2025, ReportLab Inc.",
+    "project_urls": []
+  },
+  {
+    "name": "requests",
+    "version": "2.33.0",
+    "license_expression": null,
+    "license": "Apache-2.0",
+    "project_urls": [
+      "Documentation, https://requests.readthedocs.io",
+      "Source, https://github.com/psf/requests"
+    ]
+  },
+  {
+    "name": "requests-oauthlib",
+    "version": "2.0.0",
+    "license_expression": null,
+    "license": "ISC",
+    "project_urls": []
+  },
+  {
+    "name": "rich",
+    "version": "14.3.3",
+    "license_expression": null,
+    "license": "MIT",
+    "project_urls": [
+      "Documentation, https://rich.readthedocs.io/en/latest/",
+      "Homepage, https://github.com/Textualize/rich"
+    ]
+  },
+  {
+    "name": "rpds-py",
+    "version": "2026.6.3",
+    "license_expression": "MIT",
+    "license": null,
+    "project_urls": [
+      "Documentation, https://rpds.readthedocs.io/",
+      "Funding, https://github.com/sponsors/Julian",
+      "Homepage, https://github.com/crate-py/rpds",
+      "Issues, https://github.com/crate-py/rpds/issues/",
+      "Source, https://github.com/crate-py/rpds",
+      "Tidelift, https://tidelift.com/subscription/pkg/pypi-rpds-py?utm_source=pypi-rpds-py&utm_medium=referral&utm_campaign=pypi-link",
+      "Upstream, https://github.com/orium/rpds"
+    ]
+  },
+  {
+    "name": "rsa",
+    "version": "4.9.1",
+    "license_expression": null,
+    "license": "Apache-2.0",
+    "project_urls": [
+      "Homepage, https://stuvel.eu/rsa",
+      "Repository, https://github.com/sybrenstuvel/python-rsa"
+    ]
+  },
+  {
+    "name": "ruff",
+    "version": "0.16.9",
+    "license_expression": "MIT",
+    "license": null,
+    "project_urls": [
+      "Changelog, https://github.com/astral-sh/ruff/blob/main/CHANGELOG.md",
+      "Documentation, https://docs.astral.sh/ruff/",
+      "Repository, https://github.com/astral-sh/ruff"
+    ]
+  },
+  {
+    "name": "screeninfo",
+    "version": "0.8.1",
+    "license_expression": null,
+    "license": "MIT",
+    "project_urls": [
+      "Repository, https://github.com/rr-/screeninfo"
+    ]
+  },
+  {
+    "name": "shellingham",
+    "version": "1.5.4",
+    "license_expression": null,
+    "license": "ISC License",
+    "project_urls": []
+  },
+  {
+    "name": "six",
+    "version": "1.17.0",
+    "license_expression": null,
+    "license": "MIT",
+    "project_urls": []
+  },
+  {
+    "name": "smolagents",
+    "version": "1.26.0",
+    "license_expression": null,
+    "license": null,
+    "project_urls": []
+  },
+  {
+    "name": "sniffio",
+    "version": "1.3.1",
+    "license_expression": null,
+    "license": "MIT OR Apache-2.0",
+    "project_urls": [
+      "Homepage, https://github.com/python-trio/sniffio",
+      "Documentation, https://sniffio.readthedocs.io/",
+      "Changelog, https://sniffio.readthedocs.io/en/latest/history.html"
+    ]
+  },
+  {
+    "name": "soupsieve",
+    "version": "2.10",
+    "license_expression": "MIT",
+    "license": null,
+    "project_urls": [
+      "Homepage, https://github.com/facelessuser/soupsieve"
+    ]
+  },
+  {
+    "name": "sse-starlette",
+    "version": "3.5.0",
+    "license_expression": "BSD-3-Clause",
+    "license": null,
+    "project_urls": [
+      "Homepage, https://github.com/sysid/sse-starlette",
+      "Repository, https://github.com/sysid/sse-starlette",
+      "Issues, https://github.com/sysid/sse-starlette/issues",
+      "Source, https://github.com/sysid/sse-starlette"
+    ]
+  },
+  {
+    "name": "starlette",
+    "version": "1.7.0",
+    "license_expression": "BSD-3-Clause",
+    "license": null,
+    "project_urls": [
+      "Homepage, https://github.com/Kludex/starlette",
+      "Documentation, https://starlette.dev/",
+      "Changelog, https://starlette.dev/release-notes/",
+      "Funding, https://github.com/sponsors/Kludex",
+      "Source, https://github.com/Kludex/starlette"
+    ]
+  },
+  {
+    "name": "tenacity",
+    "version": "9.1.4",
+    "license_expression": null,
+    "license": "Apache 2.0",
+    "project_urls": []
+  },
+  {
+    "name": "tqdm",
+    "version": "4.70.1",
+    "license_expression": null,
+    "license": "MPL-2.0 AND MIT",
+    "project_urls": [
+      "homepage, https://tqdm.github.io",
+      "repository, https://github.com/tqdm/tqdm",
+      "changelog, https://tqdm.github.io/releases",
+      "wiki, https://github.com/tqdm/tqdm/wiki"
+    ]
+  },
+  {
+    "name": "truststore",
+    "version": "0.10.4",
+    "license_expression": "MIT",
+    "license": null,
+    "project_urls": [
+      "Documentation, https://truststore.readthedocs.io",
+      "Source, https://github.com/sethmlarson/truststore"
+    ]
+  },
+  {
+    "name": "typer",
+    "version": "0.27.2",
+    "license_expression": "MIT",
+    "license": null,
+    "project_urls": [
+      "Homepage, https://github.com/fastapi/typer",
+      "Documentation, https://typer.tiangolo.com",
+      "Repository, https://github.com/fastapi/typer",
+      "Issues, https://github.com/fastapi/typer/issues",
+      "Changelog, https://typer.tiangolo.com/release-notes/"
+    ]
+  },
+  {
+    "name": "typing-inspection",
+    "version": "0.4.4",
+    "license_expression": "MIT",
+    "license": null,
+    "project_urls": [
+      "Homepage, https://github.com/pydantic/typing-inspection",
+      "Documentation, https://pydantic.github.io/typing-inspection/dev/",
+      "Source, https://github.com/pydantic/typing-inspection",
+      "Changelog, https://github.com/pydantic/typing-inspection/blob/main/HISTORY.md"
+    ]
+  },
+  {
+    "name": "typing_extensions",
+    "version": "4.15.0",
+    "license_expression": "PSF-2.0",
+    "license": null,
+    "project_urls": [
+      "Bug Tracker, https://github.com/python/typing_extensions/issues",
+      "Changes, https://github.com/python/typing_extensions/blob/main/CHANGELOG.md",
+      "Documentation, https://typing-extensions.readthedocs.io/",
+      "Home, https://github.com/python/typing_extensions",
+      "Q & A, https://github.com/python/typing/discussions",
+      "Repository, https://github.com/python/typing_extensions"
+    ]
+  },
+  {
+    "name": "uritemplate",
+    "version": "4.2.0",
+    "license_expression": null,
+    "license": "BSD 3-Clause OR Apache-2.0",
+    "project_urls": [
+      "Source, https://github.com/python-hyper/uritemplate"
+    ]
+  },
+  {
+    "name": "urllib3",
+    "version": "2.8.0",
+    "license_expression": "MIT",
+    "license": null,
+    "project_urls": [
+      "Changelog, https://github.com/urllib3/urllib3/blob/main/CHANGES.rst",
+      "Documentation, https://urllib3.readthedocs.io",
+      "Code, https://github.com/urllib3/urllib3",
+      "Issue tracker, https://github.com/urllib3/urllib3/issues",
+      "Security policy, https://urllib3.readthedocs.io/en/latest/security.html"
+    ]
+  },
+  {
+    "name": "uuid7",
+    "version": "0.1.0",
+    "license_expression": null,
+    "license": "MIT license",
+    "project_urls": []
+  },
+  {
+    "name": "uvicorn",
+    "version": "0.54.0",
+    "license_expression": "BSD-3-Clause",
+    "license": null,
+    "project_urls": [
+      "Changelog, https://uvicorn.dev/release-notes",
+      "Funding, https://github.com/sponsors/Kludex",
+      "Homepage, https://uvicorn.dev/",
+      "Source, https://github.com/Kludex/uvicorn"
+    ]
+  },
+  {
+    "name": "wcwidth",
+    "version": "0.9.1",
+    "license_expression": null,
+    "license": null,
+    "project_urls": [
+      "Homepage, https://github.com/jquast/wcwidth"
+    ]
+  },
+  {
+    "name": "websockets",
+    "version": "15.0.1",
+    "license_expression": null,
+    "license": "BSD-3-Clause",
+    "project_urls": [
+      "Homepage, https://github.com/python-websockets/websockets",
+      "Changelog, https://websockets.readthedocs.io/en/stable/project/changelog.html",
+      "Documentation, https://websockets.readthedocs.io/",
+      "Funding, https://tidelift.com/subscription/pkg/pypi-websockets?utm_source=pypi-websockets&utm_medium=referral&utm_campaign=readme",
+      "Tracker, https://github.com/python-websockets/websockets/issues"
+    ]
+  },
+  {
+    "name": "yarl",
+    "version": "1.25.1",
+    "license_expression": null,
+    "license": "Apache-2.0",
+    "project_urls": [
+      "Chat: Matrix, https://matrix.to/#/#aio-libs:matrix.org",
+      "Chat: Matrix Space, https://matrix.to/#/#aio-libs-space:matrix.org",
+      "CI: GitHub Workflows, https://github.com/aio-libs/yarl/actions?query=branch:master",
+      "Code of Conduct, https://github.com/aio-libs/.github/blob/master/CODE_OF_CONDUCT.md",
+      "Coverage: codecov, https://codecov.io/github/aio-libs/yarl",
+      "Docs: Changelog, https://yarl.aio-libs.org/en/latest/changes/",
+      "Docs: RTD, https://yarl.aio-libs.org",
+      "GitHub: issues, https://github.com/aio-libs/yarl/issues",
+      "GitHub: repo, https://github.com/aio-libs/yarl"
+    ]
+  }
+]
