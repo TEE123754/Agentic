@@ -81,13 +81,17 @@ def blocked_report(reason, resolved=None):
     return unexecuted_report(reason, resolved, ExecutionStatus.BLOCKED)
 
 
-def write_report(report: RunReport, artifact_root: Path, *, prepared_directory=False):
+def write_report(
+    report: RunReport, artifact_root: Path, *, prepared_directory=False, recover_partial=False
+):
     directory = artifact_root / str(report.run_id)
+    if recover_partial and (directory / "report.html").exists():
+        raise FileExistsError("A completed report export already exists")
     if prepared_directory and any(
         (directory / f"report.{suffix}").exists() for suffix in ("json", "md", "html")
     ):
         raise FileExistsError("An exported report already exists")
-    directory.mkdir(parents=True, exist_ok=prepared_directory)
+    directory.mkdir(parents=True, exist_ok=prepared_directory or recover_partial)
     payload = report.model_dump(mode="json")
     sections = [
         ("Executive summary", report.executive_summary),
@@ -200,7 +204,16 @@ def write_report(report: RunReport, artifact_root: Path, *, prepared_directory=F
             encoded = base64.b64encode(path.read_bytes()).decode()
             document += f'<figure><figcaption>{html.escape(ref.path)}</figcaption><img style="max-width:100%" alt="Masked browser evidence" src="data:image/png;base64,{encoded}"></figure>'
     document += "</body></html>"
-    (directory / "report.json").write_text(json.dumps(payload, indent=2), encoding="utf-8")
-    (directory / "report.md").write_text("\n".join(markdown), encoding="utf-8")
-    (directory / "report.html").write_text(document, encoding="utf-8")
+    for suffix, content in (
+        ("json", json.dumps(payload, indent=2)),
+        ("md", "\n".join(markdown)),
+        ("html", document),
+    ):
+        final = directory / f"report.{suffix}"
+        partial = directory / f"report.{suffix}.partial"
+        with partial.open("w", encoding="utf-8") as stream:
+            stream.write(content)
+            stream.flush()
+            os.fsync(stream.fileno())
+        partial.replace(final)
     return directory

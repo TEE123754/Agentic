@@ -495,6 +495,8 @@ class CohortSessionSummary(Contract):
     journey_id: Identifier
     repetition: int = Field(ge=0, strict=True)
     seed: int = Field(ge=0, le=2**32 - 1, strict=True)
+    attempt: int = Field(default=1, ge=1, strict=True)
+    parent_session_id: UUID | None = None
     execution_status: ExecutionStatus
     outcome: SessionOutcome | None = None
     steps: int = Field(ge=0, strict=True)

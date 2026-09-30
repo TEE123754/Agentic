@@ -79,6 +79,38 @@ def test_global_traffic_budget_and_health_stop():
     assert budget.stop_reason and not budget.acquire(stopped)
 
 
+def test_cohort_health_stop_cancels_workers_without_churn_claim(tmp_path):
+    async def scenario():
+        entered = asyncio.Event()
+
+        async def waiting_executor(*_args, **_kwargs):
+            entered.set()
+            await asyncio.Event().wait()
+
+        resolved = configuration(personas=("impatient_mobile",))
+        coordinator = CohortCoordinator(tmp_path / "phase5", executor=waiting_executor)
+        try:
+            await coordinator.submit(resolved)
+            await asyncio.wait_for(entered.wait(), timeout=5)
+            run_id = str(resolved.config.id)
+            budget = coordinator.budgets[run_id]
+            budget.observe_response(503, 0.1)
+            budget.observe_response(502, 0.1)
+            result = await asyncio.wait_for(coordinator.wait(run_id), timeout=10)
+            assert result["run"]["status"] == "failed"
+            assert result["sessions"][0]["status"] == "failed"
+            report = RunReport.model_validate_json(
+                (coordinator.root / "reports" / run_id / "report.json").read_text()
+            )
+            assert report.cohort_results.executed_sessions == 0
+            assert not report.abandonment_explanations and not report.findings
+            assert "contaminated" in report.terminal_reason
+        finally:
+            await coordinator.close()
+
+    asyncio.run(scenario())
+
+
 def test_two_browser_workers_isolate_state_cancel_and_export_partial_report(tmp_path):
     async def scenario():
         root = (
@@ -192,6 +224,14 @@ def test_two_browser_workers_isolate_state_cancel_and_export_partial_report(tmp_
 
 def test_interrupted_journal_recovers_once_without_inventing_churn(tmp_path):
     async def scenario():
+        async def stopped_executor(sampled, *, session_id, **_kwargs):
+            report = unexecuted_report(
+                "Fresh retry attempt ended before navigation.", sampled, "failed"
+            )
+            payload = report.model_dump(mode="json")
+            payload["run_id"] = str(session_id)
+            return SimpleNamespace(report=RunReport.model_validate(payload), completion={})
+
         root = tmp_path / "phase5"
         resolved = configuration(personas=("impatient_mobile",))
         seed_coordinator = CohortCoordinator(root)
@@ -204,6 +244,7 @@ def test_interrupted_journal_recovers_once_without_inventing_churn(tmp_path):
                 {
                     "configuration": resolved.config.model_dump(mode="json"),
                     "environment": resolved.environment.model_dump(mode="json"),
+                    "variant": "healthy",
                     "sessions": [spec.__dict__],
                 }
             )
@@ -220,7 +261,16 @@ def test_interrupted_journal_recovers_once_without_inventing_churn(tmp_path):
         seed_coordinator.store.append("session_queued", run_id, spec.__dict__, spec.session_id)
         seed_coordinator.store.append("session_started", run_id, {}, spec.session_id)
         await seed_coordinator.close()
-        restored = CohortCoordinator(root)
+        incomplete = root / "reports" / run_id
+        incomplete.mkdir(parents=True)
+        (incomplete / "report.json").write_text("{incomplete export", encoding="utf-8")
+        app = create_app(
+            enable_cohorts=True,
+            cohort_root=root,
+            artifact_root=tmp_path / "blocked",
+            cohort_executor=stopped_executor,
+        )
+        restored = app.state.cohorts
         try:
             await restored.start()
             status = restored.status(run_id)
@@ -234,6 +284,22 @@ def test_interrupted_journal_recovers_once_without_inventing_churn(tmp_path):
             assert not report.abandonment_explanations and not report.findings
             count = status["event_count"]
             await restored.recover()
+            assert restored.status(run_id)["event_count"] == count
+            async with httpx.AsyncClient(
+                transport=httpx.ASGITransport(app=app), base_url="http://127.0.0.1:8765"
+            ) as client:
+                response = await client.post(f"/runs/{run_id}/sessions/{spec.session_id}/retry")
+                assert response.status_code == 202
+                retry = response.json()
+                duplicate = await client.post(f"/runs/{run_id}/sessions/{spec.session_id}/retry")
+                assert duplicate.status_code == 409
+            retry_id = retry["run"]["run_id"]
+            retry_status = await restored.wait(retry_id)
+            child = retry_status["sessions"][0]
+            assert child["attempt"] == 2
+            assert child["parent_session_id"] == spec.session_id
+            assert child["seed"] == spec.seed
+            assert retry_status["run"]["report_status"] == "partial"
             assert restored.status(run_id)["event_count"] == count
         finally:
             await restored.close()

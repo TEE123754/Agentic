@@ -9,7 +9,7 @@ import time
 from collections import Counter
 from dataclasses import dataclass, replace
 from pathlib import Path
-from uuid import UUID, uuid5
+from uuid import UUID, uuid4, uuid5
 
 from frictionlab.cohorts.persistence import EventStore
 from frictionlab.cohorts.tracing import local_tracer
@@ -44,6 +44,8 @@ class SessionSpec:
     journey_id: str
     repetition: int
     seed: int
+    attempt: int = 1
+    parent_session_id: str | None = None
 
 
 class CohortCoordinator:
@@ -98,7 +100,9 @@ class CohortCoordinator:
             )
         ]
 
-    async def submit(self, resolved: ResolvedRun, *, variant="healthy"):
+    async def submit(
+        self, resolved: ResolvedRun, *, variant="healthy", parent_session_id=None, attempt=1
+    ):
         await self.start()
         if variant not in {
             "healthy",
@@ -115,12 +119,22 @@ class CohortCoordinator:
         async with self._submit_lock:
             if self.store.run(run_id):
                 raise ValueError("Run ID already exists; create a fresh run")
+            if parent_session_id and self.store.rows(
+                "SELECT 1 FROM sessions WHERE parent_session_id = ?", [str(parent_session_id)]
+            ):
+                raise ValueError("An interrupted session already has a retry attempt")
             if (
                 sum(not task.done() for task in self.tasks.values())
                 >= self.settings.max_active_runs
             ):
                 raise ValueError("A cohort is already active; bounded queue is full")
             specs = self._specs(resolved)
+            if parent_session_id is not None:
+                if len(specs) != 1 or attempt < 2:
+                    raise ValueError("A retry must contain exactly one new session attempt")
+                specs = [
+                    replace(specs[0], attempt=attempt, parent_session_id=str(parent_session_id))
+                ]
             directory = self.root / "runs" / run_id
             directory.mkdir(parents=True, exist_ok=False)
             manifest = {
@@ -156,6 +170,43 @@ class CohortCoordinator:
             task = asyncio.create_task(self._execute_run(resolved, specs, variant))
             self.tasks[run_id] = task
         return self.status(run_id)
+
+    async def retry_interrupted(self, run_id, session_id):
+        prior = self.store.run(str(run_id))
+        if not prior:
+            raise KeyError("Cohort does not exist")
+        row = next(
+            (
+                row
+                for row in self.store.sessions(str(run_id))
+                if row["session_id"] == str(session_id)
+            ),
+            None,
+        )
+        if row is None:
+            raise KeyError("Session does not belong to this cohort")
+        if row["status"] != "interrupted":
+            raise ValueError("Only an interrupted session may be retried")
+        manifest = json.loads(
+            (self.root / "runs" / str(run_id) / "manifest.json").read_text(encoding="utf-8")
+        )
+        payload = manifest["configuration"].copy()
+        payload.update(
+            id=str(uuid4()),
+            personas=[row["persona_id"]],
+            journeys=[row["journey_id"]],
+            repetitions=1,
+            seed=row["seed"],
+        )
+        resolved = resolve_run(
+            payload, expected_origin=manifest["environment"]["replica_origins"][0]
+        )
+        return await self.submit(
+            resolved,
+            variant=manifest["variant"],
+            parent_session_id=str(session_id),
+            attempt=row["attempt"] + 1,
+        )
 
     def status(self, run_id):
         run = self.store.run(str(run_id))
@@ -420,8 +471,13 @@ class CohortCoordinator:
         self._record_session(resolved, spec, report, {}, time.monotonic())
 
     async def _recover_cancelled_session(self, resolved, spec):
+        budget = self.budgets.get(str(resolved.config.id))
+        contaminated = budget.stop_reason if budget else None
         report = self._partial_session_report(
-            resolved, spec, "cancelled", "Synthetic session cancelled; no UX inference."
+            resolved,
+            spec,
+            "failed" if contaminated else "cancelled",
+            contaminated or "Synthetic session cancelled; no UX inference.",
         )
         self._record_session(resolved, spec, report, {}, time.monotonic())
 
@@ -611,6 +667,8 @@ class CohortCoordinator:
                         "journey_id": row["journey_id"],
                         "repetition": row["repetition"],
                         "seed": row["seed"],
+                        "attempt": row["attempt"],
+                        "parent_session_id": row["parent_session_id"],
                         "execution_status": row["status"],
                         "outcome": row["outcome"],
                         "steps": len(session_report.trajectories),
@@ -669,7 +727,7 @@ class CohortCoordinator:
         )
         report = RunReport.model_validate(data)
         self.store.append("report_job", run_id, {"revision": 1, "status": "reviewing"})
-        folder = write_report(report, self.root / "reports")
+        folder = write_report(report, self.root / "reports", recover_partial=True)
         self.store.append(
             "report_job",
             run_id,

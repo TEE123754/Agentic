@@ -236,6 +236,25 @@
           "title": "Seed",
           "type": "integer"
         },
+        "attempt": {
+          "default": 1,
+          "minimum": 1,
+          "title": "Attempt",
+          "type": "integer"
+        },
+        "parent_session_id": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Parent Session Id"
+        },
         "execution_status": {
           "$ref": "#/$defs/ExecutionStatus"
         },

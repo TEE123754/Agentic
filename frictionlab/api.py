@@ -199,6 +199,18 @@ def create_app(
         except ValueError as exc:
             raise HTTPException(409, str(exc)) from exc
 
+    @app.post("/runs/{run_id}/sessions/{session_id}/retry")
+    async def retry_interrupted(run_id: UUID, session_id: UUID):
+        if not coordinator:
+            raise HTTPException(404, "Cohort does not exist")
+        try:
+            result = await coordinator.retry_interrupted(str(run_id), str(session_id))
+        except KeyError as exc:
+            raise HTTPException(404, str(exc)) from exc
+        except ValueError as exc:
+            raise HTTPException(409, str(exc)) from exc
+        return JSONResponse(status_code=202, content=result)
+
     @app.get("/reports/{run_id}/{format_name}")
     def report_download(run_id: UUID, format_name: Literal["json", "md", "html"]):
         path = app.state.artifact_root / str(run_id) / f"report.{format_name}"

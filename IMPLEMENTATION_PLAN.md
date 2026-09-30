@@ -608,7 +608,7 @@ Run seeded-defect and healthy-control scenarios in one batch. Include model time
 
 ## Phase 5 — Add cohorts, persistence, and recovery
 
-**Execution checkpoint — September 30, 2026 (construction complete; acceptance pending):** DuckDB 1.5.5 and OpenTelemetry SDK 1.45.0 are pinned. Implemented a one/two-worker asyncio cohort coordinator with a six-session cap, isolated session UUID/seed/artifact/browser/runtime state, owned-fixture-only run-control API, cohort-wide rate/concurrency/health stops, one-writer DuckDB projections, fsynced JSONL replay, cancellation and interruption recovery, local OTel JSONL spans, automatic partial aggregate reports with individual session links, a review script, guide, and a manual GitHub Actions gate. The default is one worker; the remote gate is designed to run two browsers without using the laptop. **Still to do for Phase 5:** export updated schemas; run the single post-construction acceptance batch and offline review; repair only affected failures; capture saved evidence and mark the gate passed or explicitly incomplete. No Phase 5 tests or browser cohorts had run at this checkpoint. External targets and generated code remain disabled locally.
+**Execution checkpoint — September 30, 2026 (owned-fixture gate passed):** DuckDB 1.5.5 and OpenTelemetry SDK 1.45.0 are pinned. Implemented a one/two-worker asyncio cohort coordinator with a six-session cap, isolated session UUID/seed/artifact/browser/runtime state, owned-fixture-only run-control API, cohort-wide rate/concurrency/health stops, one-writer DuckDB projections, fsynced JSONL replay, cancellation and interruption recovery, explicit linked retry attempts, local OTel JSONL spans, and automatically exported partial aggregate reports with individual session links. The default is one worker. Updated JSON schemas, guide, offline reviewer, and manual GitHub Actions gate are present. The [remote acceptance run](https://github.com/TEE123754/Agentic/actions/runs/36711155345) passed **57/57** checks, including two real browsers, one cancelled session, journal replay, and selected earlier-phase regressions; no browser gate used the laptop. The saved factual report records two executed sessions (one completed, one cancelled), 13 bounded fixture requests, zero sentinel requests, and unchanged sentinel data. After that batch, targeted local checks passed for interrupted-session retry, partial-report export recovery, Phase 1 report regressions (**16/16**), and health-stop contamination (**1/1**); the full remote batch was not repeated. [Validation and evidence review](docs/phase5-validation.md). **Remaining:** No required Phase 5 work remains for the bundled fixture. Phase 6 must add calibrated cross-session UX findings, heatmaps, and remediation synthesis; two-worker live-Qwen throughput and external replicas remain unvalidated and are not claimed by this gate.
 
 **Goal:** Run multiple independent users without state leakage or lost records.
 
@@ -643,7 +643,7 @@ Run seeded-defect and healthy-control scenarios in one batch. Include model time
 
 Run a small two-worker cohort, cancel one session, and interrupt/recover persistence once. Check session isolation, global rate limits, event deduplication, run-scoped cleanup, outcome accounting, process cleanup, and automatic report jobs for every terminal run.
 
-**Exit gate:** A cohort completes with independent state, durable evidence, and accurate classification of interrupted sessions.
+**Exit gate:** Passed for the bundled fixture: a two-browser cohort completed with independent state, durable evidence, accurate cancellation and interruption classification, explicit fresh retry attempts, and an offline-reviewed partial report. This is not a calibrated UX audit.
 
 ## Phase 6 — Generate audits and recommendations
 
@@ -842,7 +842,7 @@ This proves the core product behavior before investment in larger swarms, additi
 - [x] Phase 2 — Browser execution (owned-fixture gate; 83 distinct passing checks)
 - [x] Phase 3 — Autonomous persona (typed-tools fixture scope: 100 distinct checks; remote CodeAgent: 14/14 real boundary checks and one reviewed completed journey)
 - [x] Phase 4 — Friction and abandonment (owned-fixture cognitive gate; 109 distinct checks)
-- [ ] Phase 5 — Cohorts and persistence
+- [x] Phase 5 — Cohorts and persistence (57 remote checks; targeted 16 + 1 post-batch checks)
 - [ ] Phase 6 — Audit generation
 - [ ] Phase 7 — Local dashboard
 - [ ] Phase 8 — Evaluation and comparisons

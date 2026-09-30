@@ -56,7 +56,7 @@ def main():
                         f"- Sessions: {report.cohort_results.requested_sessions}; "
                         f"executed: {report.cohort_results.executed_sessions}"
                     ),
-                    f"- Outcomes: {dict(report.cohort_results.outcome_counts)}",
+                    f"- Outcomes: {json.dumps({str(key): value for key, value in report.cohort_results.outcome_counts.items()})}",
                     (
                         f"- Synthetic sentinel requests: {report.protection.sentinel_requests}; "
                         "sentinel data unchanged: yes"
