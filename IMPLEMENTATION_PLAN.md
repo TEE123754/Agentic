@@ -847,7 +847,7 @@ This proves the core product behavior before investment in larger swarms, additi
 - [x] Phase 3 — Autonomous persona (typed-tools fixture scope: 100 distinct checks; remote CodeAgent: 14/14 real boundary checks and one reviewed completed journey)
 - [x] Phase 4 — Friction and abandonment (owned-fixture cognitive gate; 109 distinct checks)
 - [x] Phase 5 — Cohorts and persistence (57 remote checks; targeted 16 + 1 post-batch checks)
-- [ ] Phase 6 — Audit generation
+- [x] Phase 6 — Audit generation (owned-fixture gate: 39/39 remote checks; 14/14 affected follow-up checks and offline report review)
 - [ ] Phase 7 — Local dashboard
 - [ ] Phase 8 — Evaluation and comparisons
 - [ ] Phase 9 — Sharing and optional acceleration
