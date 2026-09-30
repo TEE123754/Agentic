@@ -132,9 +132,12 @@ def check_memory_limit(settings):
         settings,
         "import time\n"
         "try:\n"
-        " x=bytearray(384*1024*1024)\n"
+        " x=bytearray(768*1024*1024)\n"
         " for i in range(0,len(x),4096): x[i]=1\n"
-        " time.sleep(1); print('UNLIMITED')\n"
+        " time.sleep(1)\n"
+        " from pathlib import Path\n"
+        " current=Path('/sys/fs/cgroup/memory.current').read_text().strip()\n"
+        " print('UNLIMITED current='+current)\n"
         "except MemoryError: print('DENIED')\n",
         timeout=25,
     )

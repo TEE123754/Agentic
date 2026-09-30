@@ -251,11 +251,22 @@ def execute_cell(code: str, observation: dict, bridge, settings: CodeWorkerSetti
         return {"result": outcome, "tool_calls": calls}
     finally:
         if process.poll() is None:
-            process.kill()
+            # Stop the container first so Podman can finish its own --rm lifecycle.
+            try:
+                subprocess.run(
+                    [settings.podman_path, "kill", name],
+                    capture_output=True, timeout=8, env=worker_environment(), check=False,
+                )
+            except (OSError, subprocess.SubprocessError):
+                pass
             try:
                 process.wait(timeout=5)
             except subprocess.TimeoutExpired:
-                pass
+                process.kill()
+                try:
+                    process.wait(timeout=5)
+                except subprocess.TimeoutExpired:
+                    pass
         process.stdin.close()
         process.stdout.close()
         reader.join(timeout=2)

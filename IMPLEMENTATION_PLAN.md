@@ -476,6 +476,8 @@ Run the browser suite once against fixtures covering form submission, DOM rerend
 
 **Third remote attempt:** Rootless worker probes ran on GitHub's Linux host. Network, host file/credential/socket, PID, CPU, output, unapproved-code, IPC, and unchanged-sentinel checks passed. The 384 MiB allocation probe reported success despite a requested 256 MiB limit, and a timed-out worker left a container behind; the gate correctly withheld authorization. The memory probe now reads the cgroup limit and writes every allocated page before judging enforcement. Killed-client cleanup now retries, checks container absence, and fails closed if still present. Two targeted cleanup checks and lint pass locally. No model was downloaded and no browser journey ran. The real gate and report remain pending a targeted rerun. [Run](https://github.com/TEE123754/Agentic/actions/runs/36701208458).
 
+**Fourth remote attempt:** The cgroup file showed a 256 MiB limit, yet a touched 384 MiB allocation still completed. Cleanup of a timed-out worker again failed, this time with a Podman removal timeout; all other boundary probes passed. The gate remained closed and no model/browser was started. The next diagnostic strengthens the allocation to 768 MiB and records the cgroup's observed current usage; the launcher now asks Podman to stop the container before killing the Podman client, then verifies final removal. If either boundary still fails, do not weaken the requirement or mark Phase 3 complete. [Run](https://github.com/TEE123754/Agentic/actions/runs/36702155937).
+
 ### Completed and verified
 
 - [x] Installed and locked smolagents 1.26.0; recorded 126 installed dependencies and licenses.
