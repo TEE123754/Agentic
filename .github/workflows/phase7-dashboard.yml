@@ -2,6 +2,11 @@ name: Phase 7 owned-fixture dashboard gate
 
 on:
   workflow_dispatch:
+    inputs:
+      affected_only:
+        description: Rerun only the dashboard walkthrough after a UI fix
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -33,7 +38,12 @@ jobs:
           uv sync --locked --extra dashboard --group dev
 
       - name: One post-build dashboard acceptance batch
+        if: ${{ !inputs.affected_only }}
         run: uv run --extra dashboard pytest -q tests/phase_07 tests/phase_06/test_audit.py::test_api_latest_revision_human_disposition_and_no_target_revisit
+
+      - name: Affected dashboard walkthrough only
+        if: ${{ inputs.affected_only }}
+        run: uv run --extra dashboard pytest -q tests/phase_07
 
       - name: Review saved UI and audit evidence offline
         if: always()

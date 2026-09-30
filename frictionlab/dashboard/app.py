@@ -52,7 +52,7 @@ def _bar_chart(title, labels, values, color):
         yaxis_title="Synthetic sessions",
         paper_bgcolor="rgba(0,0,0,0)",
     )
-    st.plotly_chart(figure, use_container_width=True)
+    st.plotly_chart(figure, width="stretch")
 
 
 def _setup(catalog):

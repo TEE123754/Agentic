@@ -140,10 +140,10 @@ async def _inspect_dashboard(ui_port: int, screenshot_path: Path):
             page = await browser.new_page(viewport={"width": 1440, "height": 980})
             await page.goto(f"http://127.0.0.1:{ui_port}", wait_until="domcontentloaded")
             await page.get_by_text("FrictionLab", exact=True).first.wait_for(timeout=20000)
-            await page.get_by_text("Start checkout", exact=False).first.wait_for(timeout=20000)
             assert await page.get_by_text("Protected synthetic UX audits", exact=False).count()
-            await page.screenshot(path=str(screenshot_path), full_page=True)
             await page.get_by_role("tab", name="Findings").click()
+            await page.get_by_text("Start checkout", exact=False).first.wait_for(timeout=20000)
+            await page.screenshot(path=str(screenshot_path), full_page=True)
             await page.get_by_role("textbox", name="Review note").fill(
                 "Confirmed from the saved masked screenshot and click trajectory."
             )
