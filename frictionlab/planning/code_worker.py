@@ -92,8 +92,12 @@ def inspect_image(settings: CodeWorkerSettings):
         )
     except (OSError, subprocess.SubprocessError) as exc:
         raise PlannerStopped("code_isolation_unavailable", "Pinned worker image is not locally inspectable.") from exc
-    if result.stdout.strip() != settings.image_id:
-        raise PlannerStopped("code_isolation_unavailable", "Local worker image ID does not match the pin.")
+    observed_id = result.stdout.strip()
+    if observed_id.removeprefix("sha256:") != settings.image_id.removeprefix("sha256:"):
+        raise PlannerStopped(
+            "code_isolation_unavailable",
+            f"Local worker image ID does not match the pin: {observed_id[:80]!r}.",
+        )
 
 
 def _read_frames(stream, events):

@@ -472,6 +472,8 @@ Run the browser suite once against fixtures covering form submission, DOM rerend
 
 **First remote attempt:** Initial private-repository commit `dcd5e9c` built a digest-recorded rootless Podman image on GitHub Actions. The subsequent validation script could not import `frictionlab` because a directly invoked script on Linux lacked the project root on `PYTHONPATH`; the workflow stopped before any boundary probe, model download, or browser journey. The saved log shows this as runner configuration failure, not an isolation pass. Set `PYTHONPATH` to the checkout root and rerun only the stopped remote gate. [Run](https://github.com/TEE123754/Agentic/actions/runs/36700464147).
 
+**Second remote attempt:** The import-path repair reached rootless image inspection, which rejected Podman's bare 64-character image digest against the build file's `sha256:`-prefixed representation. No boundary probes, model download, or browser journey ran. The comparison now normalizes only that optional prefix while still requiring an identical SHA-256 value. Three focused image-inspection checks and targeted lint pass locally. The remote host/image gate remains pending a rerun. [Run](https://github.com/TEE123754/Agentic/actions/runs/36700703623).
+
 ### Completed and verified
 
 - [x] Installed and locked smolagents 1.26.0; recorded 126 installed dependencies and licenses.

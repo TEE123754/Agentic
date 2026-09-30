@@ -11,6 +11,7 @@ from frictionlab.planning.code_worker import (
     CodeWorkerSettings,
     _read_frames,
     execute_cell,
+    inspect_image,
     local_settings,
     podman_command,
     worker_environment,
@@ -46,6 +47,26 @@ def test_unpinned_image_fails_closed(image):
 def test_invalid_container_name_fails_closed():
     with pytest.raises(PlannerStopped, match="name"):
         podman_command(CodeWorkerSettings(PIN, "podman"), "another-container")
+
+
+@pytest.mark.parametrize("observed", [PIN, PIN.removeprefix("sha256:")])
+def test_image_inspection_accepts_only_the_pinned_digest(monkeypatch, observed):
+    responses = iter(["true", observed])
+    monkeypatch.setattr(
+        "frictionlab.planning.code_worker.subprocess.run",
+        lambda *_args, **_kwargs: SimpleNamespace(stdout=next(responses)),
+    )
+    inspect_image(CodeWorkerSettings(PIN, "podman"))
+
+
+def test_image_inspection_rejects_a_different_digest(monkeypatch):
+    responses = iter(["true", "b" * 64])
+    monkeypatch.setattr(
+        "frictionlab.planning.code_worker.subprocess.run",
+        lambda *_args, **_kwargs: SimpleNamespace(stdout=next(responses)),
+    )
+    with pytest.raises(PlannerStopped, match="does not match"):
+        inspect_image(CodeWorkerSettings(PIN, "podman"))
 
 
 def test_cell_rejects_oversized_code_before_runtime(monkeypatch):
