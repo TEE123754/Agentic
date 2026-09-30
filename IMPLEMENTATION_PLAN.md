@@ -470,6 +470,8 @@ Run the browser suite once against fixtures covering form submission, DOM rerend
 
 **Remote construction checkpoint:** Added a checksum-pinned Linux llama.cpp runtime path, the manual Actions workflow, a real-container boundary batch, an offline saved-report reviewer, and a remote-gate guide. The workflow accepts no website URL and runs only the bundled fixture. The worker boundary now includes an unapproved-import probe as well as escape, quota, IPC, cleanup, and sentinel checks. Local boundary-related source checks passed 23/23; targeted Ruff findings were repaired. The rootless Linux batch and CodeAgent journey have not yet run. The next steps are to publish the source to the named private repository, dispatch one workflow, inspect its artifacts, fix only failing checks if needed, and update this checkpoint with the observed result. This does not install a container runtime or model on the laptop.
 
+**First remote attempt:** Initial private-repository commit `dcd5e9c` built a digest-recorded rootless Podman image on GitHub Actions. The subsequent validation script could not import `frictionlab` because a directly invoked script on Linux lacked the project root on `PYTHONPATH`; the workflow stopped before any boundary probe, model download, or browser journey. The saved log shows this as runner configuration failure, not an isolation pass. Set `PYTHONPATH` to the checkout root and rerun only the stopped remote gate. [Run](https://github.com/TEE123754/Agentic/actions/runs/36700464147).
+
 ### Completed and verified
 
 - [x] Installed and locked smolagents 1.26.0; recorded 126 installed dependencies and licenses.
