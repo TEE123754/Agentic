@@ -207,6 +207,92 @@
       "title": "CohortResults",
       "type": "object"
     },
+    "CohortSessionSummary": {
+      "additionalProperties": false,
+      "properties": {
+        "session_id": {
+          "format": "uuid",
+          "title": "Session Id",
+          "type": "string"
+        },
+        "persona_id": {
+          "pattern": "^[a-z][a-z0-9_-]{1,63}$",
+          "title": "Persona Id",
+          "type": "string"
+        },
+        "journey_id": {
+          "pattern": "^[a-z][a-z0-9_-]{1,63}$",
+          "title": "Journey Id",
+          "type": "string"
+        },
+        "repetition": {
+          "minimum": 0,
+          "title": "Repetition",
+          "type": "integer"
+        },
+        "seed": {
+          "maximum": 4294967295,
+          "minimum": 0,
+          "title": "Seed",
+          "type": "integer"
+        },
+        "execution_status": {
+          "$ref": "#/$defs/ExecutionStatus"
+        },
+        "outcome": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SessionOutcome"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "steps": {
+          "minimum": 0,
+          "title": "Steps",
+          "type": "integer"
+        },
+        "friction_events": {
+          "minimum": 0,
+          "title": "Friction Events",
+          "type": "integer"
+        },
+        "model_calls": {
+          "minimum": 0,
+          "title": "Model Calls",
+          "type": "integer"
+        },
+        "passed_milestones": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Passed Milestones",
+          "type": "array"
+        },
+        "report_path": {
+          "title": "Report Path",
+          "type": "string"
+        }
+      },
+      "required": [
+        "session_id",
+        "persona_id",
+        "journey_id",
+        "repetition",
+        "seed",
+        "execution_status",
+        "steps",
+        "friction_events",
+        "model_calls",
+        "report_path"
+      ],
+      "title": "CohortSessionSummary",
+      "type": "object"
+    },
     "EvidenceRef": {
       "additionalProperties": false,
       "properties": {
@@ -766,7 +852,8 @@
             1,
             2,
             3,
-            4
+            4,
+            5
           ],
           "title": "Phase",
           "type": "integer"
@@ -1096,6 +1183,14 @@
     },
     "cohort_results": {
       "$ref": "#/$defs/CohortResults"
+    },
+    "session_summaries": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/CohortSessionSummary"
+      },
+      "title": "Session Summaries",
+      "type": "array"
     },
     "trajectories": {
       "default": [],

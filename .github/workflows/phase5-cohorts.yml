@@ -1,0 +1,49 @@
+name: Phase 5 owned-fixture cohort gate
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: phase5-cohorts
+  cancel-in-progress: false
+
+jobs:
+  cohorts:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    env:
+      PYTHONPATH: .
+      FRICTIONLAB_BROWSER_PATH: /usr/bin/google-chrome
+      FRICTIONLAB_PHASE5_EVIDENCE: artifacts/phase5/validation
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install locked free/open-source dependencies
+        run: |
+          python -m pip install uv==0.11.18
+          uv sync --locked --group dev
+
+      - name: One post-build Phase 5 acceptance batch
+        run: uv run pytest -q tests/phase_05 tests/phase_01/test_fixture_api.py tests/phase_01/test_reports_and_cli.py tests/phase_02/test_policy.py
+
+      - name: Review saved evidence offline
+        if: always()
+        run: uv run python scripts/review_phase5.py
+
+      - name: Upload synthetic cohort evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: phase5-owned-fixture-evidence
+          path: artifacts/phase5/validation/
+          if-no-files-found: warn
+          retention-days: 7

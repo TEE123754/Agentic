@@ -1,7 +1,8 @@
-"""Local fixture and configuration API; autonomous cohort execution remains unavailable."""
+"""Local fixture API with opt-in, owned-fixture cohort execution."""
 
 from __future__ import annotations
 
+from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import Literal
 from uuid import UUID
@@ -32,9 +33,37 @@ from frictionlab.reporting import blocked_report, write_report
 ASSETS = Path(__file__).parent / "fixtures" / "web"
 
 
-def create_app(config_directory=CONFIG_DIRECTORY, artifact_root=None, origin=DEFAULT_ORIGIN):
+def create_app(
+    config_directory=CONFIG_DIRECTORY,
+    artifact_root=None,
+    origin=DEFAULT_ORIGIN,
+    *,
+    enable_cohorts=False,
+    cohort_root=None,
+    cohort_settings=None,
+    cohort_executor=None,
+):
     validate_origin(origin, loopback=True)
-    app = FastAPI(title="FrictionLab", version=__version__)
+    coordinator = None
+    if enable_cohorts:
+        from frictionlab.cohorts.coordinator import CohortCoordinator, CohortSettings
+
+        coordinator = CohortCoordinator(
+            cohort_root, settings=cohort_settings or CohortSettings(), executor=cohort_executor
+        )
+
+    @asynccontextmanager
+    async def lifespan(_app):
+        if coordinator:
+            await coordinator.start()
+        try:
+            yield
+        finally:
+            if coordinator:
+                await coordinator.close()
+
+    app = FastAPI(title="FrictionLab", version=__version__, lifespan=lifespan)
+    app.state.cohorts = coordinator
     app.state.fixture = FixtureStore()
     app.state.artifact_root = (
         Path(artifact_root) if artifact_root else ROOT / "artifacts" / "phase1" / "runs"
@@ -49,7 +78,12 @@ def create_app(config_directory=CONFIG_DIRECTORY, artifact_root=None, origin=DEF
 
     @app.get("/health")
     def health():
-        return {"status": "ok", "phase": 2, "build_id": FIXTURE_BUILD, "execution_enabled": False}
+        return {
+            "status": "ok",
+            "phase": 5 if coordinator else 2,
+            "build_id": FIXTURE_BUILD,
+            "execution_enabled": bool(coordinator),
+        }
 
     @app.get("/")
     def storefront():
@@ -69,11 +103,13 @@ def create_app(config_directory=CONFIG_DIRECTORY, artifact_root=None, origin=DEF
             return persist_blocked_report(str(exc))
         return {
             "configuration_valid": True,
-            "execution_enabled": False,
+            "execution_enabled": bool(coordinator),
             "configuration_hash": resolved.configuration_hash,
             "requested_sessions": resolved.requested_sessions,
             "environment": resolved.environment.id,
-            "message": "Configuration validated locally. Autonomous cohort execution is unavailable.",
+            "message": "Configuration validated for the owned-fixture cohort."
+            if coordinator
+            else "Configuration validated locally. Autonomous cohort execution is unavailable.",
         }
 
     def persist_blocked_report(reason, resolved=None):
@@ -108,19 +144,66 @@ def create_app(config_directory=CONFIG_DIRECTORY, artifact_root=None, origin=DEF
         )
 
     @app.post("/runs")
-    def start_run(payload: dict):
+    async def start_run(
+        payload: dict,
+        variant: Literal[
+            "healthy",
+            "generic_validation",
+            "dead_button",
+            "delayed_feedback",
+            "hidden_shipping",
+            "focus_trap",
+        ] = "healthy",
+    ):
         try:
             resolved = resolve_run(payload, config_directory, origin)
         except ConfigurationRejected as exc:
             return persist_blocked_report(str(exc))
+        if coordinator:
+            try:
+                result = await coordinator.submit(resolved, variant=variant)
+            except ValueError as exc:
+                raise HTTPException(409, str(exc)) from exc
+            return JSONResponse(status_code=202, content=result)
         return persist_blocked_report(
             "Autonomous cohorts are unavailable until planning, isolated workers, and orchestration are implemented. The Phase 2 browser demo supports only owned local fixtures.",
             resolved,
         )
 
+    @app.get("/runs/{run_id}")
+    def cohort_status(run_id: UUID):
+        result = coordinator.status(str(run_id)) if coordinator else None
+        if result is None:
+            raise HTTPException(404, "Cohort does not exist")
+        return result
+
+    @app.post("/runs/{run_id}/cancel")
+    async def cancel_cohort(run_id: UUID):
+        if not coordinator:
+            raise HTTPException(404, "Cohort does not exist")
+        try:
+            return await coordinator.cancel(str(run_id))
+        except KeyError as exc:
+            raise HTTPException(404, str(exc)) from exc
+        except ValueError as exc:
+            raise HTTPException(409, str(exc)) from exc
+
+    @app.post("/runs/{run_id}/sessions/{session_id}/cancel")
+    async def cancel_session(run_id: UUID, session_id: UUID):
+        if not coordinator:
+            raise HTTPException(404, "Cohort does not exist")
+        try:
+            return await coordinator.cancel(str(run_id), str(session_id))
+        except KeyError as exc:
+            raise HTTPException(404, str(exc)) from exc
+        except ValueError as exc:
+            raise HTTPException(409, str(exc)) from exc
+
     @app.get("/reports/{run_id}/{format_name}")
     def report_download(run_id: UUID, format_name: Literal["json", "md", "html"]):
         path = app.state.artifact_root / str(run_id) / f"report.{format_name}"
+        if coordinator and not path.is_file() and coordinator.store.run(str(run_id)):
+            path = coordinator.root / "reports" / str(run_id) / f"report.{format_name}"
         if not path.is_file():
             raise HTTPException(404, "Report does not exist")
         media = {"json": "application/json", "md": "text/markdown", "html": "text/html"}[

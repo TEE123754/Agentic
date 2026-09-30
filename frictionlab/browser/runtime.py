@@ -15,10 +15,11 @@ from frictionlab.protection.policy import FixturePolicy
 
 
 class OwnedFixture:
-    def __init__(self, run_id, variant, limits, artifact_root):
+    def __init__(self, run_id, variant, limits, artifact_root, *, global_budget=None):
         self.run_id = run_id
         self.variant = variant
         self.limits = limits
+        self.global_budget = global_budget
         self.artifact_root = artifact_root
         self.socket = None
         self.task = None
@@ -72,7 +73,12 @@ class OwnedFixture:
                 raise TimeoutError("Owned fixture startup deadline")
             await asyncio.sleep(0.05)
         self.policy = FixturePolicy(
-            self.origin, self.run_id, self.variant, self.app.state.fixture, self.limits
+            self.origin,
+            self.run_id,
+            self.variant,
+            self.app.state.fixture,
+            self.limits,
+            global_budget=self.global_budget,
         )
         self.proxy = LocalHTTPServer(proxy_handler(self.policy)).start()
         return self

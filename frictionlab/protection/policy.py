@@ -12,12 +12,15 @@ from frictionlab.contracts.models import ProtectionEvent, TrafficLimits, validat
 
 
 class FixturePolicy:
-    def __init__(self, origin, run_id, variant, store, limits: TrafficLimits):
+    def __init__(
+        self, origin, run_id, variant, store, limits: TrafficLimits, *, global_budget=None
+    ):
         self.origin = validate_origin(origin, loopback=True)
         self.run_id = str(run_id)
         self.variant = variant
         self.store = store
         self.limits = limits
+        self.global_budget = global_budget
         self.events = []
         self.traffic = []
         self.active = 0
@@ -88,6 +91,10 @@ class FixturePolicy:
 
     def acquire(self):
         """Sliding one-second global rate window and a concurrent-upstream ceiling."""
+        shared = self.global_budget
+        if shared and not shared.acquire(self.stopped):
+            self.record("blocked", "network", shared.stop_reason or "Cohort traffic stopped")
+            return False
         while not self.stopped.is_set():
             now = time.monotonic()
             with self._lock:
@@ -103,11 +110,19 @@ class FixturePolicy:
                     self.peak_active = max(self.peak_active, self.active)
                     return True
             self.stopped.wait(0.02)
+        if shared:
+            shared.release()
         return False
 
     def release(self):
         with self._lock:
             self.active -= 1
+        if self.global_budget:
+            self.global_budget.release()
+
+    def observe_upstream(self, status, duration_seconds):
+        if self.global_budget:
+            self.global_budget.observe_response(status, duration_seconds)
 
     def metrics(self):
         with self._lock:

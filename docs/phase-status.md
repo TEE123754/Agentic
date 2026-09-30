@@ -93,3 +93,13 @@ Phase 4's owned-fixture gate is complete below; phases 5–10 have not started. 
 **Known limitations / next:** The gate covers one owned fixture and synthetic profiles, not calibrated human abandonment or robust model performance across seeds. Broader false-positive evaluation and human review remain. Phase 3's generated-code path passed only on a remote host/image; external replicas and local generated code remain disabled. Phase 5 cohorts/DuckDB/persistence and later aggregate UX reports/heatmaps/dashboard have not started. No required Phase 4 fixture-gate work remains.
 
 **Evidence:** [Validation review](phase4-validation.md), [structured results](../artifacts/phase4/validation.json), [merged checks](../artifacts/phase4/validation.xml), [behavioral guide](phase4-cognition.md), [repaired local-Qwen report](../artifacts/phase4/runs/13e8b5a3-e09f-487a-8ee1-c6432d63c4ae/report.html), [original timed-out Qwen report](../artifacts/phase4/runs/88d69f16-357d-44bd-8061-cd6b447a32e2/report.html), [matched healthy report](../artifacts/phase4/runs/7bb91b99-f9a3-46dd-a1e6-fbfe8eb202f8/report.html).
+
+## Phase 5 — Construction complete; acceptance pending
+
+**Date:** September 30, 2026 (Asia/Kuala_Lumpur).
+
+**Delivered in source:** Bounded owned-fixture cohort coordinator; run/session status and cancellation API; separate browser/profile/fixture namespaces, seed, planner memory, and evidence directories; global traffic and fixture-health budget; DuckDB projections and fsynced replayable JSONL journal; interrupted-session recovery; local OpenTelemetry span export; automatic partial aggregate reports linking individual reports; one-batch acceptance tests, offline reviewer, and manual GitHub Actions workflow. Pinned DuckDB and OpenTelemetry SDK. Default one worker minimizes local resource use.
+
+**Protection:** Cohort execution is enabled only on the local `serve` API and only for registered bundled fixtures. Each nested browser fixture still disables cohort endpoints. Existing deny-by-default browser/proxy boundaries, synthetic accounts, and run-owned cleanup remain. No production website or external replica is supported.
+
+**What remains:** Export the updated JSON schemas; run the one post-build Phase 5 acceptance batch (prefer the manual remote GitHub workflow for the two-browser gate), review saved reports/journal/traces offline, repair any targeted failures, and record the final outcome. No Phase 5 test result is claimed yet. Aggregate reports are factual and partial; calibrated findings and heatmaps remain Phase 6. [Operator guide](phase5-cohorts.md).

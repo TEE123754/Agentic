@@ -76,6 +76,8 @@ class BrowserBroker:
         artifact_root=None,
         response_timeout_seconds=4,
         report_transform=None,
+        global_budget=None,
+        session_id=None,
     ):
         if variant not in VARIANTS:
             raise ValueError("Unknown controlled fixture variant")
@@ -88,14 +90,18 @@ class BrowserBroker:
         )
         self.variant = variant
         self.viewport = self.persona.device.viewport
-        self.run_id = uuid4()
+        self.run_id = UUID(str(session_id)) if session_id else uuid4()
         self.artifact_root = (
             Path(artifact_root) if artifact_root else ROOT / "artifacts" / "phase2" / "runs"
         )
         self.directory = self.artifact_root / str(self.run_id)
         self.writer = EvidenceWriter(self.directory / "evidence")
         self.runtime = OwnedFixture(
-            self.run_id, variant, resolved.environment.limits, self.artifact_root
+            self.run_id,
+            variant,
+            resolved.environment.limits,
+            self.artifact_root,
+            global_budget=global_budget,
         )
         self.response_timeout = min(max(response_timeout_seconds, 0.1), 10)
         self.context = None

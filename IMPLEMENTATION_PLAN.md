@@ -608,9 +608,11 @@ Run seeded-defect and healthy-control scenarios in one batch. Include model time
 
 ## Phase 5 — Add cohorts, persistence, and recovery
 
+**Execution checkpoint — September 30, 2026 (construction complete; acceptance pending):** DuckDB 1.5.5 and OpenTelemetry SDK 1.45.0 are pinned. Implemented a one/two-worker asyncio cohort coordinator with a six-session cap, isolated session UUID/seed/artifact/browser/runtime state, owned-fixture-only run-control API, cohort-wide rate/concurrency/health stops, one-writer DuckDB projections, fsynced JSONL replay, cancellation and interruption recovery, local OTel JSONL spans, automatic partial aggregate reports with individual session links, a review script, guide, and a manual GitHub Actions gate. The default is one worker; the remote gate is designed to run two browsers without using the laptop. **Still to do for Phase 5:** export updated schemas; run the single post-construction acceptance batch and offline review; repair only affected failures; capture saved evidence and mark the gate passed or explicitly incomplete. No Phase 5 tests or browser cohorts had run at this checkpoint. External targets and generated code remain disabled locally.
+
 **Goal:** Run multiple independent users without state leakage or lost records.
 
-**Tools:** asyncio, bounded worker processes, FastAPI, DuckDB, JSONL journals, OpenTelemetry; optional local Phoenix.
+**Tools:** asyncio bounded worker tasks, FastAPI, DuckDB, JSONL journals, local OpenTelemetry SDK export; optional local Phoenix.
 
 ### Build
 

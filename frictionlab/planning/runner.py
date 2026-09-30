@@ -43,6 +43,8 @@ async def run_persona(
     mode="typed_tools",
     behavioral=False,
     artifact_root=None,
+    global_budget=None,
+    session_id=None,
 ):
     limits = limits or load_limits()
     state = {
@@ -70,7 +72,9 @@ async def run_persona(
             {
                 "execution_mode": state["execution_mode"],
                 "requested_execution_mode": mode,
-                "generated_python_executed": bool(bridge and getattr(bridge, "code_executed", False)),
+                "generated_python_executed": bool(
+                    bridge and getattr(bridge, "code_executed", False)
+                ),
                 "vision_enabled": False,
                 "smolagents": importlib.metadata.version("smolagents"),
                 "planner_stop_category": state["category"],
@@ -97,7 +101,9 @@ async def run_persona(
                 {
                     "code_worker_image_id": state["code_settings"].image_id,
                     "code_worker_gate_host": platform.node(),
-                    "code_worker_started": bool(bridge and getattr(bridge, "code_worker_started", False)),
+                    "code_worker_started": bool(
+                        bridge and getattr(bridge, "code_worker_started", False)
+                    ),
                     "code_worker_rootless_required": True,
                 }
             )
@@ -246,6 +252,8 @@ async def run_persona(
         artifact_root=artifact_root
         or ROOT / "artifacts" / ("phase4" if behavioral else "phase3") / "runs",
         report_transform=transform,
+        global_budget=global_budget,
+        session_id=session_id,
     )
     worker = agent = model = bridge = None
     try:

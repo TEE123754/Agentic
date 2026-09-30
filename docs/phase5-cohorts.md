@@ -1,0 +1,25 @@
+# Phase 5 owned-fixture cohorts
+
+Phase 5 schedules up to six synthetic sessions through one or two asynchronous workers. Each session receives its own UUID, browser profile, cookies/storage, synthetic fixture namespace/account, planner memory, seed, and artifact directory. The shared local model server serializes inference; the workers never exchange page observations. The default is **one** worker to limit laptop load. Two workers are supported for the small acceptance gate.
+
+The only executable target remains the bundled loopback fixture. Configuration resolution checks the registered environment and exact numeric loopback origin. Each browser uses the existing deny-by-default proxy, blocked service workers, mocked integrations, order prohibition, and synthetic credentials. No external website or production application is contacted. Cleanup resets only the session's owned fixture namespace and deletes its temporary browser profile; reports remain on disk for review.
+
+`python -m frictionlab serve` binds to `127.0.0.1:8765` and enables the cohort API on that local server. The nested disposable fixtures always create the API with cohort execution disabled. A valid request uses the existing `configs/run.example.json` schema, but no more than six persona × journey × repetition sessions may be submitted. One cohort may be active at a time; the second returns HTTP 409. A fresh UUID is required for each run. This API is local-only and has no authentication, so do not expose its port to a network.
+
+```powershell
+python -m frictionlab serve
+$config = Get-Content configs/run.example.json -Raw
+Invoke-RestMethod -Method Post -Uri 'http://127.0.0.1:8765/runs?variant=healthy' -ContentType 'application/json' -Body $config
+```
+
+The example configuration requests nine sessions and is deliberately rejected by the local six-session cap. For a small run, select one or two listed personas and one listed journey before posting. Supported fixture variants are `healthy`, `generic_validation`, `dead_button`, `delayed_feedback`, `hidden_shipping`, and `focus_trap`.
+
+`GET /runs/{run_id}` returns run/session status, journal event count, and cohort-wide traffic metrics. `POST /runs/{run_id}/cancel` cancels the cohort; `POST /runs/{run_id}/sessions/{session_id}/cancel` cancels one session. `GET /reports/{run_id}/{json|md|html}` downloads the automatically generated aggregate report after it becomes terminal. The status response includes individual report paths under `artifacts/phase5/runs/{run_id}/sessions/{session_id}/`. The aggregate offline HTML/Markdown also link to them. API requests with an unknown or non-fixture environment fail before a browser or model starts.
+
+The shared traffic budget enforces the registered fixture's request rate and upstream concurrency across all workers. Excess queue wait, repeated HTTP 5xx, slow upstream responses, or the cohort runtime ceiling stop further traffic and classify affected measurements as infrastructure-contaminated. The proxy still applies its own session-level allowlist and sentinel checks. Browser actions, model decisions, friction events, milestones, and evidence references are written through one DuckDB connection. Every acknowledged journal event is fsynced to `events.jsonl` before its DuckDB projection. On restart, committed journal events replay once; an incomplete trailing line is discarded. Sessions left queued/running become **interrupted**, never a synthetic churn claim. A restart retries an incomplete aggregate report job from saved evidence only, without reopening the browser.
+
+`artifacts/phase5/cohorts.duckdb`, `events.jsonl`, manifests, session reports, aggregate reports, and `otel-spans.jsonl` are local files. OpenTelemetry spans contain IDs, timing, and action/result labels, not raw DOM, credentials, or screenshots. Phoenix is optional and is not installed or started. The GitHub Actions acceptance workflow uploads only synthetic fixture evidence for seven days. Local artifacts are retained until the operator deletes the Phase 5 artifact directory; no automatic purge can erase a report under review.
+
+The Phase 5 report records configuration/build/model/detector versions, each sampled seed and session outcome, milestone status, steps, friction/model counts, protection metrics, trace references, and links to complete individual reports. It is explicitly marked **partial**. Phase 6 will add validated cross-session findings, heatmaps, ranked remediation, and full evidence review. A partial report is not evidence of human churn or production conversion.
+
+The one end-of-phase validation command is `uv run pytest -q tests/phase_05 tests/phase_01/test_fixture_api.py tests/phase_01/test_reports_and_cli.py tests/phase_02/test_policy.py`. The same batch runs on the manual `.github/workflows/phase5-cohorts.yml` GitHub Actions workflow, which keeps the two-browser acceptance run off the laptop. `scripts/review_phase5.py` reviews saved report/database/trace artifacts offline after the batch. Repair a failed check with a targeted rerun; do not repeat the entire phase batch without a substantive reason.

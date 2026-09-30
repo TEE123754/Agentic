@@ -462,7 +462,7 @@ class ReviewDisposition(Contract):
 
 
 class ReportScope(Contract):
-    phase: Literal[1, 2, 3, 4] = 1
+    phase: Literal[1, 2, 3, 4, 5] = 1
     build_id: str | None = None
     environment_id: str | None = None
     personas: tuple[str, ...] = ()
@@ -487,6 +487,35 @@ class CohortResults(Contract):
         if sum(self.outcome_counts.values()) != self.executed_sessions:
             raise ValueError("Outcome counts must account for executed sessions exactly")
         return self
+
+
+class CohortSessionSummary(Contract):
+    session_id: UUID
+    persona_id: Identifier
+    journey_id: Identifier
+    repetition: int = Field(ge=0, strict=True)
+    seed: int = Field(ge=0, le=2**32 - 1, strict=True)
+    execution_status: ExecutionStatus
+    outcome: SessionOutcome | None = None
+    steps: int = Field(ge=0, strict=True)
+    friction_events: int = Field(ge=0, strict=True)
+    model_calls: int = Field(ge=0, strict=True)
+    passed_milestones: tuple[str, ...] = ()
+    report_path: str
+
+    @field_validator("report_path")
+    @classmethod
+    def safe_report_path(cls, value):
+        path = PurePosixPath(value)
+        if (
+            "\\" in value
+            or ":" in value
+            or path.is_absolute()
+            or ".." in path.parts
+            or not value.endswith("/report.html")
+        ):
+            raise ValueError("Session report must use an owned relative HTML path")
+        return value
 
 
 class ProtectionSummary(Contract):
@@ -520,6 +549,7 @@ class RunReport(Contract):
     scope: ReportScope
     protection: ProtectionSummary
     cohort_results: CohortResults
+    session_summaries: tuple[CohortSessionSummary, ...] = ()
     trajectories: tuple[StepResult, ...] = ()
     planner_decisions: tuple[PlannerDecisionRecord, ...] = ()
     friction_events: tuple[FrictionEvent, ...] = ()

@@ -12,6 +12,8 @@ dependencies = [
   "fastapi",
   "uvicorn",
   "smolagents>=1.26.0",
+  "duckdb==1.5.5",
+  "opentelemetry-sdk==1.45.0",
 ]
 
 [project.optional-dependencies]

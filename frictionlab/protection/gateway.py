@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import http.client
 import threading
+import time
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import urljoin, urlsplit
 
@@ -73,6 +74,7 @@ def proxy_handler(policy):
                 self.reply(403)
                 return
             upstream = http.client.HTTPConnection("127.0.0.1", upstream_port, timeout=5)
+            started = time.monotonic()
             try:
                 parsed = urlsplit(self.path)
                 target = parsed.path + ("?" + parsed.query if parsed.query else "")
@@ -80,6 +82,7 @@ def proxy_handler(policy):
                 headers = {"Content-Type": "application/json"} if self.command == "POST" else {}
                 upstream.request(self.command, target, body=body or None, headers=headers)
                 response = upstream.getresponse()
+                policy.observe_upstream(response.status, time.monotonic() - started)
                 payload = response.read(2 * 1024 * 1024 + 1)
                 redirect = response.getheader("Location")
                 if redirect and policy.reason("GET", urljoin(policy.origin, redirect)):
@@ -110,6 +113,7 @@ def proxy_handler(policy):
                 self.end_headers()
                 self.wfile.write(payload)
             except (OSError, http.client.HTTPException):
+                policy.observe_upstream(502, time.monotonic() - started)
                 policy.record("blocked", "network", "Owned fixture upstream unavailable")
                 self.reply(502)
             finally:

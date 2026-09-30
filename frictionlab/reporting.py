@@ -5,6 +5,7 @@ from __future__ import annotations
 import base64
 import html
 import json
+import os
 from pathlib import Path
 from uuid import uuid4
 
@@ -139,6 +140,14 @@ def write_report(report: RunReport, artifact_root: Path, *, prepared_directory=F
                 },
             ),
         )
+    if report.scope.phase >= 5:
+        sections.insert(
+            8,
+            (
+                "Cohort session results and reports",
+                payload["session_summaries"] or "No session reports were produced.",
+            ),
+        )
     markdown = [
         "# FrictionLab run report",
         "",
@@ -168,6 +177,23 @@ def write_report(report: RunReport, artifact_root: Path, *, prepared_directory=F
     document += f"<p>Run: {report.run_id}; execution: {report.execution_status}; report: {report.report_status}</p>"
     document += f"<p>Reason: {html.escape(report.terminal_reason)}</p>"
     document += "".join(cards)
+    if report.session_summaries:
+        markdown.extend(["## Open individual session reports", ""])
+        document += "<section><h2>Open individual session reports</h2><ul>"
+        for item in report.session_summaries:
+            relative = os.path.relpath(artifact_root.parent / item.report_path, directory).replace(
+                "\\", "/"
+            )
+            markdown.append(
+                f"- [{item.persona_id} / {item.journey_id} ({item.execution_status})]({relative})"
+            )
+            document += (
+                f'<li><a href="{html.escape(relative, quote=True)}">'
+                f"{html.escape(item.persona_id)} / {html.escape(item.journey_id)} "
+                f"({html.escape(str(item.execution_status))})</a></li>"
+            )
+        document += "</ul></section>"
+        markdown.append("")
     for ref in report.visual_evidence:
         path = (directory / ref.path).resolve()
         if path.is_relative_to(directory.resolve()) and path.suffix == ".png" and path.is_file():

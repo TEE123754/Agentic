@@ -14,7 +14,7 @@ from frictionlab.reporting import blocked_report, write_report
 def main(argv=None):
     parser = argparse.ArgumentParser(prog="python -m frictionlab")
     commands = parser.add_subparsers(dest="command", required=True)
-    serve = commands.add_parser("serve", help="Serve only the bundled local fixture/API")
+    serve = commands.add_parser("serve", help="Serve the bundled fixture and local cohort API")
     serve.add_argument("--port", type=int, default=8765)
     validate = commands.add_parser("validate", help="Review JSON configuration offline")
     validate.add_argument("path", type=Path)
@@ -94,7 +94,9 @@ def main(argv=None):
         from frictionlab.api import create_app
 
         uvicorn.run(
-            create_app(origin=f"http://127.0.0.1:{args.port}"), host="127.0.0.1", port=args.port
+            create_app(origin=f"http://127.0.0.1:{args.port}", enable_cohorts=True),
+            host="127.0.0.1",
+            port=args.port,
         )
         return 0
     try:
