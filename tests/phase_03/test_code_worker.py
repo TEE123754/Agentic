@@ -9,6 +9,7 @@ import pytest
 
 from frictionlab.planning.code_worker import (
     CodeWorkerSettings,
+    _cleanup_container,
     _read_frames,
     execute_cell,
     inspect_image,
@@ -67,6 +68,26 @@ def test_image_inspection_rejects_a_different_digest(monkeypatch):
     )
     with pytest.raises(PlannerStopped, match="does not match"):
         inspect_image(CodeWorkerSettings(PIN, "podman"))
+
+
+def test_cleanup_retries_then_verifies_container_absence(monkeypatch):
+    responses = iter([1, 0, 0, 1])
+    monkeypatch.setattr(
+        "frictionlab.planning.code_worker.subprocess.run",
+        lambda *_args, **_kwargs: SimpleNamespace(returncode=next(responses), stderr=b""),
+    )
+    monkeypatch.setattr("frictionlab.planning.code_worker.time.sleep", lambda *_: None)
+    _cleanup_container(CodeWorkerSettings(PIN, "podman"), "frictionlab-code-" + "b" * 32)
+
+
+def test_cleanup_fails_closed_when_container_remains(monkeypatch):
+    monkeypatch.setattr(
+        "frictionlab.planning.code_worker.subprocess.run",
+        lambda *_args, **_kwargs: SimpleNamespace(returncode=0, stderr=b""),
+    )
+    monkeypatch.setattr("frictionlab.planning.code_worker.time.sleep", lambda *_: None)
+    with pytest.raises(PlannerStopped, match="cleanup could not be verified"):
+        _cleanup_container(CodeWorkerSettings(PIN, "podman"), "frictionlab-code-" + "b" * 32)
 
 
 def test_cell_rejects_oversized_code_before_runtime(monkeypatch):

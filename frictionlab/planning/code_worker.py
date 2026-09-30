@@ -127,6 +127,34 @@ def _read_frames(stream, events):
         events.put(None)
 
 
+def _cleanup_container(settings: CodeWorkerSettings, name: str):
+    """Wait for Podman to release a killed client's container, then verify absence."""
+    last_error = ""
+    for attempt in range(5):
+        try:
+            removed = subprocess.run(
+                [settings.podman_path, "rm", "--force", "--ignore", name],
+                capture_output=True, timeout=10, env=worker_environment(), check=False,
+            )
+            exists = subprocess.run(
+                [settings.podman_path, "container", "exists", name],
+                capture_output=True, timeout=10, env=worker_environment(), check=False,
+            )
+            if removed.returncode == 0 and exists.returncode == 1:
+                return
+            last_error = (
+                f"remove={removed.returncode}, exists={exists.returncode}, "
+                f"stderr={removed.stderr.decode('utf-8', 'replace')[:160]}"
+            )
+        except (OSError, subprocess.SubprocessError) as exc:
+            last_error = type(exc).__name__
+        if attempt < 4:
+            time.sleep(0.5)
+    raise PlannerStopped(
+        "code_cleanup_failure", f"Disposable worker cleanup could not be verified ({last_error})."
+    )
+
+
 def execute_cell(code: str, observation: dict, bridge, settings: CodeWorkerSettings):
     """Execute one cell in a fresh container; all browser effects pass ToolBridge."""
     if not isinstance(code, str) or len(code.encode("utf-8")) > MAX_CELL_BYTES:
@@ -232,10 +260,4 @@ def execute_cell(code: str, observation: dict, bridge, settings: CodeWorkerSetti
         process.stdout.close()
         reader.join(timeout=2)
         # A killed Podman client may leave its container behind. Clean by our UUID name.
-        try:
-            subprocess.run(
-                [settings.podman_path, "rm", "--force", "--ignore", name],
-                capture_output=True, timeout=10, env=worker_environment(), check=True,
-            )
-        except (OSError, subprocess.SubprocessError):
-            raise PlannerStopped("code_cleanup_failure", "Disposable worker cleanup could not be verified.")
+        _cleanup_container(settings, name)

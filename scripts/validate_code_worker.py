@@ -122,17 +122,27 @@ def check_process_limit(settings):
 
 
 def check_memory_limit(settings):
+    checked_probe(
+        settings,
+        "from pathlib import Path\n"
+        "maximum=Path('/sys/fs/cgroup/memory.max').read_text().strip()\n"
+        "print('DENIED' if maximum!='max' and int(maximum)<=268435456 else 'UNLIMITED')\n",
+    )
     result = probe(
         settings,
+        "import time\n"
         "try:\n"
-        " x=bytearray(384*1024*1024); print('UNLIMITED')\n"
+        " x=bytearray(384*1024*1024)\n"
+        " for i in range(0,len(x),4096): x[i]=1\n"
+        " time.sleep(1); print('UNLIMITED')\n"
         "except MemoryError: print('DENIED')\n",
         timeout=25,
     )
     if result.stdout.strip() == "DENIED" or result.returncode == 137:
         return
     raise RuntimeError(
-        f"Memory ceiling was not observed: exit={result.returncode}, output={result.stdout[:200]!r}"
+        f"Memory ceiling was not observed: exit={result.returncode}, "
+        f"output={result.stdout[:200]!r}, stderr={result.stderr[:200]!r}"
     )
 
 

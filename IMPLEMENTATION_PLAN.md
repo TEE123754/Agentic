@@ -474,6 +474,8 @@ Run the browser suite once against fixtures covering form submission, DOM rerend
 
 **Second remote attempt:** The import-path repair reached rootless image inspection, which rejected Podman's bare 64-character image digest against the build file's `sha256:`-prefixed representation. No boundary probes, model download, or browser journey ran. The comparison now normalizes only that optional prefix while still requiring an identical SHA-256 value. Three focused image-inspection checks and targeted lint pass locally. The remote host/image gate remains pending a rerun. [Run](https://github.com/TEE123754/Agentic/actions/runs/36700703623).
 
+**Third remote attempt:** Rootless worker probes ran on GitHub's Linux host. Network, host file/credential/socket, PID, CPU, output, unapproved-code, IPC, and unchanged-sentinel checks passed. The 384 MiB allocation probe reported success despite a requested 256 MiB limit, and a timed-out worker left a container behind; the gate correctly withheld authorization. The memory probe now reads the cgroup limit and writes every allocated page before judging enforcement. Killed-client cleanup now retries, checks container absence, and fails closed if still present. Two targeted cleanup checks and lint pass locally. No model was downloaded and no browser journey ran. The real gate and report remain pending a targeted rerun. [Run](https://github.com/TEE123754/Agentic/actions/runs/36701208458).
+
 ### Completed and verified
 
 - [x] Installed and locked smolagents 1.26.0; recorded 126 installed dependencies and licenses.
