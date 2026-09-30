@@ -33,13 +33,23 @@ def main():
             assert all((path.parent / ref.path).is_file() for ref in finding.evidence)
         for group in report.heatmaps:
             assert (path.parent / group.svg_path).is_file()
+            assert (
+                (path.parent / group.svg_path.removesuffix(".svg")).with_suffix(".json").is_file()
+            )
             assert all(
                 0 <= point.x < group.pixel_width and 0 <= point.y < group.pixel_height
                 for point in group.points
             )
         html = path.with_name("report.html").read_text(encoding="utf-8")
+        markdown = path.with_name("report.md").read_text(encoding="utf-8")
         assert "data:image/svg+xml;base64," in html and 'src="http' not in html
         assert "Evidence exclusions" in html and "Conversion milestones" in html
+        for finding in report.findings:
+            for ref in finding.evidence:
+                assert f'href="{ref.path}"' in html and f"]({ref.path})" in markdown
+        for group in report.heatmaps:
+            json_path = group.svg_path.removesuffix(".svg") + ".json"
+            assert f'href="{json_path}"' in html and f"]({json_path})" in markdown
         lines.extend(
             [
                 f"## Run {report.run_id}",

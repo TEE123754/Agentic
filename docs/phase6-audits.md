@@ -18,13 +18,13 @@ Revision 2 groups verified issues by build, route, page-state signature, viewpor
 
 The milestone funnel counts only eligible completed or patience-abandoned sessions. Cancelled, interrupted, blocked, and infrastructure-failed sessions appear in outcomes and exclusions, outside the UX denominator. Incomplete runs and unsupported evidence produce an explicit partial audit.
 
-Click heatmaps use saved candidate bounds and screenshot coordinate maps. They contain saved synthetic actions, not recordings of real visitors. A repeated-failure cluster requires at least three consecutive distinct failed clicks on the same control in a compatible page state. Common intentional repeat controls are excluded. An SVG includes its masked screenshot as a local data URL, so the offline report does not fetch the target application.
+Click heatmaps use saved candidate bounds and screenshot coordinate maps. The validator checks that each PNG's captured dimensions match the saved coordinate map. Captures with different pixel dimensions remain in separate heatmap groups even when their CSS viewports match. They contain saved synthetic actions, not recordings of real visitors. A repeated-failure cluster requires at least three consecutive distinct failed clicks on the same control in a compatible page state. Common intentional repeat controls are excluded. An SVG includes its masked screenshot as a local data URL, so the offline report does not fetch the target application. Any excluded click, event, or session makes the audit explicitly partial.
 
 ## Inspect and review
 
 For a run ID, the local API provides `GET /runs/{run_id}/reports/json`, `/md`, or `/html`. `GET /runs/{run_id}/reports/revisions/{revision}/{format_name}` retrieves a specific immutable version. A reviewer can submit a local disposition with `POST /runs/{run_id}/findings/{finding_id}/review` and JSON such as `{"status":"confirmed","note":"Reproduced in the saved fixture evidence."}`. This creates a later revision from the already saved audit assets. The disposition is a reviewer judgment, separate from the automated evidence check.
 
-Open `report.html` or `report.md` with the adjacent `evidence/` and `heatmaps/` files retained. The structured `report.json` is the source for a future Phase 7 dashboard. Each export includes the run and protection context, trajectory links, milestone funnel, findings, heatmaps, exclusions, recommendations, and review status.
+Open `report.html` or `report.md` with the adjacent `evidence/` and `heatmaps/` files retained. Each finding links directly to its copied local evidence; each heatmap links to its SVG and JSON click points. Missing published assets fail export and preserve the earlier downloadable revision. The structured `report.json` is the source for a future Phase 7 dashboard. Each export includes the run and protection context, trajectory links, milestone funnel, findings, heatmaps, exclusions, recommendations, and review status.
 
 ## Acceptance and limits
 

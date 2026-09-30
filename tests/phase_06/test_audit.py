@@ -11,6 +11,7 @@ import httpx
 import pytest
 from harness import SemanticHarness
 
+import frictionlab.audit.service as audit_service
 from frictionlab.api import create_app
 from frictionlab.audit.service import finalize_audit, latest_report_path
 from frictionlab.audit.synthesis import AuditEngine
@@ -38,7 +39,7 @@ def png(width=390, height=844):
     )
 
 
-def observation(directory, signature, *, identifier=None):
+def observation(directory, signature, *, identifier=None, pixel_scale=1):
     identifier = identifier or uuid4()
     refs = [
         {"path": f"evidence/{identifier}.png", "kind": "screenshot"},
@@ -77,15 +78,15 @@ def observation(directory, signature, *, identifier=None):
                 "offset_y": 0,
                 "css_width": 390,
                 "css_height": 844,
-                "pixel_width": 390,
-                "pixel_height": 844,
+                "pixel_width": 390 * pixel_scale,
+                "pixel_height": 844 * pixel_scale,
             },
             "extraction_timing_ms": {},
         }
     )
     evidence = directory / "evidence"
     evidence.mkdir(parents=True, exist_ok=True)
-    (evidence / f"{identifier}.png").write_bytes(png())
+    (evidence / f"{identifier}.png").write_bytes(png(390 * pixel_scale, 844 * pixel_scale))
     (evidence / f"{identifier}.observation.json").write_text(
         value.model_dump_json(indent=2), encoding="utf-8"
     )
@@ -98,6 +99,7 @@ def create_saved_cohort(
     *,
     repeated_clicks=False,
     malformed=False,
+    pixel_scales=None,
 ):
     payload = read_json(CONFIG_DIRECTORY / "run.example.json")
     payload.update(
@@ -128,6 +130,7 @@ def create_saved_cohort(
     summaries = []
     counts = {}
     for repetition, outcome in enumerate(outcomes):
+        pixel_scale = pixel_scales[repetition] if pixel_scales else 1
         sid = str(uuid4())
         spec = {
             "session_id": sid,
@@ -141,13 +144,14 @@ def create_saved_cohort(
         manifest["sessions"].append(spec)
         store.append("session_queued", run_id, spec, sid)
         directory = root / "runs" / run_id / "sessions" / sid
-        before = observation(directory, "a" * 64)
+        before = observation(directory, "a" * 64, pixel_scale=pixel_scale)
         steps = []
         current = before
         for index in range(3 if repeated_clicks else 1):
             after = observation(
                 directory,
                 "a" * 64 if outcome == "abandoned_patience" or repeated_clicks else "b" * 64,
+                pixel_scale=pixel_scale,
             )
             action_id = uuid4()
             steps.append(
@@ -334,6 +338,10 @@ def test_grouped_finding_denominator_heatmap_and_immutable_revisions(tmp_path, m
         html_report = latest_report_path(root, store, run_id, "html").read_text()
         assert "data:image/svg+xml;base64," in html_report
         assert "Evidence exclusions" in html_report and "Conversion milestones" in html_report
+        for ref in finding.evidence:
+            assert f'href="{ref.path}"' in html_report
+            assert f"]({ref.path})" in latest_report_path(root, store, run_id, "md").read_text()
+        assert f'href="{group.svg_path.removesuffix(".svg")}.json"' in html_report
         assert (root / "reports" / run_id / "report.json").is_file()
         assert store.run(run_id)["report_revision"] == 2
         assert len(store.rows("SELECT * FROM findings WHERE run_id = ?", [run_id])) == 1
@@ -367,6 +375,95 @@ def test_repeated_failed_click_cluster_uses_actual_actions(tmp_path):
         assert report.heatmaps[0].rage_click_clusters == 1
         assert len(report.heatmaps[0].points) == 3
         assert all(point.rage_cluster for point in report.heatmaps[0].points)
+    finally:
+        store.close()
+
+
+def test_pixel_density_separates_heatmaps_without_splitting_ux_context(tmp_path):
+    root = tmp_path / "cohort"
+    run_id, store = create_saved_cohort(
+        root, outcomes=("completed", "completed"), pixel_scales=(1, 2)
+    )
+    try:
+        report = finalize_audit(root, store, run_id)
+        assert report and report.report_status == "ready"
+        assert len(report.heatmaps) == 2
+        assert {(group.pixel_width, group.pixel_height) for group in report.heatmaps} == {
+            (390, 844),
+            (780, 1688),
+        }
+        assert {(point.x, point.y) for group in report.heatmaps for point in group.points} == {
+            (90, 80),
+            (180, 160),
+        }
+    finally:
+        store.close()
+
+
+def test_unmapped_click_is_excluded_and_report_becomes_partial(tmp_path):
+    root = tmp_path / "cohort"
+    run_id, store = create_saved_cohort(root, outcomes=("completed",))
+    try:
+        sid = store.sessions(run_id)[0]["session_id"]
+        session_dir = root / "runs" / run_id / "sessions" / sid
+        session = RunReport.model_validate_json((session_dir / "report.json").read_text())
+        observation_id = session.trajectories[0].observation_before
+        path = session_dir / "evidence" / f"{observation_id}.observation.json"
+        saved = json.loads(path.read_text())
+        saved["candidates"] = []
+        path.write_text(json.dumps(saved), encoding="utf-8")
+        report = finalize_audit(root, store, run_id)
+        assert report and report.report_status == "partial"
+        assert any(item.kind == "action" for item in report.exclusions)
+        assert report.review.missing_evidence
+        assert not report.heatmaps
+    finally:
+        store.close()
+
+
+def test_screenshot_coordinate_mismatch_excludes_session(tmp_path):
+    root = tmp_path / "cohort"
+    run_id, store = create_saved_cohort(root, outcomes=("completed",))
+    try:
+        sid = store.sessions(run_id)[0]["session_id"]
+        session_dir = root / "runs" / run_id / "sessions" / sid
+        session = RunReport.model_validate_json((session_dir / "report.json").read_text())
+        observation_id = session.trajectories[0].observation_before
+        path = session_dir / "evidence" / f"{observation_id}.observation.json"
+        saved = json.loads(path.read_text())
+        saved["coordinates"]["pixel_width"] += 1
+        path.write_text(json.dumps(saved), encoding="utf-8")
+        report = finalize_audit(root, store, run_id)
+        assert report and report.report_status == "partial"
+        assert any("Screenshot dimensions differ" in item.reason for item in report.exclusions)
+        assert not report.heatmaps
+    finally:
+        store.close()
+
+
+def test_missing_heatmap_asset_keeps_fallback_and_recovers_offline(tmp_path, monkeypatch):
+    root = tmp_path / "cohort"
+    run_id, store = create_saved_cohort(root, outcomes=("completed",))
+    original = audit_service._write_assets
+
+    def omit_point_data(directory, assets):
+        original(
+            directory,
+            {
+                name: value
+                for name, value in assets.items()
+                if not name.startswith("heatmaps/") or not name.endswith(".json")
+            },
+        )
+
+    try:
+        monkeypatch.setattr(audit_service, "_write_assets", omit_point_data)
+        assert finalize_audit(root, store, run_id) is None
+        assert latest_report_path(root, store, run_id).parent == root / "reports" / run_id
+        monkeypatch.setattr(audit_service, "_write_assets", original)
+        repaired = finalize_audit(root, store, run_id)
+        assert repaired and repaired.report_status == "ready"
+        assert latest_report_path(root, store, run_id).parent.name == "2"
     finally:
         store.close()
 

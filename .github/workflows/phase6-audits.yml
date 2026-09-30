@@ -2,6 +2,15 @@ name: Phase 6 owned-fixture audit gate
 
 on:
   workflow_dispatch:
+    inputs:
+      suite:
+        description: Scope of the post-build validation batch
+        required: true
+        default: full
+        type: choice
+        options:
+          - full
+          - phase6_only
 
 permissions:
   contents: read
@@ -33,7 +42,12 @@ jobs:
           uv sync --locked --group dev
 
       - name: One post-build Phase 6 acceptance batch
-        run: uv run pytest -q tests/phase_06 tests/phase_05/test_cohorts.py::test_two_browser_workers_isolate_state_cancel_and_export_partial_report tests/phase_01/test_reports_and_cli.py tests/phase_04/test_cognition.py
+        run: |
+          if [ "${{ inputs.suite }}" = "phase6_only" ]; then
+            uv run pytest -q tests/phase_06
+          else
+            uv run pytest -q tests/phase_06 tests/phase_05/test_cohorts.py::test_two_browser_workers_isolate_state_cancel_and_export_partial_report tests/phase_01/test_reports_and_cli.py tests/phase_04/test_cognition.py
+          fi
 
       - name: Review saved report and evidence offline
         if: always()

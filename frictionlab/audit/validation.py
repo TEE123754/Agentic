@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from pathlib import Path
+from struct import unpack
 from uuid import UUID
 
 from frictionlab.browser.evidence import BrowserObservation
@@ -42,6 +43,24 @@ class SessionEvidence:
             observation = BrowserObservation.model_validate_json(path.read_text(encoding="utf-8"))
             if str(observation.id) != key:
                 raise ValueError("Saved observation ID does not match the trajectory")
+            for ref in observation.evidence:
+                if ref.path.endswith(".png"):
+                    with self.file(ref.path).open("rb") as stream:
+                        header = stream.read(24)
+                    if (
+                        len(header) != 24
+                        or not header.startswith(b"\x89PNG\r\n\x1a\n")
+                        or header[12:16] != b"IHDR"
+                    ):
+                        raise ValueError("Saved screenshot is not a PNG capture")
+                    dimensions = unpack(">II", header[16:24])
+                    if dimensions != (
+                        observation.coordinates.pixel_width,
+                        observation.coordinates.pixel_height,
+                    ):
+                        raise ValueError(
+                            "Screenshot dimensions differ from the saved coordinate map"
+                        )
             self.observations[key] = observation
         return self.observations[key]
 

@@ -206,6 +206,24 @@ def write_report(
     document += f"<p>Run: {report.run_id}; execution: {report.execution_status}; report: {report.report_status}</p>"
     document += f"<p>Reason: {html.escape(report.terminal_reason)}</p>"
     document += "".join(cards)
+    if report.scope.phase >= 6 and report.findings:
+        markdown.extend(["## Finding evidence files", ""])
+        document += "<section><h2>Finding evidence files</h2>"
+        for finding in report.findings:
+            markdown.extend([f"### {finding.title}", ""])
+            document += f"<h3>{html.escape(finding.title)}</h3><ul>"
+            for ref in finding.evidence:
+                asset = (directory / ref.path).resolve()
+                if not asset.is_relative_to(directory.resolve()) or not asset.is_file():
+                    raise FileNotFoundError("A published finding evidence file is missing")
+                markdown.append(f"- [{ref.kind}: {ref.path}]({ref.path})")
+                document += (
+                    f'<li><a href="{html.escape(ref.path, quote=True)}">'
+                    f"{html.escape(ref.kind)}: {html.escape(ref.path)}</a></li>"
+                )
+            markdown.append("")
+            document += "</ul>"
+        document += "</section>"
     if report.session_summaries:
         markdown.extend(["## Open individual session reports", ""])
         document += "<section><h2>Open individual session reports</h2><ul>"
@@ -227,19 +245,34 @@ def write_report(
         for group in report.heatmaps:
             svg = (directory / group.svg_path).resolve()
             if not svg.is_relative_to(directory.resolve()) or not svg.is_file():
+                if report.scope.phase >= 6:
+                    raise FileNotFoundError("A published heatmap SVG is missing")
                 continue
+            json_path = group.svg_path.removesuffix(".svg") + ".json"
+            data_file = (directory / json_path).resolve()
+            if report.scope.phase >= 6 and (
+                not data_file.is_relative_to(directory.resolve()) or not data_file.is_file()
+            ):
+                raise FileNotFoundError("A published heatmap data file is missing")
             encoded = base64.b64encode(svg.read_bytes()).decode()
             caption = f"{group.route} · {group.input_mode} · {len(group.points)} clicks · {group.rage_click_clusters} repeated-failure cluster(s)"
             markdown.append(f"- [{caption}]({group.svg_path})")
+            if report.scope.phase >= 6:
+                markdown.append(f"  - [Point data]({json_path})")
             document += (
                 f"<figure><figcaption>{html.escape(caption)}</figcaption>"
                 f'<img style="max-width:100%" alt="Synthetic click heatmap" '
-                f'src="data:image/svg+xml;base64,{encoded}"></figure>'
+                f'src="data:image/svg+xml;base64,{encoded}">'
+                f'<p><a href="{html.escape(json_path, quote=True)}">Point data</a></p></figure>'
             )
         document += "</section>"
         markdown.append("")
     for ref in report.visual_evidence:
         path = (directory / ref.path).resolve()
+        if report.scope.phase >= 6 and (
+            not path.is_relative_to(directory.resolve()) or not path.is_file()
+        ):
+            raise FileNotFoundError("A published visual evidence file is missing")
         if path.is_relative_to(directory.resolve()) and path.suffix == ".png" and path.is_file():
             encoded = base64.b64encode(path.read_bytes()).decode()
             document += f'<figure><figcaption>{html.escape(ref.path)}</figcaption><img style="max-width:100%" alt="Masked browser evidence" src="data:image/png;base64,{encoded}"></figure>'

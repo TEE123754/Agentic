@@ -95,6 +95,14 @@ def context_key(build_id, observation, input_mode):
     )
 
 
+def heatmap_key(build_id, observation, input_mode):
+    return (
+        *context_key(build_id, observation, input_mode),
+        observation.coordinates.pixel_width,
+        observation.coordinates.pixel_height,
+    )
+
+
 def _key_id(value):
     return hashlib.sha256(json.dumps(value, sort_keys=True).encode()).hexdigest()[:16]
 
@@ -176,14 +184,14 @@ class AuditEngine:
                 explanations.append(diagnosis.first_person)
         incomplete = (
             base.execution_status != "completed"
-            or any(item.kind in {"session", "event"} for item in self.exclusions)
+            or bool(self.exclusions)
             or not any(session.eligible for session in sessions)
         )
         missing = []
         if base.execution_status != "completed":
             missing.append("Run did not complete; some browser journeys are unavailable.")
         if self.exclusions:
-            missing.append(f"{len(self.exclusions)} session/event exclusions require review.")
+            missing.append(f"{len(self.exclusions)} evidence exclusions require review.")
         if not any(session.eligible for session in sessions):
             missing.append("No protected, executed session is eligible for UX synthesis.")
         data = base.model_dump(mode="json")
@@ -368,6 +376,13 @@ class AuditEngine:
                     (ref for ref in before.evidence if ref.path.endswith(".png")), None
                 )
                 if screenshot is None:
+                    self.exclusions.append(
+                        excluded(
+                            "action",
+                            "Click observation has no saved screenshot for coordinate review.",
+                            session_id=session.session_id,
+                        )
+                    )
                     continue
                 x, y, width, height = candidate.bounds
                 px, py = before.coordinates.css_to_pixel(x + width / 2, y + height / 2)
@@ -383,7 +398,7 @@ class AuditEngine:
                         )
                     )
                     continue
-                key = context_key(
+                key = heatmap_key(
                     self.manifest["environment"]["build_id"], before, session.input_mode
                 )
                 point_groups[key].append(
@@ -537,7 +552,7 @@ def _rage_actions(session: SessionEvidence):
         if candidate is None or candidate.name.casefold().strip() in EXPECTED_REPEATED_CONTROLS:
             index += 1
             continue
-        key = context_key(session.report.scope.build_id, before, session.input_mode)
+        key = heatmap_key(session.report.scope.build_id, before, session.input_mode)
         end = index + 1
         while end < len(steps):
             other = steps[end]
@@ -559,7 +574,7 @@ def _rage_actions(session: SessionEvidence):
             if (
                 selected is None
                 or selected.name != candidate.name
-                or context_key(session.report.scope.build_id, observation, session.input_mode)
+                or heatmap_key(session.report.scope.build_id, observation, session.input_mode)
                 != key
             ):
                 break
