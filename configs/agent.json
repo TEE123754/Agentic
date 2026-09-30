@@ -3,7 +3,7 @@
   "max_steps": 24,
   "max_tool_calls": 24,
   "max_runtime_seconds": 240,
-  "request_timeout_seconds": 45,
+  "request_timeout_seconds": 60,
   "max_input_tokens": 2800,
   "max_output_tokens": 256,
   "max_memory_characters": 10000,
