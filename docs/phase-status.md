@@ -36,7 +36,7 @@
 
 ## Later phases
 
-Phase 4's owned-fixture gate is complete below; phases 5–10 have not started. Phase 3's typed-tools fixture scope passed after repairs; its full generated-code/container gate remains unmet.
+Phase 4's owned-fixture gate is complete below; phases 5–10 have not started. Phase 3's typed-tools fixture scope passed after repairs, and its generated-code/container gate passed on a disposable GitHub runner as recorded below.
 
 ## Phase 2 — Complete (owned-fixture browser/proxy gate)
 
@@ -56,7 +56,7 @@ Phase 4's owned-fixture gate is complete below; phases 5–10 have not started. 
 
 **Next:** Phase 3 single autonomous persona. Validate the stronger code-worker boundary before executing generated Python. Cognitive runtime, detectors, orchestration, durable telemetry, calibrated UX reports/heatmaps, and dashboard remain later work.
 
-## Phase 3 — Typed-tools fixture scope verified; full phase partial
+## Phase 3 — Complete for the owned-fixture scope
 
 **Date:** September 30, 2026 (Asia/Kuala_Lumpur; raw artifact timestamps use UTC).
 
@@ -72,7 +72,9 @@ Phase 4's owned-fixture gate is complete below; phases 5–10 have not started. 
 
 **September 30 completion attempt:** Constructed an OCI-side generated-code process, a rootless Podman launcher with immutable local image ID and no network/host mounts, a bounded stdio action channel to the trusted broker, a pinned-base `Containerfile`, and the `smolagents.CodeAgent` source adapter. The runner requires a matching host/image boundary gate before model or browser startup. Twenty new offline worker/adapter checks and two existing blocked-mode guards pass; targeted lint passes. This is source-level construction, not a validated sandbox. A fresh host check still found no Podman, Docker, or installed WSL.
 
-**Remaining for Phase 3:** Provision a free rootless runtime, build/inspect the pinned image, pass one real-container escape/IPC/limit/cleanup batch on that exact host/image, and review one owned-fixture CodeAgent journey/report. The current proxy and offline checks do not establish this boundary. Generated Python stays disabled, and full Phase 3 remains partial. No other required work remains in the supported typed-tools fixture scope. Broader replica support, optional vision, real assistive technology, cohorts, heatmaps, and dashboard remain separate/deferred work. [Worker checkpoint](phase3-code-worker.md).
+**Remote completion:** The manual [GitHub Actions run](https://github.com/TEE123754/Agentic/actions/runs/36704845110) passed on an ephemeral Ubuntu runner. All 14 real-container boundary checks passed for its rootless Podman worker image, including network/host isolation, resource limits, unapproved code, stale/forged IPC, timeout, cleanup, and untouched sentinel. The CodeAgent then executed generated Python in that worker and completed the owned healthy delivery/returns journey in one model decision and one browser action. The saved JSON/Markdown/offline HTML report was reviewed without repeating navigation. It records zero sentinel requests, unchanged sentinel data, and owned-service cleanup. The terminal screenshot visibly shows the delivery and returns policy. Local [boundary review](../artifacts/phase3/remote-36704845110/worker-boundary-review.md), [journey review](../artifacts/phase3/remote-36704845110/code-journey-review.md), and [report](../artifacts/phase3/remote-36704845110/runs/49824634-7fd8-4b5d-8fde-24becbb00f8e/report.html) are retained. Failed remote attempts remain recorded in the implementation plan.
+
+**Remaining scope:** No required Phase 3 owned-fixture gate work remains. This laptop still has no Podman, Docker, or WSL, so its local `isolated_code` mode stays blocked; the GitHub acceptance record is valid only on its runner/image. The terminal report is explicitly partial because calibrated UX findings/heatmaps and cohort orchestration belong to later phases. External replica support, optional vision, real assistive technology, cohorts, full UX reports, and dashboard remain deferred. [Worker checkpoint](phase3-code-worker.md).
 
 **Evidence:** [Acceptance review](phase3-validation.md), [structured results](../artifacts/phase3/validation.json), [merged checks](../artifacts/phase3/validation.xml), [autonomous guide](phase3-autonomous.md), [mobile report](../artifacts/phase3/runs/204a3c49-dca9-4e48-a473-aeaf25fb46a2/report.html), [keyboard report](../artifacts/phase3/runs/f192ad61-4aba-456b-b1e7-aab860d3b423/report.html), [enterprise report](../artifacts/phase3/runs/8271c88e-eaeb-4ee2-94a0-ef92a15fa963/report.html).
 
@@ -88,6 +90,6 @@ Phase 4's owned-fixture gate is complete below; phases 5–10 have not started. 
 
 **Protection/report review:** Ten Phase 4 terminal reports, one protected-control probe, and one information-dialog probe report were retained. Ten initialized sentinel reports recorded zero requests and unchanged data; the unexecuted preflight rejection made zero target requests. Report exports and evidence links resolved. Saved dead/healthy/repaired-Qwen screenshots were reviewed offline, showing no order or external dispatch. No external website, generated Python, or vision call occurred.
 
-**Known limitations / next:** The gate covers one owned fixture and synthetic profiles, not calibrated human abandonment or robust model performance across seeds. Broader false-positive evaluation and human review remain. Phase 3's source-built OS/container generated-code path is still unvalidated, so external replicas and generated code remain disabled. Phase 5 cohorts/DuckDB/persistence and later aggregate UX reports/heatmaps/dashboard have not started. No required Phase 4 fixture-gate work remains.
+**Known limitations / next:** The gate covers one owned fixture and synthetic profiles, not calibrated human abandonment or robust model performance across seeds. Broader false-positive evaluation and human review remain. Phase 3's generated-code path passed only on a remote host/image; external replicas and local generated code remain disabled. Phase 5 cohorts/DuckDB/persistence and later aggregate UX reports/heatmaps/dashboard have not started. No required Phase 4 fixture-gate work remains.
 
 **Evidence:** [Validation review](phase4-validation.md), [structured results](../artifacts/phase4/validation.json), [merged checks](../artifacts/phase4/validation.xml), [behavioral guide](phase4-cognition.md), [repaired local-Qwen report](../artifacts/phase4/runs/13e8b5a3-e09f-487a-8ee1-c6432d63c4ae/report.html), [original timed-out Qwen report](../artifacts/phase4/runs/88d69f16-357d-44bd-8061-cd6b447a32e2/report.html), [matched healthy report](../artifacts/phase4/runs/7bb91b99-f9a3-46dd-a1e6-fbfe8eb202f8/report.html).

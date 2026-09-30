@@ -1,18 +1,18 @@
-# Phase 3 generated-code worker: construction checkpoint
+# Phase 3 generated-code worker: construction and remote validation
 
-The supported autonomous product path is still the reviewed `typed_tools` mode. `isolated_code` remains blocked before starting a browser or model. The new OCI worker files are preparation for that path, **not evidence that arbitrary generated Python is safe to enable**.
+The original construction checkpoint below records why `isolated_code` was blocked locally. The [September 30 remote gate](https://github.com/TEE123754/Agentic/actions/runs/36704845110) subsequently passed all 14 rootless-worker checks and one generated-code CodeAgent journey on a disposable GitHub runner. The host/image record is specific to that runner. This Windows laptop still has no container runtime, so its local `isolated_code` mode remains blocked; external staging sites remain unsupported.
 
 ## Built boundary
 
 - `frictionlab/planning/container_worker.py` receives one bounded code cell and a filtered observation over stdin, runs it in a fresh process, and exposes only a `tool(action)` function for browser operations. It rejects direct imports, attribute access, and unapproved calls as defense in depth; Python itself is not a sandbox.
 - `frictionlab/planning/code_worker.py` constructs a rootless Podman invocation with an immutable local image ID, no network, no host mounts, read-only root, no Linux capabilities, no new privileges, private IPC/PID/UTS, an unprivileged UID, 16 MiB temporary scratch, and CPU, memory, process, wall-time, input, and output ceilings. It verifies the local image ID and rootless runtime before launch.
 - The only action channel is bounded newline JSON over the worker's stdin/stdout. The host treats frames as untrusted and sends each proposed action through the existing `ToolBridge`, which rechecks current observation, candidate, action contract, independent finish, quotas, and browser protection policy. No Playwright handle, application credential, provider token, host socket, or target URL is provided to the worker.
-- The launcher kills a timed-out process and attempts forced removal by its random container name. Cleanup failure is an infrastructure failure, never a UX diagnosis.
+- The launcher asks Podman to stop a timed-out container, then verifies forced removal by its random name. Cleanup failure is an infrastructure failure, never a UX diagnosis.
 - `Containerfile.code-worker` copies only the worker module into an operator-supplied pinned base image. The resulting image must itself be pinned by its local SHA-256 image ID. No registry pull occurs when running cells.
 - `.containerignore` limits the build context to this one module and its Containerfile, excluding models, reports, credentials, and local environments from the image build transfer.
 - `frictionlab/planning/code_agent.py` connects `smolagents.CodeAgent` to the disposable worker. A local Qwen decision is a bounded Python cell; the agent cannot send Python variables or unreviewed tools into the worker. The existing persona memory, model token/step ceilings, broker checks, independent completion, and terminal report path remain authoritative. The runner checks a host/image-specific boundary record **before** starting a browser or model. No such record is present on this host, so this branch has not executed.
 
-## Remaining gate before enabling generated Python
+## Historical gate checklist and remaining external-target prerequisite
 
 1. Provision a supported **free, rootless Podman** runtime on a host that can run Linux containers. This Windows machine currently has no Podman, Docker, or installed WSL. Installing WSL/Podman changes the host and may require administrator rights and restart; this task has not done so.
 2. Build a worker image from a reviewed, digest-pinned open-source Python base; record the base provenance, final image ID, Podman version, rootless status, kernel/runtime configuration, and host identifier. The [GitHub-built uv Python 3.12 Alpine image](https://github.com/astral-sh/uv/blob/main/docs/guides/integration/docker.md) is one free GHCR source; resolve and record its actual digest before using it as `BASE_IMAGE`. [Podman's run reference](https://docs.podman.io/en/latest/markdown/podman-run.1.html) defines the network, root filesystem, resource, and no-pull flags. No paid account is required.
@@ -22,7 +22,7 @@ The supported autonomous product path is still the reviewed `typed_tools` mode. 
 4. Run at least one owned-fixture `CodeAgent` journey through the real worker and independently review its detailed terminal report. Record image ID, host, worker startup, tool calls, and actual generated-code execution. The typed-tools journeys need not be repeated.
 5. Separately validate stronger browser isolation before accepting any user-supplied staging/replica URL. The worker boundary alone does not authorize external targets.
 
-## Review of this checkpoint
+## Historical source-only review
 
 Construction preceded the offline worker check batch. **Twenty new worker/adapter checks and two existing blocked-mode guards passed**; only affected checks were repeated after small source changes. Targeted Ruff checks pass. The checks cover the command's intended isolation flags/no host mounts, immutable image-ID rejection, invalid names, input limits before launch, absent-runtime fail-closed behavior, excluded API keys, oversized output rejection, direct unauthorized code syntax, host/image gate checks, and the CodeAgent adapter's tool/state restrictions. They do not execute generated Python or a container. The reviewed runner still rejects `isolated_code` before browser/model startup on this host.
 
@@ -33,6 +33,4 @@ Construction preceded the offline worker check batch. **Twenty new worker/adapte
 | IPC and reporting | Strict frame/input/output bounds, current-observation broker dispatch, host/image gate, and worker metadata are in source. | End-to-end CodeAgent tool protocol, detailed terminal report with an actual generated cell, and exact image/runtime provenance. |
 | Build inputs | Only the worker file is selected in `.containerignore`; `Containerfile.code-worker` has no application credentials or model weights. | The chosen digest-pinned base, build-context behavior, resulting image ID, and image inspection. |
 
-No code-mode UX result or isolation success is claimed. Existing typed-tools Phase 3 reports remain the only executed autonomous evidence. No deployed website was contacted during this checkpoint; only local source checks ran.
-
-The product execution path remains closed by the missing host/image acceptance record. Phase 3 remains partial; no verified sandbox or external-target safety claim is made.
+The table above describes the source-only checkpoint before the remote run. The completed [worker boundary review](../artifacts/phase3/remote-36704845110/worker-boundary-review.md), [CodeAgent journey review](../artifacts/phase3/remote-36704845110/code-journey-review.md), and [terminal report](../artifacts/phase3/remote-36704845110/runs/49824634-7fd8-4b5d-8fde-24becbb00f8e/report.html) supersede its unverified items for one owned fixture and one runner/image. Fourteen boundary checks passed, the generated Python took one grounded action, and independent delivery/returns criteria passed. Zero sentinel requests and cleanup were recorded. The report remains partial for later-phase UX findings and cohorts. The local laptop and external targets still lack their own acceptance records.

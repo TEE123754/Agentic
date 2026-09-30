@@ -8,7 +8,7 @@ FrictionLab is a local-first synthetic UX audit platform under phased constructi
 & '.venv\Scripts\python.exe' -m frictionlab autonomous --persona impatient_mobile --journey checkout_review
 ```
 
-A local model chooses actions against a fresh disposable fixture, independently verifies the goal, and saves detailed offline reports for success, failure, or preflight rejection. All three supported profiles have verified typed-tool journeys after repairs; 100 distinct checks pass. The generated-code/container worker is built in source and awaits its real-host gate. The manual [remote isolation workflow](docs/phase3-remote-gate.md) uses a disposable GitHub runner, leaving this laptop unchanged. No production URL or paid key is accepted. See the [autonomous runner guide](docs/phase3-autonomous.md) and [acceptance record](docs/phase3-validation.md).
+A local model chooses actions against a fresh disposable fixture, independently verifies the goal, and saves detailed offline reports for success, failure, or preflight rejection. All three supported profiles have verified typed-tool journeys after repairs; 100 distinct checks pass. The generated-code worker passed 14 real isolation checks and one reviewed CodeAgent journey on a disposable [GitHub runner](https://github.com/TEE123754/Agentic/actions/runs/36704845110), leaving this laptop unchanged. The final report is partial because aggregate UX findings and cohorts belong to later phases. No production URL or paid key is accepted. See the [remote gate guide](docs/phase3-remote-gate.md), [autonomous runner guide](docs/phase3-autonomous.md), and [acceptance record](docs/phase3-validation.md).
 
 ## Phase 4 behavioral run
 
