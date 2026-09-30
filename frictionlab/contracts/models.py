@@ -447,12 +447,127 @@ class Finding(Contract):
     evidence: tuple[EvidenceRef, ...] = Field(min_length=1)
     recommendation: NonEmpty
     verification: NonEmpty
+    detector: Identifier | None = None
+    route: str = ""
+    page_state_signature: str = ""
+    target_name: str = ""
+    viewport: Viewport | None = None
+    input_mode: Literal["mouse", "touch", "keyboard"] | None = None
+    affected_session_ids: tuple[UUID, ...] = ()
+    eligible_session_ids: tuple[UUID, ...] = ()
+    event_ids: tuple[UUID, ...] = ()
+    affected_profiles: tuple[Identifier, ...] = ()
+    reproduction_rate: Probability | None = None
+    severity_rationale: str = ""
+    confidence_basis: str = ""
 
     @model_validator(mode="after")
     def valid_denominator(self):
         if self.affected_sessions > self.eligible_sessions:
             raise ValueError("Affected sessions cannot exceed the eligible denominator")
+        if (
+            self.affected_session_ids
+            and len(set(self.affected_session_ids)) != self.affected_sessions
+        ):
+            raise ValueError("Affected session IDs must match the affected count")
+        if (
+            self.eligible_session_ids
+            and len(set(self.eligible_session_ids)) != self.eligible_sessions
+        ):
+            raise ValueError("Eligible session IDs must match the denominator")
+        if (
+            self.affected_session_ids
+            and self.eligible_session_ids
+            and not set(self.affected_session_ids) <= set(self.eligible_session_ids)
+        ):
+            raise ValueError("Affected session IDs must be eligible")
         return self
+
+
+class HeatmapPoint(Contract):
+    session_id: UUID
+    action_id: UUID
+    x: float = Field(ge=0, allow_inf_nan=False)
+    y: float = Field(ge=0, allow_inf_nan=False)
+    target_name: str = Field(max_length=120)
+    result: Literal["progress", "no_change", "validation_error"]
+    rage_cluster: bool = False
+
+
+class HeatmapGroup(Contract):
+    id: str = Field(pattern=r"^[0-9a-f]{16}$")
+    build_id: NonEmpty
+    route: NonEmpty
+    page_state_signature: NonEmpty
+    viewport: Viewport
+    pixel_width: int = Field(ge=1, strict=True)
+    pixel_height: int = Field(ge=1, strict=True)
+    input_mode: Literal["mouse", "touch", "keyboard"]
+    points: tuple[HeatmapPoint, ...]
+    rage_click_clusters: int = Field(ge=0, strict=True)
+    svg_path: str
+
+    @field_validator("svg_path")
+    @classmethod
+    def local_svg(cls, value):
+        path = PurePosixPath(value)
+        if (
+            "\\" in value
+            or ":" in value
+            or path.is_absolute()
+            or ".." in path.parts
+            or not value.startswith("heatmaps/")
+            or path.suffix != ".svg"
+        ):
+            raise ValueError("Heatmap SVG must be an owned local relative path")
+        return value
+
+    @model_validator(mode="after")
+    def points_inside_capture(self):
+        if any(
+            point.x >= self.pixel_width or point.y >= self.pixel_height for point in self.points
+        ):
+            raise ValueError("Heatmap points must stay inside the captured viewport")
+        return self
+
+
+class AuditExclusion(Contract):
+    kind: Literal["session", "event", "action"]
+    reason: NonEmpty
+    session_id: UUID | None = None
+    event_id: UUID | None = None
+
+
+class MilestoneFunnel(Contract):
+    journey_id: Identifier
+    milestone: Identifier
+    eligible_sessions: int = Field(ge=0, strict=True)
+    passed_sessions: int = Field(ge=0, strict=True)
+    pass_rate: Probability | None = None
+
+    @model_validator(mode="after")
+    def valid_counts(self):
+        if self.passed_sessions > self.eligible_sessions:
+            raise ValueError("Passed milestones cannot exceed eligible sessions")
+        if self.eligible_sessions == 0 and self.pass_rate is not None:
+            raise ValueError("Zero denominator requires a null milestone rate")
+        if self.eligible_sessions and self.pass_rate is None:
+            raise ValueError("Milestone rate is required when eligible sessions exist")
+        return self
+
+
+class TrajectoryEntry(Contract):
+    session_id: UUID
+    step_index: int = Field(ge=0, strict=True)
+    action_id: UUID
+    action_kind: str = ""
+    result: Literal["progress", "no_change", "validation_error", "blocked", "agent_error"]
+    detail: str = Field(max_length=2000)
+    observation_before: UUID
+    observation_after: UUID | None = None
+    application_seconds: float = Field(ge=0, allow_inf_nan=False)
+    inference_seconds: float = Field(ge=0, allow_inf_nan=False)
+    session_report_path: str
 
 
 class ReviewDisposition(Contract):
@@ -462,7 +577,7 @@ class ReviewDisposition(Contract):
 
 
 class ReportScope(Contract):
-    phase: Literal[1, 2, 3, 4, 5] = 1
+    phase: Literal[1, 2, 3, 4, 5, 6] = 1
     build_id: str | None = None
     environment_id: str | None = None
     personas: tuple[str, ...] = ()
@@ -553,11 +668,15 @@ class RunReport(Contract):
     cohort_results: CohortResults
     session_summaries: tuple[CohortSessionSummary, ...] = ()
     trajectories: tuple[StepResult, ...] = ()
+    trajectory_index: tuple[TrajectoryEntry, ...] = ()
     planner_decisions: tuple[PlannerDecisionRecord, ...] = ()
     friction_events: tuple[FrictionEvent, ...] = ()
     patience_ledger: tuple[PatienceEntry, ...] = ()
     abandonment_diagnosis: AbandonmentDiagnosis | None = None
     findings: tuple[Finding, ...] = ()
+    heatmaps: tuple[HeatmapGroup, ...] = ()
+    exclusions: tuple[AuditExclusion, ...] = ()
+    milestone_funnel: tuple[MilestoneFunnel, ...] = ()
     visual_evidence: tuple[EvidenceRef, ...] = ()
     abandonment_explanations: tuple[str, ...] = ()
     recommendations: tuple[str, ...]

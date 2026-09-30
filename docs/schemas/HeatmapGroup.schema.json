@@ -1,0 +1,160 @@
+{
+  "$defs": {
+    "HeatmapPoint": {
+      "additionalProperties": false,
+      "properties": {
+        "session_id": {
+          "format": "uuid",
+          "title": "Session Id",
+          "type": "string"
+        },
+        "action_id": {
+          "format": "uuid",
+          "title": "Action Id",
+          "type": "string"
+        },
+        "x": {
+          "minimum": 0,
+          "title": "X",
+          "type": "number"
+        },
+        "y": {
+          "minimum": 0,
+          "title": "Y",
+          "type": "number"
+        },
+        "target_name": {
+          "maxLength": 120,
+          "title": "Target Name",
+          "type": "string"
+        },
+        "result": {
+          "enum": [
+            "progress",
+            "no_change",
+            "validation_error"
+          ],
+          "title": "Result",
+          "type": "string"
+        },
+        "rage_cluster": {
+          "default": false,
+          "title": "Rage Cluster",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "session_id",
+        "action_id",
+        "x",
+        "y",
+        "target_name",
+        "result"
+      ],
+      "title": "HeatmapPoint",
+      "type": "object"
+    },
+    "Viewport": {
+      "additionalProperties": false,
+      "properties": {
+        "width": {
+          "maximum": 3840,
+          "minimum": 320,
+          "title": "Width",
+          "type": "integer"
+        },
+        "height": {
+          "maximum": 2160,
+          "minimum": 480,
+          "title": "Height",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "width",
+        "height"
+      ],
+      "title": "Viewport",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "pattern": "^[0-9a-f]{16}$",
+      "title": "Id",
+      "type": "string"
+    },
+    "build_id": {
+      "maxLength": 2000,
+      "minLength": 1,
+      "title": "Build Id",
+      "type": "string"
+    },
+    "route": {
+      "maxLength": 2000,
+      "minLength": 1,
+      "title": "Route",
+      "type": "string"
+    },
+    "page_state_signature": {
+      "maxLength": 2000,
+      "minLength": 1,
+      "title": "Page State Signature",
+      "type": "string"
+    },
+    "viewport": {
+      "$ref": "#/$defs/Viewport"
+    },
+    "pixel_width": {
+      "minimum": 1,
+      "title": "Pixel Width",
+      "type": "integer"
+    },
+    "pixel_height": {
+      "minimum": 1,
+      "title": "Pixel Height",
+      "type": "integer"
+    },
+    "input_mode": {
+      "enum": [
+        "mouse",
+        "touch",
+        "keyboard"
+      ],
+      "title": "Input Mode",
+      "type": "string"
+    },
+    "points": {
+      "items": {
+        "$ref": "#/$defs/HeatmapPoint"
+      },
+      "title": "Points",
+      "type": "array"
+    },
+    "rage_click_clusters": {
+      "minimum": 0,
+      "title": "Rage Click Clusters",
+      "type": "integer"
+    },
+    "svg_path": {
+      "title": "Svg Path",
+      "type": "string"
+    }
+  },
+  "required": [
+    "id",
+    "build_id",
+    "route",
+    "page_state_signature",
+    "viewport",
+    "pixel_width",
+    "pixel_height",
+    "input_mode",
+    "points",
+    "rage_click_clusters",
+    "svg_path"
+  ],
+  "title": "HeatmapGroup",
+  "type": "object"
+}

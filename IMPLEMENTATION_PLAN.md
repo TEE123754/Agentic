@@ -647,6 +647,8 @@ Run a small two-worker cohort, cancel one session, and interrupt/recover persist
 
 ## Phase 6 — Generate audits and recommendations
 
+**Execution checkpoint — September 30, 2026 (construction complete; acceptance pending):** Added Phase 6 report contracts for verified finding context, exclusions, milestone funnels, trajectory indexing, and compatible click heatmaps. Implemented an offline session/evidence validator, deterministic grouped findings and remediation templates, coordinate-mapped SVG/JSON heatmaps, an immutable revision-2 export service with revision-1 fallback, restart recovery, local human finding dispositions as later revisions, and latest/revision report API routes. The synthesis path reads only saved reports, observations, screenshots, manifests, and DuckDB rows; no browser or target request is used for report review. Added the Phase 6 acceptance suite, offline evidence reviewer, manual private GitHub Actions gate, [operator guide](docs/phase6-audits.md), and exported 37 contract schemas. **Still to do before this phase can pass:** finish lint, run one consolidated post-construction test batch on the private remote runner, inspect saved outputs offline, repair only affected failures, and record the gate result. No Phase 6 test or browser run has been claimed at this checkpoint. Phase 5 evidence remains immutable; unsupported findings are excluded, and synthesis faults leave a downloadable partial report.
+
 **Goal:** Automatically produce the detailed report required above after every run and its evidence review.
 
 **Tools:** DuckDB queries, Python aggregation, smolagents/model adapter, Pydantic, Plotly.

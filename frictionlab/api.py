@@ -12,6 +12,7 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.responses import FileResponse, JSONResponse
 
 from frictionlab import __version__
+from frictionlab.audit.service import FindingReviewInput, latest_report_path
 from frictionlab.configuration import (
     CONFIG_DIRECTORY,
     DEFAULT_ORIGIN,
@@ -80,7 +81,7 @@ def create_app(
     def health():
         return {
             "status": "ok",
-            "phase": 5 if coordinator else 2,
+            "phase": 6 if coordinator else 2,
             "build_id": FIXTURE_BUILD,
             "execution_enabled": bool(coordinator),
         }
@@ -215,13 +216,44 @@ def create_app(
     def report_download(run_id: UUID, format_name: Literal["json", "md", "html"]):
         path = app.state.artifact_root / str(run_id) / f"report.{format_name}"
         if coordinator and not path.is_file() and coordinator.store.run(str(run_id)):
-            path = coordinator.root / "reports" / str(run_id) / f"report.{format_name}"
-        if not path.is_file():
+            path = latest_report_path(coordinator.root, coordinator.store, str(run_id), format_name)
+        if path is None or not path.is_file():
             raise HTTPException(404, "Report does not exist")
         media = {"json": "application/json", "md": "text/markdown", "html": "text/html"}[
             format_name
         ]
         return FileResponse(path, media_type=media, filename=f"frictionlab-{run_id}.{format_name}")
+
+    @app.get("/reports/{run_id}/revisions/{revision}/{format_name}")
+    def report_revision(run_id: UUID, revision: int, format_name: Literal["json", "md", "html"]):
+        if not coordinator or revision < 1:
+            raise HTTPException(404, "Report revision does not exist")
+        path = latest_report_path(
+            coordinator.root, coordinator.store, str(run_id), format_name, revision=revision
+        )
+        if path is None or not path.is_file():
+            raise HTTPException(404, "Report revision does not exist")
+        media = {"json": "application/json", "md": "text/markdown", "html": "text/html"}[
+            format_name
+        ]
+        return FileResponse(path, media_type=media, filename=f"frictionlab-{run_id}.{format_name}")
+
+    @app.post("/runs/{run_id}/findings/{finding_id}/review")
+    async def review_audit_finding(run_id: UUID, finding_id: UUID, body: FindingReviewInput):
+        if not coordinator:
+            raise HTTPException(404, "Cohort does not exist")
+        try:
+            report = await coordinator.review_finding(str(run_id), str(finding_id), body)
+        except KeyError as exc:
+            raise HTTPException(404, str(exc)) from exc
+        except ValueError as exc:
+            raise HTTPException(409, str(exc)) from exc
+        return {
+            "run_id": str(run_id),
+            "revision": report.revision,
+            "report_status": str(report.report_status),
+            "review": report.review.model_dump(mode="json"),
+        }
 
     @app.post("/fixture/runs")
     def create_fixture_run(body: CreateFixtureRun):

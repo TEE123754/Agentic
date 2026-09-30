@@ -28,6 +28,29 @@
       ],
       "title": "EvidenceRef",
       "type": "object"
+    },
+    "Viewport": {
+      "additionalProperties": false,
+      "properties": {
+        "width": {
+          "maximum": 3840,
+          "minimum": 320,
+          "title": "Width",
+          "type": "integer"
+        },
+        "height": {
+          "maximum": 2160,
+          "minimum": 480,
+          "title": "Height",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "width",
+        "height"
+      ],
+      "title": "Viewport",
+      "type": "object"
     }
   },
   "additionalProperties": false,
@@ -99,6 +122,122 @@
       "maxLength": 2000,
       "minLength": 1,
       "title": "Verification",
+      "type": "string"
+    },
+    "detector": {
+      "anyOf": [
+        {
+          "pattern": "^[a-z][a-z0-9_-]{1,63}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Detector"
+    },
+    "route": {
+      "default": "",
+      "title": "Route",
+      "type": "string"
+    },
+    "page_state_signature": {
+      "default": "",
+      "title": "Page State Signature",
+      "type": "string"
+    },
+    "target_name": {
+      "default": "",
+      "title": "Target Name",
+      "type": "string"
+    },
+    "viewport": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Viewport"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "input_mode": {
+      "anyOf": [
+        {
+          "enum": [
+            "mouse",
+            "touch",
+            "keyboard"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Input Mode"
+    },
+    "affected_session_ids": {
+      "default": [],
+      "items": {
+        "format": "uuid",
+        "type": "string"
+      },
+      "title": "Affected Session Ids",
+      "type": "array"
+    },
+    "eligible_session_ids": {
+      "default": [],
+      "items": {
+        "format": "uuid",
+        "type": "string"
+      },
+      "title": "Eligible Session Ids",
+      "type": "array"
+    },
+    "event_ids": {
+      "default": [],
+      "items": {
+        "format": "uuid",
+        "type": "string"
+      },
+      "title": "Event Ids",
+      "type": "array"
+    },
+    "affected_profiles": {
+      "default": [],
+      "items": {
+        "pattern": "^[a-z][a-z0-9_-]{1,63}$",
+        "type": "string"
+      },
+      "title": "Affected Profiles",
+      "type": "array"
+    },
+    "reproduction_rate": {
+      "anyOf": [
+        {
+          "maximum": 1,
+          "minimum": 0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Reproduction Rate"
+    },
+    "severity_rationale": {
+      "default": "",
+      "title": "Severity Rationale",
+      "type": "string"
+    },
+    "confidence_basis": {
+      "default": "",
+      "title": "Confidence Basis",
       "type": "string"
     }
   },

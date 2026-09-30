@@ -171,6 +171,58 @@
       "title": "Action",
       "type": "object"
     },
+    "AuditExclusion": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "enum": [
+            "session",
+            "event",
+            "action"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "reason": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Reason",
+          "type": "string"
+        },
+        "session_id": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Session Id"
+        },
+        "event_id": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Event Id"
+        }
+      },
+      "required": [
+        "kind",
+        "reason"
+      ],
+      "title": "AuditExclusion",
+      "type": "object"
+    },
     "CohortResults": {
       "additionalProperties": false,
       "properties": {
@@ -425,6 +477,122 @@
           "minLength": 1,
           "title": "Verification",
           "type": "string"
+        },
+        "detector": {
+          "anyOf": [
+            {
+              "pattern": "^[a-z][a-z0-9_-]{1,63}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Detector"
+        },
+        "route": {
+          "default": "",
+          "title": "Route",
+          "type": "string"
+        },
+        "page_state_signature": {
+          "default": "",
+          "title": "Page State Signature",
+          "type": "string"
+        },
+        "target_name": {
+          "default": "",
+          "title": "Target Name",
+          "type": "string"
+        },
+        "viewport": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Viewport"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "input_mode": {
+          "anyOf": [
+            {
+              "enum": [
+                "mouse",
+                "touch",
+                "keyboard"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Input Mode"
+        },
+        "affected_session_ids": {
+          "default": [],
+          "items": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "title": "Affected Session Ids",
+          "type": "array"
+        },
+        "eligible_session_ids": {
+          "default": [],
+          "items": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "title": "Eligible Session Ids",
+          "type": "array"
+        },
+        "event_ids": {
+          "default": [],
+          "items": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "title": "Event Ids",
+          "type": "array"
+        },
+        "affected_profiles": {
+          "default": [],
+          "items": {
+            "pattern": "^[a-z][a-z0-9_-]{1,63}$",
+            "type": "string"
+          },
+          "title": "Affected Profiles",
+          "type": "array"
+        },
+        "reproduction_rate": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reproduction Rate"
+        },
+        "severity_rationale": {
+          "default": "",
+          "title": "Severity Rationale",
+          "type": "string"
+        },
+        "confidence_basis": {
+          "default": "",
+          "title": "Confidence Basis",
+          "type": "string"
         }
       },
       "required": [
@@ -539,6 +707,188 @@
         "evidence"
       ],
       "title": "FrictionEvent",
+      "type": "object"
+    },
+    "HeatmapGroup": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[0-9a-f]{16}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "build_id": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Build Id",
+          "type": "string"
+        },
+        "route": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Route",
+          "type": "string"
+        },
+        "page_state_signature": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Page State Signature",
+          "type": "string"
+        },
+        "viewport": {
+          "$ref": "#/$defs/Viewport"
+        },
+        "pixel_width": {
+          "minimum": 1,
+          "title": "Pixel Width",
+          "type": "integer"
+        },
+        "pixel_height": {
+          "minimum": 1,
+          "title": "Pixel Height",
+          "type": "integer"
+        },
+        "input_mode": {
+          "enum": [
+            "mouse",
+            "touch",
+            "keyboard"
+          ],
+          "title": "Input Mode",
+          "type": "string"
+        },
+        "points": {
+          "items": {
+            "$ref": "#/$defs/HeatmapPoint"
+          },
+          "title": "Points",
+          "type": "array"
+        },
+        "rage_click_clusters": {
+          "minimum": 0,
+          "title": "Rage Click Clusters",
+          "type": "integer"
+        },
+        "svg_path": {
+          "title": "Svg Path",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "build_id",
+        "route",
+        "page_state_signature",
+        "viewport",
+        "pixel_width",
+        "pixel_height",
+        "input_mode",
+        "points",
+        "rage_click_clusters",
+        "svg_path"
+      ],
+      "title": "HeatmapGroup",
+      "type": "object"
+    },
+    "HeatmapPoint": {
+      "additionalProperties": false,
+      "properties": {
+        "session_id": {
+          "format": "uuid",
+          "title": "Session Id",
+          "type": "string"
+        },
+        "action_id": {
+          "format": "uuid",
+          "title": "Action Id",
+          "type": "string"
+        },
+        "x": {
+          "minimum": 0,
+          "title": "X",
+          "type": "number"
+        },
+        "y": {
+          "minimum": 0,
+          "title": "Y",
+          "type": "number"
+        },
+        "target_name": {
+          "maxLength": 120,
+          "title": "Target Name",
+          "type": "string"
+        },
+        "result": {
+          "enum": [
+            "progress",
+            "no_change",
+            "validation_error"
+          ],
+          "title": "Result",
+          "type": "string"
+        },
+        "rage_cluster": {
+          "default": false,
+          "title": "Rage Cluster",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "session_id",
+        "action_id",
+        "x",
+        "y",
+        "target_name",
+        "result"
+      ],
+      "title": "HeatmapPoint",
+      "type": "object"
+    },
+    "MilestoneFunnel": {
+      "additionalProperties": false,
+      "properties": {
+        "journey_id": {
+          "pattern": "^[a-z][a-z0-9_-]{1,63}$",
+          "title": "Journey Id",
+          "type": "string"
+        },
+        "milestone": {
+          "pattern": "^[a-z][a-z0-9_-]{1,63}$",
+          "title": "Milestone",
+          "type": "string"
+        },
+        "eligible_sessions": {
+          "minimum": 0,
+          "title": "Eligible Sessions",
+          "type": "integer"
+        },
+        "passed_sessions": {
+          "minimum": 0,
+          "title": "Passed Sessions",
+          "type": "integer"
+        },
+        "pass_rate": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Pass Rate"
+        }
+      },
+      "required": [
+        "journey_id",
+        "milestone",
+        "eligible_sessions",
+        "passed_sessions"
+      ],
+      "title": "MilestoneFunnel",
       "type": "object"
     },
     "PatienceEntry": {
@@ -872,7 +1222,8 @@
             2,
             3,
             4,
-            5
+            5,
+            6
           ],
           "title": "Phase",
           "type": "integer"
@@ -1156,6 +1507,115 @@
       ],
       "title": "StepResult",
       "type": "object"
+    },
+    "TrajectoryEntry": {
+      "additionalProperties": false,
+      "properties": {
+        "session_id": {
+          "format": "uuid",
+          "title": "Session Id",
+          "type": "string"
+        },
+        "step_index": {
+          "minimum": 0,
+          "title": "Step Index",
+          "type": "integer"
+        },
+        "action_id": {
+          "format": "uuid",
+          "title": "Action Id",
+          "type": "string"
+        },
+        "action_kind": {
+          "default": "",
+          "title": "Action Kind",
+          "type": "string"
+        },
+        "result": {
+          "enum": [
+            "progress",
+            "no_change",
+            "validation_error",
+            "blocked",
+            "agent_error"
+          ],
+          "title": "Result",
+          "type": "string"
+        },
+        "detail": {
+          "maxLength": 2000,
+          "title": "Detail",
+          "type": "string"
+        },
+        "observation_before": {
+          "format": "uuid",
+          "title": "Observation Before",
+          "type": "string"
+        },
+        "observation_after": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Observation After"
+        },
+        "application_seconds": {
+          "minimum": 0,
+          "title": "Application Seconds",
+          "type": "number"
+        },
+        "inference_seconds": {
+          "minimum": 0,
+          "title": "Inference Seconds",
+          "type": "number"
+        },
+        "session_report_path": {
+          "title": "Session Report Path",
+          "type": "string"
+        }
+      },
+      "required": [
+        "session_id",
+        "step_index",
+        "action_id",
+        "result",
+        "detail",
+        "observation_before",
+        "application_seconds",
+        "inference_seconds",
+        "session_report_path"
+      ],
+      "title": "TrajectoryEntry",
+      "type": "object"
+    },
+    "Viewport": {
+      "additionalProperties": false,
+      "properties": {
+        "width": {
+          "maximum": 3840,
+          "minimum": 320,
+          "title": "Width",
+          "type": "integer"
+        },
+        "height": {
+          "maximum": 2160,
+          "minimum": 480,
+          "title": "Height",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "width",
+        "height"
+      ],
+      "title": "Viewport",
+      "type": "object"
     }
   },
   "additionalProperties": false,
@@ -1219,6 +1679,14 @@
       "title": "Trajectories",
       "type": "array"
     },
+    "trajectory_index": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/TrajectoryEntry"
+      },
+      "title": "Trajectory Index",
+      "type": "array"
+    },
     "planner_decisions": {
       "default": [],
       "items": {
@@ -1260,6 +1728,30 @@
         "$ref": "#/$defs/Finding"
       },
       "title": "Findings",
+      "type": "array"
+    },
+    "heatmaps": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/HeatmapGroup"
+      },
+      "title": "Heatmaps",
+      "type": "array"
+    },
+    "exclusions": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/AuditExclusion"
+      },
+      "title": "Exclusions",
+      "type": "array"
+    },
+    "milestone_funnel": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/MilestoneFunnel"
+      },
+      "title": "Milestone Funnel",
       "type": "array"
     },
     "visual_evidence": {

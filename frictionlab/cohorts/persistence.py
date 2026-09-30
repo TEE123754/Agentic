@@ -82,9 +82,17 @@ class EventStore:
         with self.lock:
             self.connection.close()
 
-    def append(self, kind: str, run_id: str, payload: dict, session_id: str | None = None):
+    def append(
+        self,
+        kind: str,
+        run_id: str,
+        payload: dict,
+        session_id: str | None = None,
+        *,
+        event_id: str | None = None,
+    ):
         event = {
-            "event_id": str(uuid4()),
+            "event_id": str(event_id or uuid4()),
             "run_id": str(run_id),
             "session_id": str(session_id) if session_id else None,
             "kind": kind,
@@ -95,6 +103,10 @@ class EventStore:
         if len(encoded) > 256 * 1024:
             raise ValueError("Cohort journal event exceeds its size ceiling")
         with self.lock:
+            if self.connection.execute(
+                "SELECT 1 FROM events WHERE event_id = ?", [event["event_id"]]
+            ).fetchone():
+                return event["event_id"]
             with self.journal_path.open("ab") as stream:
                 stream.write(encoded)
                 stream.flush()

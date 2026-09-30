@@ -1,0 +1,49 @@
+name: Phase 6 owned-fixture audit gate
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: phase6-audits
+  cancel-in-progress: false
+
+jobs:
+  audits:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      PYTHONPATH: .
+      FRICTIONLAB_BROWSER_PATH: /usr/bin/google-chrome
+      FRICTIONLAB_PHASE6_EVIDENCE: artifacts/phase6/validation
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install locked free/open-source dependencies
+        run: |
+          python -m pip install uv==0.11.18
+          uv sync --locked --group dev
+
+      - name: One post-build Phase 6 acceptance batch
+        run: uv run pytest -q tests/phase_06 tests/phase_05/test_cohorts.py::test_two_browser_workers_isolate_state_cancel_and_export_partial_report tests/phase_01/test_reports_and_cli.py tests/phase_04/test_cognition.py
+
+      - name: Review saved report and evidence offline
+        if: always()
+        run: uv run python scripts/review_phase6.py
+
+      - name: Upload synthetic audit evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: phase6-owned-fixture-evidence
+          path: artifacts/phase6/validation/
+          if-no-files-found: warn
+          retention-days: 7

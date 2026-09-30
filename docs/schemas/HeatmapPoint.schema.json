@@ -1,0 +1,54 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "session_id": {
+      "format": "uuid",
+      "title": "Session Id",
+      "type": "string"
+    },
+    "action_id": {
+      "format": "uuid",
+      "title": "Action Id",
+      "type": "string"
+    },
+    "x": {
+      "minimum": 0,
+      "title": "X",
+      "type": "number"
+    },
+    "y": {
+      "minimum": 0,
+      "title": "Y",
+      "type": "number"
+    },
+    "target_name": {
+      "maxLength": 120,
+      "title": "Target Name",
+      "type": "string"
+    },
+    "result": {
+      "enum": [
+        "progress",
+        "no_change",
+        "validation_error"
+      ],
+      "title": "Result",
+      "type": "string"
+    },
+    "rage_cluster": {
+      "default": false,
+      "title": "Rage Cluster",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "session_id",
+    "action_id",
+    "x",
+    "y",
+    "target_name",
+    "result"
+  ],
+  "title": "HeatmapPoint",
+  "type": "object"
+}

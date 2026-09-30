@@ -1,0 +1,86 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "session_id": {
+      "format": "uuid",
+      "title": "Session Id",
+      "type": "string"
+    },
+    "step_index": {
+      "minimum": 0,
+      "title": "Step Index",
+      "type": "integer"
+    },
+    "action_id": {
+      "format": "uuid",
+      "title": "Action Id",
+      "type": "string"
+    },
+    "action_kind": {
+      "default": "",
+      "title": "Action Kind",
+      "type": "string"
+    },
+    "result": {
+      "enum": [
+        "progress",
+        "no_change",
+        "validation_error",
+        "blocked",
+        "agent_error"
+      ],
+      "title": "Result",
+      "type": "string"
+    },
+    "detail": {
+      "maxLength": 2000,
+      "title": "Detail",
+      "type": "string"
+    },
+    "observation_before": {
+      "format": "uuid",
+      "title": "Observation Before",
+      "type": "string"
+    },
+    "observation_after": {
+      "anyOf": [
+        {
+          "format": "uuid",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Observation After"
+    },
+    "application_seconds": {
+      "minimum": 0,
+      "title": "Application Seconds",
+      "type": "number"
+    },
+    "inference_seconds": {
+      "minimum": 0,
+      "title": "Inference Seconds",
+      "type": "number"
+    },
+    "session_report_path": {
+      "title": "Session Report Path",
+      "type": "string"
+    }
+  },
+  "required": [
+    "session_id",
+    "step_index",
+    "action_id",
+    "result",
+    "detail",
+    "observation_before",
+    "application_seconds",
+    "inference_seconds",
+    "session_report_path"
+  ],
+  "title": "TrajectoryEntry",
+  "type": "object"
+}

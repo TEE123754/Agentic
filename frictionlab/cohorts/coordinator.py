@@ -11,6 +11,8 @@ from dataclasses import dataclass, replace
 from pathlib import Path
 from uuid import UUID, uuid4, uuid5
 
+from frictionlab.audit.service import finalize_audit
+from frictionlab.audit.service import review_finding as save_finding_review
 from frictionlab.cohorts.persistence import EventStore
 from frictionlab.cohorts.tracing import local_tracer
 from frictionlab.cohorts.traffic import SharedTrafficBudget
@@ -227,6 +229,12 @@ class CohortCoordinator:
             await asyncio.shield(task)
         return self.status(run_id)
 
+    async def review_finding(self, run_id, finding_id, review):
+        if self.store.run(str(run_id)) is None:
+            raise KeyError("Cohort does not exist")
+        async with self._submit_lock:
+            return save_finding_review(self.root, self.store, run_id, finding_id, review)
+
     async def cancel(self, run_id, session_id=None):
         run_id = str(run_id)
         run = self.store.run(run_id)
@@ -381,6 +389,8 @@ class CohortCoordinator:
                         "reason": f"Report export failed ({type(exc).__name__}); retry on restart.",
                     },
                 )
+            else:
+                finalize_audit(self.root, self.store, run_id)
 
     async def _execute_session(self, resolved, spec, variant, runtime, budget):
         run_id = str(resolved.config.id)
@@ -782,6 +792,15 @@ class CohortCoordinator:
                 and prior_status in {"completed", "failed", "cancelled", "interrupted"}
                 else None,
             )
+        terminal = self.store.rows(
+            "SELECT run_id, report_revision, report_status FROM runs "
+            "WHERE status IN ('completed', 'failed', 'cancelled', 'interrupted')"
+        )
+        for row in terminal:
+            if row["report_revision"] < 2 or (
+                row["report_revision"] == 2 and row["report_status"] not in {"ready", "partial"}
+            ):
+                finalize_audit(self.root, self.store, row["run_id"])
 
 
 def _read_session(root, row):

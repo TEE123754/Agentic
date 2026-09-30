@@ -205,6 +205,7 @@ def test_two_browser_workers_isolate_state_cancel_and_export_partial_report(tmp_
             assert metrics["peak_requests_per_second"] <= 2
             assert metrics["peak_concurrent_requests"] <= 1
             assert status["run"]["report_status"] == "partial"
+            assert status["run"]["report_revision"] == 2
             report = RunReport.model_validate_json(
                 (root / "reports" / run_id / "report.json").read_text()
             )
@@ -212,6 +213,11 @@ def test_two_browser_workers_isolate_state_cancel_and_export_partial_report(tmp_
             assert report.cohort_results.outcome_counts == {"completed": 1, "cancelled": 1}
             assert report.report_status == "partial" and not report.findings
             assert (root / "reports" / run_id / "report.html").is_file()
+            audit = RunReport.model_validate_json(
+                (root / "reports" / run_id / "revisions" / "2" / "report.json").read_text()
+            )
+            assert audit.scope.phase == 6 and audit.report_status == "partial"
+            assert audit.heatmaps and audit.trajectory_index
             assert (root / "otel-spans.jsonl").is_file()
             assert coordinator.store.rows("SELECT COUNT(*) AS n FROM steps")[0]["n"] >= 3
             assert coordinator.store.rows("SELECT COUNT(*) AS n FROM milestones")[0]["n"] >= 1

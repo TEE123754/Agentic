@@ -82,9 +82,16 @@ def blocked_report(reason, resolved=None):
 
 
 def write_report(
-    report: RunReport, artifact_root: Path, *, prepared_directory=False, recover_partial=False
+    report: RunReport,
+    artifact_root: Path,
+    *,
+    prepared_directory=False,
+    recover_partial=False,
+    output_directory: Path | None = None,
+    cohort_root: Path | None = None,
 ):
-    directory = artifact_root / str(report.run_id)
+    directory = output_directory or artifact_root / str(report.run_id)
+    links_root = cohort_root or artifact_root.parent
     if recover_partial and (directory / "report.html").exists():
         raise FileExistsError("A completed report export already exists")
     if prepared_directory and any(
@@ -100,12 +107,16 @@ def write_report(
         ("Cohort results", payload["cohort_results"]),
         (
             "Individual trajectories",
-            payload["trajectories"] or "Unavailable: no browser trajectory was recorded.",
+            payload["trajectory_index"]
+            or payload["trajectories"]
+            or "Unavailable: no browser trajectory was recorded.",
         ),
         ("UX findings", payload["findings"] or "None asserted; no observed UX evidence."),
         (
             "Visual evidence and heatmaps",
-            payload["visual_evidence"]
+            {"heatmaps": payload["heatmaps"], "visual_evidence": payload["visual_evidence"]}
+            if payload["heatmaps"]
+            else payload["visual_evidence"]
             or "Unavailable: no screenshots or interactions were captured.",
         ),
         (
@@ -152,6 +163,20 @@ def write_report(
                 payload["session_summaries"] or "No session reports were produced.",
             ),
         )
+    if report.scope.phase >= 6:
+        sections.insert(
+            5,
+            (
+                "Conversion milestones and eligible denominators",
+                payload["milestone_funnel"] or "No eligible milestone denominator was available.",
+            ),
+        )
+        sections.append(
+            (
+                "Evidence exclusions and unsupported claims",
+                payload["exclusions"] or "No saved evidence was excluded from this audit.",
+            )
+        )
     markdown = [
         "# FrictionLab run report",
         "",
@@ -185,9 +210,7 @@ def write_report(
         markdown.extend(["## Open individual session reports", ""])
         document += "<section><h2>Open individual session reports</h2><ul>"
         for item in report.session_summaries:
-            relative = os.path.relpath(artifact_root.parent / item.report_path, directory).replace(
-                "\\", "/"
-            )
+            relative = os.path.relpath(links_root / item.report_path, directory).replace("\\", "/")
             markdown.append(
                 f"- [{item.persona_id} / {item.journey_id} ({item.execution_status})]({relative})"
             )
@@ -197,6 +220,23 @@ def write_report(
                 f"({html.escape(str(item.execution_status))})</a></li>"
             )
         document += "</ul></section>"
+        markdown.append("")
+    if report.heatmaps:
+        markdown.extend(["## Saved heatmaps", ""])
+        document += "<section><h2>Saved heatmaps</h2>"
+        for group in report.heatmaps:
+            svg = (directory / group.svg_path).resolve()
+            if not svg.is_relative_to(directory.resolve()) or not svg.is_file():
+                continue
+            encoded = base64.b64encode(svg.read_bytes()).decode()
+            caption = f"{group.route} · {group.input_mode} · {len(group.points)} clicks · {group.rage_click_clusters} repeated-failure cluster(s)"
+            markdown.append(f"- [{caption}]({group.svg_path})")
+            document += (
+                f"<figure><figcaption>{html.escape(caption)}</figcaption>"
+                f'<img style="max-width:100%" alt="Synthetic click heatmap" '
+                f'src="data:image/svg+xml;base64,{encoded}"></figure>'
+            )
+        document += "</section>"
         markdown.append("")
     for ref in report.visual_evidence:
         path = (directory / ref.path).resolve()

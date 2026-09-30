@@ -1,0 +1,47 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "journey_id": {
+      "pattern": "^[a-z][a-z0-9_-]{1,63}$",
+      "title": "Journey Id",
+      "type": "string"
+    },
+    "milestone": {
+      "pattern": "^[a-z][a-z0-9_-]{1,63}$",
+      "title": "Milestone",
+      "type": "string"
+    },
+    "eligible_sessions": {
+      "minimum": 0,
+      "title": "Eligible Sessions",
+      "type": "integer"
+    },
+    "passed_sessions": {
+      "minimum": 0,
+      "title": "Passed Sessions",
+      "type": "integer"
+    },
+    "pass_rate": {
+      "anyOf": [
+        {
+          "maximum": 1,
+          "minimum": 0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Pass Rate"
+    }
+  },
+  "required": [
+    "journey_id",
+    "milestone",
+    "eligible_sessions",
+    "passed_sessions"
+  ],
+  "title": "MilestoneFunnel",
+  "type": "object"
+}
