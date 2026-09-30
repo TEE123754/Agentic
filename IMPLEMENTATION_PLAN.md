@@ -688,6 +688,8 @@ Generate detailed reports from completed, abandoned, cancelled, blocked, and int
 
 ## Phase 7 — Build the local command center
 
+**Execution checkpoint — September 30, 2026 (implementation complete; gate pending):** Added the optional local Streamlit/Plotly command center, loopback-only API client, bounded owned-fixture setup and live cancellation, read-only progress/run discovery, stored trajectory screenshots, compatible heatmaps, findings and human review, and full JSON/Markdown/HTML downloads. The FastAPI evidence routes serve only saved assets referenced by a session or published report. Added the operator guide, a single complete browser/API acceptance walkthrough, an offline evidence reviewer, and a manual private GitHub Actions gate. Ruff formatting and lint pass for the changed Python. **Left before the gate:** run the one remote Phase 7 batch, inspect its saved dashboard screenshot and detailed reviewed report, resolve any defects with affected-only checks, then record evidence and tick the Phase 7 checkbox. No Phase 7 behavioral test has run yet. The UI cannot accept an external staging origin and must not contact the tested page during report review.
+
 **Goal:** Let a product team configure runs and inspect findings without using development tools.
 
 **Tools:** Streamlit, Plotly, FastAPI.

@@ -18,6 +18,10 @@ dependencies = [
 
 [project.optional-dependencies]
 vision = ["transformers", "torch", "pillow"]
+dashboard = [
+    "plotly>=6,<7",
+    "streamlit>=1.49,<2",
+]
 
 [dependency-groups]
 dev = ["pytest", "ruff"]

@@ -4,7 +4,11 @@ from __future__ import annotations
 
 import argparse
 import asyncio
+import importlib.util
 import json
+import os
+import subprocess
+import sys
 from pathlib import Path
 
 from frictionlab.configuration import ROOT, ConfigurationRejected, read_json, resolve_run
@@ -16,6 +20,8 @@ def main(argv=None):
     commands = parser.add_subparsers(dest="command", required=True)
     serve = commands.add_parser("serve", help="Serve the bundled fixture and local cohort API")
     serve.add_argument("--port", type=int, default=8765)
+    dashboard = commands.add_parser("dashboard", help="Open the local Streamlit command center")
+    dashboard.add_argument("--port", type=int, default=8501)
     validate = commands.add_parser("validate", help="Review JSON configuration offline")
     validate.add_argument("path", type=Path)
     browser_demo = commands.add_parser(
@@ -70,6 +76,33 @@ def main(argv=None):
             "--mode", choices=("typed_tools", "isolated_code"), default="typed_tools"
         )
     args = parser.parse_args(argv)
+    if args.command == "dashboard":
+        if not 1024 <= args.port <= 65535:
+            parser.error("Use an unprivileged dashboard port between 1024 and 65535")
+        if importlib.util.find_spec("streamlit") is None:
+            parser.error("Install the optional dashboard with `uv sync --extra dashboard`")
+        path = ROOT / "frictionlab" / "dashboard" / "app.py"
+        environment = os.environ.copy()
+        environment["PYTHONPATH"] = str(ROOT)
+        return subprocess.call(
+            [
+                sys.executable,
+                "-m",
+                "streamlit",
+                "run",
+                str(path),
+                "--server.address",
+                "127.0.0.1",
+                "--server.port",
+                str(args.port),
+                "--server.headless",
+                "true",
+                "--browser.gatherUsageStats",
+                "false",
+            ],
+            cwd=ROOT,
+            env=environment,
+        )
     if args.command in {"autonomous", "behavioral"}:
         from frictionlab.planning.runner import autonomous_cli
 

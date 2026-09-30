@@ -20,7 +20,8 @@ from frictionlab.configuration import (
     ConfigurationRejected,
     resolve_run,
 )
-from frictionlab.contracts.models import FIXTURE_BUILD, validate_origin
+from frictionlab.contracts.models import FIXTURE_BUILD, RunReport, validate_origin
+from frictionlab.dashboard.read_model import catalog, list_runs, progress
 from frictionlab.fixtures.store import (
     CheckoutInput,
     CreateFixtureRun,
@@ -169,6 +170,138 @@ def create_app(
         return persist_blocked_report(
             "Autonomous cohorts are unavailable until planning, isolated workers, and orchestration are implemented. The Phase 2 browser demo supports only owned local fixtures.",
             resolved,
+        )
+
+    @app.get("/dashboard/catalog")
+    def dashboard_catalog():
+        result = catalog(config_directory)
+        result["execution_enabled"] = bool(coordinator)
+        if coordinator:
+            result["workers"] = coordinator.settings.workers
+            result["max_cohort_sessions"] = coordinator.settings.max_sessions
+        return result
+
+    @app.get("/dashboard/runs")
+    def dashboard_runs():
+        return list_runs(coordinator.store) if coordinator else {"runs": []}
+
+    @app.get("/dashboard/runs/{run_id}/progress")
+    def dashboard_progress(run_id: UUID):
+        result = progress(coordinator.root, coordinator.store, str(run_id)) if coordinator else None
+        if result is None:
+            raise HTTPException(404, "Cohort does not exist")
+        return result
+
+    def session_report(run_id: UUID, session_id: UUID):
+        if not coordinator or not coordinator.store.run(str(run_id)):
+            raise HTTPException(404, "Cohort does not exist")
+        row = next(
+            (
+                item
+                for item in coordinator.store.sessions(str(run_id))
+                if item["session_id"] == str(session_id)
+            ),
+            None,
+        )
+        if row is None or not row["report_path"]:
+            raise HTTPException(404, "Session report is not available")
+        directory = coordinator.root / "runs" / str(run_id) / "sessions" / str(session_id)
+        expected = (directory / "report.html").resolve()
+        actual = (coordinator.root / row["report_path"]).resolve()
+        if actual != expected or not actual.is_file():
+            raise HTTPException(404, "Session report is not available")
+        report_path = directory / "report.json"
+        if not report_path.is_file():
+            raise HTTPException(404, "Session report is not available")
+        return directory, RunReport.model_validate_json(report_path.read_text(encoding="utf-8"))
+
+    @app.get("/dashboard/runs/{run_id}/sessions/{session_id}/report")
+    def dashboard_session_report(run_id: UUID, session_id: UUID):
+        _, report = session_report(run_id, session_id)
+        return report.model_dump(mode="json")
+
+    @app.get("/dashboard/runs/{run_id}/sessions/{session_id}/observations/{observation_id}")
+    def dashboard_observation(run_id: UUID, session_id: UUID, observation_id: UUID):
+        directory, report = session_report(run_id, session_id)
+        known = {step.observation_before for step in report.trajectories}
+        known.update(
+            step.observation_after for step in report.trajectories if step.observation_after
+        )
+        if observation_id not in known:
+            raise HTTPException(404, "Observation is not part of this session")
+        path = directory / "evidence" / f"{observation_id}.observation.json"
+        if not path.is_file() or path.stat().st_size > 256 * 1024:
+            raise HTTPException(404, "Observation is unavailable")
+        from frictionlab.browser.evidence import BrowserObservation
+
+        value = BrowserObservation.model_validate_json(path.read_text(encoding="utf-8"))
+        if value.id != observation_id:
+            raise HTTPException(404, "Observation is unavailable")
+        return {
+            "id": str(value.id),
+            "route": value.route,
+            "viewport": value.viewport.model_dump(mode="json"),
+            "focus": value.focus,
+            "validation": list(value.validation),
+            "semantic_text": value.semantic_text[:2000],
+            "screenshot_available": any(
+                ref.path == f"evidence/{observation_id}.png" for ref in value.evidence
+            ),
+        }
+
+    @app.get("/dashboard/runs/{run_id}/sessions/{session_id}/screenshots/{observation_id}")
+    def dashboard_screenshot(run_id: UUID, session_id: UUID, observation_id: UUID):
+        directory, report = session_report(run_id, session_id)
+        known = {step.observation_before for step in report.trajectories}
+        known.update(
+            step.observation_after for step in report.trajectories if step.observation_after
+        )
+        if observation_id not in known:
+            raise HTTPException(404, "Screenshot is not part of this session")
+        path = directory / "evidence" / f"{observation_id}.png"
+        if not path.is_file() or path.stat().st_size > 5 * 1024 * 1024:
+            raise HTTPException(404, "Screenshot is unavailable")
+        return FileResponse(path, media_type="image/png")
+
+    @app.get("/dashboard/reports/{run_id}/heatmaps/{group_id}")
+    def dashboard_heatmap(run_id: UUID, group_id: str):
+        if not coordinator:
+            raise HTTPException(404, "Audit is unavailable")
+        report_path = latest_report_path(coordinator.root, coordinator.store, str(run_id))
+        if report_path is None:
+            raise HTTPException(404, "Audit is unavailable")
+        report = RunReport.model_validate_json(report_path.read_text(encoding="utf-8"))
+        group = next((item for item in report.heatmaps if item.id == group_id), None)
+        if group is None:
+            raise HTTPException(404, "Heatmap is unavailable")
+        path = (report_path.parent / group.svg_path).resolve()
+        if not path.is_relative_to(report_path.parent.resolve()) or not path.is_file():
+            raise HTTPException(404, "Heatmap is unavailable")
+        return FileResponse(
+            path,
+            media_type="image/svg+xml",
+            headers={"Content-Security-Policy": "default-src 'none'; img-src data:"},
+        )
+
+    @app.get("/dashboard/reports/{run_id}/evidence/{name}")
+    def dashboard_finding_evidence(run_id: UUID, name: str):
+        if not coordinator or "/" in name or "\\" in name:
+            raise HTTPException(404, "Evidence is unavailable")
+        report_path = latest_report_path(coordinator.root, coordinator.store, str(run_id))
+        if report_path is None:
+            raise HTTPException(404, "Evidence is unavailable")
+        report = RunReport.model_validate_json(report_path.read_text(encoding="utf-8"))
+        relative = f"evidence/{name}"
+        allowed = {ref.path for finding in report.findings for ref in finding.evidence}
+        allowed.update(ref.path for ref in report.visual_evidence)
+        if relative not in allowed:
+            raise HTTPException(404, "Evidence is unavailable")
+        path = (report_path.parent / relative).resolve()
+        if not path.is_relative_to(report_path.parent.resolve()) or not path.is_file():
+            raise HTTPException(404, "Evidence is unavailable")
+        media = "image/png" if path.suffix == ".png" else "text/plain"
+        return FileResponse(
+            path, media_type=media, headers={"Content-Security-Policy": "default-src 'none'"}
         )
 
     @app.get("/runs/{run_id}")
