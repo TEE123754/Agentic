@@ -478,6 +478,8 @@ Run the browser suite once against fixtures covering form submission, DOM rerend
 
 **Fourth remote attempt:** The cgroup file showed a 256 MiB limit, yet a touched 384 MiB allocation still completed. Cleanup of a timed-out worker again failed, this time with a Podman removal timeout; all other boundary probes passed. The gate remained closed and no model/browser was started. The next diagnostic strengthens the allocation to 768 MiB and records the cgroup's observed current usage; the launcher now asks Podman to stop the container before killing the Podman client, then verifies final removal. If either boundary still fails, do not weaken the requirement or mark Phase 3 complete. [Run](https://github.com/TEE123754/Agentic/actions/runs/36702155937).
 
+**Fifth remote attempt:** The full real-container boundary batch passed on GitHub's rootless runner: network, host files/credentials/sockets, PID/memory/CPU limits, wall time, output, unapproved code, stale/forged IPC, cleanup, and untouched sentinel. The host/image-specific gate and detailed boundary review were uploaded. Linux inference setup then stopped before a browser journey because the official llama.cpp archive contains a link; the extractor rejected all links even though Python's `data` filter can validate safe in-archive links. The extractor now permits link member types while retaining the `data` filter's outside-target rejection. No CodeAgent journey or terminal report was produced yet, so Phase 3 remains partial. [Run and gate artifact](https://github.com/TEE123754/Agentic/actions/runs/36702990073).
+
 ### Completed and verified
 
 - [x] Installed and locked smolagents 1.26.0; recorded 126 installed dependencies and licenses.

@@ -115,8 +115,11 @@ def main():
             with tarfile.open(archive, "r:gz") as bundle:
                 for entry in bundle.getmembers():
                     resolved = (target / entry.name).resolve()
-                    if not resolved.is_relative_to(target) or not (entry.isfile() or entry.isdir()):
+                    if not resolved.is_relative_to(target) or not (
+                        entry.isfile() or entry.isdir() or entry.issym() or entry.islnk()
+                    ):
                         raise RuntimeError("Unsafe archive member")
+                # Python's data filter also rejects links that resolve outside target.
                 bundle.extractall(target, filter="data")
             server = next(target.rglob("llama-server"))
             server.chmod(server.stat().st_mode | 0o111)
