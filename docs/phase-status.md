@@ -36,7 +36,7 @@
 
 ## Later phases
 
-Phase 4's owned-fixture gate is complete below; phases 5–10 have not started. Phase 3's typed-tools fixture scope passed after repairs, and its generated-code/container gate passed on a disposable GitHub runner as recorded below.
+Phases 0–6 have completed their documented owned-fixture gates. Phases 7–10 have not started. The generated-code/container boundary passed on a disposable GitHub runner; local generated-code mode remains blocked without a supported container runtime.
 
 ## Phase 2 — Complete (owned-fixture browser/proxy gate)
 
@@ -106,12 +106,12 @@ Phase 4's owned-fixture gate is complete below; phases 5–10 have not started. 
 
 **Remaining scope:** No required Phase 5 owned-fixture gate work remains. The aggregate report is factual and partial; calibrated UX findings, heatmaps, and remediation advice remain Phase 6. Two-worker live-Qwen throughput and arbitrary staging sites are not validated. [Operator guide](phase5-cohorts.md); [detailed validation record](phase5-validation.md); [saved offline review](../artifacts/phase5/remote-36711155345/validation-review.md).
 
-## Phase 6 — Construction checkpoint; acceptance pending
+## Phase 6 — Complete for the owned-fixture audit gate
 
 **Date:** September 30, 2026 (Asia/Kuala_Lumpur).
 
 **Built:** Offline validator for saved session/observation/event evidence; grouped findings with eligible denominators, confidence and severity rationale, remediation and verification; synthetic click heatmaps with masked screenshot backgrounds and repeated-failure clusters; milestone funnels, trajectory indexes, exclusions, first-person diagnosis checks, and detailed JSON/Markdown/offline HTML. Durable revision-2 finalization follows the existing revision-1 fallback. Local human finding dispositions create later immutable revisions; the API serves latest and explicit versions. Recovery retains a prior good export when later review fails. The implementation and reviewer use only local files and DuckDB, never the website during report synthesis.
 
-**Validation status:** Contract schemas exported and source formatting completed. The consolidated Phase 6 acceptance batch has not yet run; no passing Phase 6 result is claimed here. The acceptance suite covers completed, abandoned, cancelled, blocked, failed, interrupted, malformed evidence, synthesis failure, human review, and a two-browser owned-fixture defect cohort.
+**Acceptance and review:** Contract schemas exported; Ruff passed. The [single remote acceptance run](https://github.com/TEE123754/Agentic/actions/runs/36718564621) passed **39/39** checks, covering completed, abandoned, cancelled, blocked, failed, interrupted, malformed evidence, synthesis failure, human review, relevant regressions, and a two-browser owned-fixture defect cohort. The latter produced 2/2 eligible synthetic abandonments, one supported Start checkout finding, one compatible heatmap, six trajectory entries, and zero exclusions. Its masked screenshot and saved report were reviewed offline. The manifest uses only a loopback origin; sentinel received zero requests and its data was unchanged. The review path makes no target requests.
 
-**What remains:** Finish source lint, run the single post-construction acceptance batch on the private GitHub runner, inspect its saved report/evidence offline, repair and recheck only affected failures, then record the gate result in this file and [the implementation plan](../IMPLEMENTATION_PLAN.md). External staging targets and calibrated human churn claims remain outside the gate. [Phase 6 guide](phase6-audits.md).
+**What remains:** No required Phase 6 owned-fixture gate work. External staging targets, calibrated human churn claims, and the Phase 7 dashboard remain outside this gate. [Phase 6 guide](phase6-audits.md); [detailed validation record](phase6-validation.md); [saved offline audit](../artifacts/phase6/remote-36718564621/17d53cfb-59c5-4379-8a32-2ac19bd45540/reports/1dd8e02b-8901-488b-8c63-40484990c1f9/revisions/2/report.html).
