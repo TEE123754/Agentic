@@ -724,6 +724,8 @@ Perform one complete dashboard acceptance walkthrough after all views are implem
 
 ## Phase 8 — Evaluate quality and implement comparisons
 
+**Execution checkpoint — September 30, 2026 (construction complete; gate pending):** Added a SHA-pinned, split-aware Mind2Web JSON loader and offline candidate/action scorer; a frozen two-seed healthy/defect fixture batch with order reversed between pairs; saved-report matching and comparison with raw counts, exclusions, findings/confidence, evidence completeness, and measured protection; a FastAPI comparison route and Streamlit tab; a human-review rubric; and an ephemeral GitHub Actions gate with offline evidence review. The Mind2Web remote smoke downloads only the publisher's 28.4 MB training shard to the runner's temporary storage and uploads aggregate scores, not raw examples. Ruff passed for changed Python. **Left before the gate:** run the one consolidated remote Phase 8 batch, inspect its reports and comparison screenshot, fix any defects with affected-only checks, then record evidence and decide whether to tick Phase 8. No Phase 8 behavioral test has run yet. Held-out Mind2Web model accuracy, arbitrary staging origins, and human-churn calibration remain outside this fixture gate.
+
 **Goal:** Measure navigation competence, detector quality, and repeatability separately.
 
 **Tools:** Mind2Web, fixture applications, pytest, DuckDB, Plotly.

@@ -22,6 +22,7 @@ from frictionlab.configuration import (
 )
 from frictionlab.contracts.models import FIXTURE_BUILD, RunReport, validate_origin
 from frictionlab.dashboard.read_model import catalog, list_runs, progress
+from frictionlab.evaluation.comparison import compare_runs
 from frictionlab.fixtures.store import (
     CheckoutInput,
     CreateFixtureRun,
@@ -184,6 +185,17 @@ def create_app(
     @app.get("/dashboard/runs")
     def dashboard_runs():
         return list_runs(coordinator.store) if coordinator else {"runs": []}
+
+    @app.get("/dashboard/compare/{baseline_id}/{candidate_id}")
+    def dashboard_compare(baseline_id: UUID, candidate_id: UUID):
+        if not coordinator:
+            raise HTTPException(404, "Saved comparison is unavailable")
+        try:
+            return compare_runs(
+                coordinator.root, coordinator.store, str(baseline_id), str(candidate_id)
+            )
+        except ValueError as exc:
+            raise HTTPException(409, str(exc)) from exc
 
     @app.get("/dashboard/runs/{run_id}/progress")
     def dashboard_progress(run_id: UUID):

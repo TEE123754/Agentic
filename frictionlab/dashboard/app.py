@@ -372,6 +372,43 @@ def _full_report(run_id, report):
                     st.markdown(content.decode("utf-8"), unsafe_allow_html=False)
 
 
+def _comparison(run_id, runs):
+    completed = [
+        item for item in runs if (item["report_revision"] or 0) >= 2 and item["run_id"] != run_id
+    ]
+    if not completed:
+        st.info("A second audited run with the same samples is needed for a matched comparison.")
+        return
+    other = st.selectbox(
+        "Compare this run with",
+        [item["run_id"] for item in completed],
+        format_func=lambda value: value[:8],
+    )
+    report = _get(f"/dashboard/compare/{other}/{run_id}")
+    if not report:
+        st.info("Choose runs with identical profiles, journeys, seed, environment, and model.")
+        return
+    st.caption(
+        f"Baseline {report['baseline_variant']} → candidate {report['candidate_variant']} · "
+        f"model {report['model']}"
+    )
+    st.metric("Change in completed synthetic sessions", report["completion_delta"])
+    st.dataframe(report["paired_sessions"], hide_index=True)
+    left, right = st.columns(2)
+    with left:
+        st.write("**Resolved findings**")
+        st.dataframe(report["resolved_findings"], hide_index=True)
+    with right:
+        st.write("**New findings**")
+        st.dataframe(report["new_findings"], hide_index=True)
+    st.write("**Report completeness and measured protection**")
+    st.json(
+        {"report_completeness": report["report_completeness"], "protection": report["protection"]}
+    )
+    for limitation in report["limitations"]:
+        st.caption(limitation)
+
+
 def main():
     st.set_page_config(page_title="FrictionLab · Local command center", layout="wide")
     st.title("FrictionLab")
@@ -411,7 +448,9 @@ def main():
             "The audit is still being finalized. Refresh to inspect it when ready; failed exports retain an earlier partial report when available."
         )
         return
-    tabs = st.tabs(["Overview", "Trajectories", "Heatmaps", "Findings", "Full report"])
+    tabs = st.tabs(
+        ["Overview", "Trajectories", "Heatmaps", "Findings", "Full report", "Comparison"]
+    )
     with tabs[0]:
         _overview(report)
     with tabs[1]:
@@ -422,6 +461,8 @@ def main():
         _findings(selection, report)
     with tabs[4]:
         _full_report(selection, report)
+    with tabs[5]:
+        _comparison(selection, runs)
 
 
 if __name__ == "__main__":

@@ -1,0 +1,17 @@
+{
+  "version": "phase8-owned-fixture-v1",
+  "planner": "deterministic-semantic-control-harness",
+  "journey": "checkout_review",
+  "persona": "impatient_mobile",
+  "pairs": [
+    {"seed": 42, "order": ["dead_button", "healthy"]},
+    {"seed": 43, "order": ["healthy", "dead_button"]}
+  ],
+  "labels": {"dead_button": "seeded_blocker", "healthy": "healthy"},
+  "targets": {
+    "healthy_completion": 0.8,
+    "high_severity_precision": 0.9,
+    "seeded_blocker_detection": 0.8,
+    "finding_reference_validity": 1.0
+  }
+}

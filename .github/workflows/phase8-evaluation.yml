@@ -1,0 +1,62 @@
+name: Phase 8 frozen fixture and Mind2Web gate
+
+on:
+  workflow_dispatch:
+    inputs:
+      affected_only:
+        description: Rerun only affected fixture checks after a fix
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: phase8-evaluation
+  cancel-in-progress: false
+
+jobs:
+  evaluation:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    env:
+      PYTHONPATH: .
+      FRICTIONLAB_BROWSER_PATH: /usr/bin/google-chrome
+      FRICTIONLAB_PHASE8_EVIDENCE: artifacts/phase8/validation
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install locked free/open-source dependencies
+        run: |
+          python -m pip install uv==0.11.18
+          uv sync --locked --extra dashboard --group dev
+
+      - name: One post-build frozen fixture and regression batch
+        if: ${{ !inputs.affected_only }}
+        run: uv run --extra dashboard pytest -q tests/phase_08 tests/phase_07/test_dashboard.py::test_phase7_complete_owned_fixture_dashboard_walkthrough
+
+      - name: Affected Phase 8 fixture checks only
+        if: ${{ inputs.affected_only }}
+        run: uv run --extra dashboard pytest -q tests/phase_08
+
+      - name: Check pinned Mind2Web train shard without retaining raw data
+        run: uv run --extra dashboard python scripts/phase8_mind2web.py
+
+      - name: Review saved comparison and benchmark summaries offline
+        if: always()
+        run: uv run --extra dashboard python scripts/review_phase8.py
+
+      - name: Upload synthetic summary and fixture evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: phase8-owned-fixture-evaluation-evidence
+          path: artifacts/phase8/validation/
+          if-no-files-found: warn
+          retention-days: 7
