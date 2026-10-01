@@ -34,11 +34,10 @@ def test_three_profile_local_release_pilot():
                 assert path is not None
                 report = RunReport.model_validate_json(path.read_text(encoding="utf-8"))
                 runs[variant] = payload["id"]
-                assert report.report_status == "ready", report.terminal_reason
+                assert report.report_status in {"ready", "partial"}, report.terminal_reason
                 assert report.cohort_results.executed_sessions == 3
                 assert report.protection.sentinel_requests == 0
                 assert report.protection.sentinel_data_unchanged
-                assert not report.review.missing_evidence
                 for finding in report.findings:
                     assert finding.evidence
                     for ref in finding.evidence:
@@ -46,9 +45,19 @@ def test_three_profile_local_release_pilot():
                 for suffix in ("json", "md", "html"):
                     assert path.with_suffix("." + suffix).is_file()
                 if variant == "healthy":
+                    assert report.report_status == "ready" and not report.review.missing_evidence
                     assert report.cohort_results.outcome_counts.get("completed", 0) == 3
                 else:
                     assert report.findings and report.abandonment_explanations
+                    outcomes = report.cohort_results.outcome_counts
+                    eligible = sum(outcomes.get(key, 0) for key in (
+                        "completed", "abandoned_patience", "abandoned_requirement",
+                    ))
+                    assert report.cohort_results.eligible_sessions == eligible
+                    assert outcomes.get("abandoned_patience", 0) >= 1
+                    if eligible < 3:
+                        assert report.report_status == "partial"
+                        assert any("exclusion" in note for note in report.review.missing_evidence)
             comparison = compare_runs(root, coordinator.store, runs["dead_button"], runs["healthy"])
             assert comparison["completion_delta"] > 0 and comparison["resolved_findings"]
             bundle = export_bundle(root, runs["dead_button"], root / "portable")
