@@ -1,5 +1,6 @@
 """Run with the wheel installed and python -I, after all construction is complete."""
 
+import asyncio
 import json
 import os
 import subprocess
@@ -8,6 +9,26 @@ import tempfile
 from pathlib import Path
 
 import frictionlab
+
+
+async def inspect_installed_site(home, executable):
+    from playwright.async_api import async_playwright
+
+    requests = []
+    async with async_playwright() as playwright:
+        browser = await playwright.chromium.launch(headless=True, executable_path=executable)
+        try:
+            page = await browser.new_page(viewport={"width": 390, "height": 844})
+            page.on("request", lambda request: requests.append(request.url))
+            await page.goto((home / "site/index.html").as_uri())
+            await page.get_by_role("link", name="Explore a sample audit").click()
+            await page.get_by_text("FrictionLab portable audit").wait_for()
+            await page.goto((home / "site/index.html").as_uri())
+            href = await page.get_by_role("link", name="Read the setup guide").get_attribute("href")
+            assert (home / "site" / href).resolve().is_file()
+        finally:
+            await browser.close()
+    assert not any(url.startswith(("http://", "https://")) for url in requests)
 
 
 def main():
@@ -61,6 +82,7 @@ def main():
         report = json.loads(reports[-1].read_text())
         assert report["protection"]["sentinel_requests"] == 0
         assert report["protection"]["sentinel_data_unchanged"] is True
+        asyncio.run(inspect_installed_site(home, environment["FRICTIONLAB_BROWSER_PATH"]))
         (evidence / "installed-cli-review.json").write_text(
             json.dumps(
                 {
@@ -71,6 +93,8 @@ def main():
                     "sentinel_requests": 0,
                     "sentinel_data_unchanged": True,
                     "large_downloads": False,
+                    "installed_landing_sample_navigation": True,
+                    "report_review_http_requests": 0,
                 },
                 indent=2,
             )
