@@ -17,7 +17,7 @@ FrictionLab is an open-source Python tool for product and engineering teams inve
 
 ## Current scope
 
-This is a development-stage tool. Phases 0-8 passed their declared owned-fixture gates; Phase 9 adds offline sharing. Synthetic persona behavior is not a prediction of human conversion or proof of human usability.
+This is a development-stage tool. Phases 0-9 passed their declared owned-fixture and offline-sharing gates. See the [Phase 9 validation record](docs/phase9-validation.md). Synthetic persona behavior is not a prediction of human conversion or proof of human usability.
 
 **Execution currently accepts bundled disposable fixtures only.** Arbitrary deployed products and external staging replicas remain blocked. Future replica support requires separate data, mocked integrations and a proven network boundary. FrictionLab provides advice; it does not change application source or deploy fixes. Reports and replay read saved evidence without contacting the tested website.
 

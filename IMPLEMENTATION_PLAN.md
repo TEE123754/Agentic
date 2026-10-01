@@ -3,8 +3,8 @@
 **Product:** Autonomous, multi-agent behavioral testing for staging web applications.  
 **Architecture:** Python application running locally, with an interactive dashboard and exportable reports.  
 **Cost constraint:** No required paid APIs, subscriptions, cloud compute, or credit card. Uses existing local hardware.  
-**Document date:** October 1, 2026 (Asia/Kuala_Lumpur).
-**Status:** Phases 0-8 complete for owned-fixture gates. Phase 9 acceptance: quota check passed; offline walkthrough repaired and affected-only rerun pending. Phase 10 documentation/landing page complete, BYOK and packaging remaining. External replicas blocked.
+**Document date:** October 2, 2026 (Asia/Kuala_Lumpur).
+**Status:** Phases 0-9 complete for their declared owned-fixture/offline-sharing gates. Phase 10 documentation/landing page complete; installable CLI packaging and BYOK transports remain. External replicas stay blocked. See verified checkpoints below.
 
 ## 1. Intended outcome
 
@@ -761,7 +761,7 @@ Run one frozen benchmark batch and one matched broken/fixed fixture comparison. 
 
 ## Phase 9 — Add sharing and optional free API acceleration
 
-**Execution checkpoint - October 1, 2026 (built; gate pending):** Built static CLI export, allowlisted bounded JSON, credential/URL/email redaction, embedded PNGs, offline filters/playback/heatmaps/report view and synthetic sample. Added quota guard, disabled configuration and mocked guard acceptance. Actual cloud transport/enforcement moves to Phase 10. **Left:** single remote batch, artifact/screenshot inspection, affected-only repairs and checklist update. Initial remote batch: 1 quota check passed; offline walkthrough failed on test-only relative file URI. Fixed path resolution. Affected rerun passed viewer/import/redaction and found mobile landing overflow from grid minimum sizing. Fixed responsive sizing; remote walkthrough passed 1/1. Visual review caught inherited screenshot max-height distorting heatmap coordinates; repaired and added background/stage alignment assertion. Final affected gate pending.
+**Execution checkpoint - October 2, 2026 (COMPLETE for offline sharing):** Built CLI static export, bounded sanitized JSON, self-contained offline findings filters, screenshot playback, correctly aligned compatible heatmaps, sanitized report view, local import and fixture example. Added disabled-by-default quota guard; no cloud transport ships. Two distinct checks passed across the initial quota check and [final affected walkthrough](https://github.com/TEE123754/Agentic/actions/runs/36889073326) (1/1 in 21.90 seconds). Offline artifact review and desktop/mobile screenshots were inspected; visual review caught and repaired heatmap geometry before completion. Review made zero HTTP requests; observed sentinel requests were zero and data unchanged. **Left for this gate:** none. Public hosting is optional and not performed. Real BYOK transports, secret handling, request enforcement, provider provenance and downloadable packaging remain Phase 10; external replicas and human calibration remain unsupported. [Validation history](docs/phase9-validation.md).
 
 **Goal:** Share audits without requiring cloud browser infrastructure.
 
@@ -875,7 +875,7 @@ This proves the core product behavior before investment in larger swarms, additi
 - [x] Phase 6 — Audit generation (owned-fixture gate: 39/39 remote checks; 14/14 affected follow-up checks and offline report review)
 - [x] Phase 7 — Local dashboard (owned-fixture gate: initial Phase 6 regression passed; final affected-only dashboard walkthrough 1/1 passed with reviewed report and offline screenshot)
 - [x] Phase 8 — Evaluation and comparisons (frozen owned-fixture gate: 3/3 remote checks; four reports, two matched comparisons, pinned Mind2Web training-shard diagnostic)
-- [ ] Phase 9 — Sharing and optional acceleration
+- [x] Phase 9 — Offline sharing (2 distinct remote checks verified; cloud transports deferred to Phase 10)
 - [ ] Phase 10 - Open-source local CLI and BYOK
 - [ ] Phase 11 — Release validation
 

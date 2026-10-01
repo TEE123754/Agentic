@@ -135,3 +135,18 @@ Phases 0–6 have completed their documented owned-fixture gates. Phases 7–10 
 **Acceptance:** The [remote gate](https://github.com/TEE123754/Agentic/actions/runs/36734421811) passed **3/3** checks in one batch. Four ready fixture reports yielded two defect → healthy comparisons, each with +1 synthetic completion and a resolved seeded finding. On the frozen two-positive/two-negative batch, healthy completion, high-severity precision, seeded-blocker detection, and finding evidence-reference validity were 100%; all sentinel counts were zero and data remained unchanged. The saved comparison screenshot was visually reviewed; dashboard review made no fixture-route request. The pinned Mind2Web training-shard smoke covered nine tasks/49 steps, and the untuned lexical reference achieved only 3/46 grounded element selections and 0/9 full tasks. Those poor diagnostic scores are retained and are not attributed to the browser planner.
 
 **Remaining scope:** No required Phase 8 owned-fixture gate work. The small deterministic batch does not calibrate human UX or establish model-driven navigation quality. Held-out official Mind2Web scoring of the actual planner, broader labels/seeds/personas, arbitrary protected staging replicas, and subsequent sharing/release validation remain. [Operator guide](phase8-evaluation.md); [validation record](phase8-validation.md); [saved offline review](../artifacts/phase8/remote-36734421811/phase8-owned-fixture-evaluation-evidence/validation-review.md).
+
+
+## Phase 9 - Complete for offline sharing
+
+**Date:** October 2, 2026 (Asia/Kuala_Lumpur).
+
+**Delivered:** Local `export-static`, sanitized bounded JSON, self-contained viewer with filters/playback/heatmaps/report view, private browser import, public synthetic example and optional Static Space instructions. Quota policy remains disabled; cloud transports are not shipped.
+
+**Acceptance:** Two distinct checks verified: mocked quota guard passed in the initial batch; the [final affected offline walkthrough](https://github.com/TEE123754/Agentic/actions/runs/36889073326) passed 1/1 in 21.90 seconds. Test path and mobile layout defects were repaired. Screenshot review found heatmap distortion; its repair and geometry assertion passed before completion. Final screenshot and offline reviewer inspected. No HTTP requests during review; zero sentinel traffic and unchanged data recorded. No local browser/model tests or full-suite repetition.
+
+**Remaining:** None for the declared gate. Optional publication was not performed. See [validation record](phase9-validation.md).
+
+## Phase 10 - Partial: open-source local product and BYOK
+
+Professional README, local clickable landing page, MIT license and contribution/security guidance are complete. Installable console command, downloadable releases, init/doctor, real user-key transports, integrated quotas/provenance, license review and the consolidated acceptance remain. Current source CLI works with the local-model backend; no cloud API key support is implied. Repository visibility remains unchanged. [Detailed checklist](phase10-local-product.md).
