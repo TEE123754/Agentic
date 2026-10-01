@@ -89,6 +89,7 @@ def test_phase9_offline_export_import_and_sanitization(tmp_path):
         if "FRICTIONLAB_PHASE9_EVIDENCE" in os.environ
         else tmp_path / "phase9"
     )
+    root = root.resolve()
     root.mkdir(parents=True, exist_ok=True)
     run_id = asyncio.run(_capture_fixture(root))
     report_dir = root / "reports" / run_id / "revisions" / "2"

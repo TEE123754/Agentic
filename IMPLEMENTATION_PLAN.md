@@ -1,10 +1,10 @@
-# FrictionLab â€” Phase-by-Phase Implementation Plan
+# FrictionLab — Phase-by-Phase Implementation Plan
 
 **Product:** Autonomous, multi-agent behavioral testing for staging web applications.  
 **Architecture:** Python application running locally, with an interactive dashboard and exportable reports.  
 **Cost constraint:** No required paid APIs, subscriptions, cloud compute, or credit card. Uses existing local hardware.  
 **Document date:** October 1, 2026 (Asia/Kuala_Lumpur).
-**Status:** Phases 0-8 complete for owned-fixture gates; Phase 9 built, remote acceptance pending. New Phase 10: local open-source CLI and BYOK. External replicas and cloud transports remain blocked/unimplemented.
+**Status:** Phases 0-8 complete for owned-fixture gates. Phase 9 acceptance: quota check passed; offline walkthrough repaired and affected-only rerun pending. Phase 10 documentation/landing page complete, BYOK and packaging remaining. External replicas blocked.
 
 ## 1. Intended outcome
 
@@ -21,7 +21,7 @@ The first release should support:
 
 Treat explanations as synthetic UX hypotheses. Agent mistakes, execution errors, and provider failures must remain distinguishable from interface failures and simulated abandonment.
 
-### Mandatory requirement A â€” Protect the deployed website
+### Mandatory requirement A — Protect the deployed website
 
 **Product contract:** Test execution and report review must not change the deployed website's code, configuration, real user data, transactions, or integrations, or send cohort traffic to its live services.
 
@@ -46,7 +46,7 @@ Use Playwright policy hooks plus a container/network boundary or controlled prox
 
 **Acceptance:** Seed the fixture with attempted live API calls, redirects, beacons, service-worker registration, and WebSocket connections. At the phase boundary, confirm the controlled live-service sentinel receives zero requests, its data remains unchanged, and blocked attempts appear in the report. This proves protection for the tested boundary; deployment isolation remains an explicit prerequisite.
 
-### Mandatory requirement B â€” Detailed report after execution and review
+### Mandatory requirement B — Detailed report after execution and review
 
 Every terminal run, including completed, failed, cancelled, interrupted, or blocked runs, must automatically create a report. A short outcome summary alone does not satisfy this requirement.
 
@@ -64,7 +64,7 @@ Every terminal run, including completed, failed, cancelled, interrupted, or bloc
 | Comparison, when available | Matched baseline/candidate configuration, new/resolved findings, raw differences, and uncertainty |
 | Review and limitations | Evidence validation results, automated review status, optional human dispositions, exclusions, missing artifacts, and unresolved disagreements |
 
-**Finalization pipeline:** execution stops â†’ flush evidence â†’ calculate metrics â†’ draft findings â†’ validate/review evidence â†’ generate report â†’ publish local dashboard/download links.
+**Finalization pipeline:** execution stops → flush evidence → calculate metrics → draft findings → validate/review evidence → generate report → publish local dashboard/download links.
 
 - Review must use stored evidence and must not launch another browser cohort. A retest is a separately requested/configured run.
 - Validate evidence references, denominators, profile attribution, and consistency between findings and recommendations.
@@ -221,13 +221,13 @@ Agent/                      # Repository root
     phase_09/
     phase_10/
   artifacts/                 # Local, ignored by Git
-  containers/               # Planned Phase 2â€“3 isolation
+  containers/               # Planned Phase 2–3 isolation
   docs/
   pyproject.toml
   uv.lock
 ```
 
-The application uses the flat Python package shown above. Directories labeled planned and Phase 5â€“10 test directories are future interfaces; create them in their phases. Phase 0 acceptance remains in `spikes/phase0/`.
+The application uses the flat Python package shown above. Directories labeled planned and Phase 5–10 test directories are future interfaces; create them in their phases. Phase 0 acceptance remains in `spikes/phase0/`.
 
 ## 5. Phase summary
 
@@ -246,9 +246,9 @@ The application uses the flat Python package shown above. Directories labeled pl
 | 10 | Open-source local CLI distribution and BYOK | Phase 9 |
 | 11 | Complete release validation and pilot packaging | Phase 10 |
 
-## Phase 0 â€” Validate feasibility and integration boundaries
+## Phase 0 — Validate feasibility and integration boundaries
 
-### Execution checkpoint â€” September 29, 2026
+### Execution checkpoint — September 29, 2026
 
 **Status: COMPLETE for the fixture-only feasibility gate.** Hardware: Windows 11, i7-14700HX, 31.71 GiB RAM, RTX 5050 Laptop GPU with 8,151 MiB memory. Podman/Docker are absent on PATH. Hardware details are saved in `docs/hardware.json` and `docs/local-hardware-profile.md`.
 
@@ -294,7 +294,7 @@ What remains:
 - **No required Phase 0 gate work remains.** Phase 1 was subsequently completed; see its checkpoint below.
 - Optional vision inspection is configured but disabled and unvalidated; download/pin local SmolVLM weights and validate it only when vision is needed.
 - A dedicated Playwright browser download remains unavailable after CDN timeouts. Current validation records installed Chrome 153.0.8010.53; pin a dedicated binary when download access is available.
-- Container-enforced protection for arbitrary targets/generated code remains a required implementation and validation task in Phases 2â€“3. The current fixture/proxy evidence is not a production-grade OS isolation guarantee.
+- Container-enforced protection for arbitrary targets/generated code remains a required implementation and validation task in Phases 2–3. The current fixture/proxy evidence is not a production-grade OS isolation guarantee.
 - Expand single-page grounding to frames/shadow roots and additional action types in Phase 2. The Phase 0 spike intentionally accepts no real website URL.
 
 Phase 0 is checked because its local integration and isolation-design gate passed. The detailed report explicitly records the outstanding deployment boundaries and optional capabilities.
@@ -330,9 +330,9 @@ Run one bundled scenario: launch a page, capture semantic candidates, request an
 
 **Exit gate:** The scenario succeeds without a paid key, the same browser target is observed and controlled, and the isolation design excludes deployed website services. If browser-use cannot be isolated cleanly, resolve the adapter design here before dependent phases begin.
 
-## Phase 1 â€” Create the foundation and controlled fixtures
+## Phase 1 — Create the foundation and controlled fixtures
 
-### Execution checkpoint â€” September 29, 2026
+### Execution checkpoint — September 29, 2026
 
 **Status: Complete.** Construction finished before the consolidated acceptance pass. All 78 distinct checks now pass; Ruff and JavaScript syntax pass. Details and original/repair evidence are recorded in [Phase 1 validation](docs/phase1-validation.md).
 
@@ -340,7 +340,7 @@ Completed:
 
 - Inspected the existing spike and dependency lock; preserved Phase 0 evidence.
 - Added explicit FastAPI/Uvicorn dependencies and phase-scoped pytest configuration to the project declaration.
-- Defined the implementation boundary: local bundled fixture only; external-target execution and generated-code agents remain unavailable until Phases 2â€“3.
+- Defined the implementation boundary: local bundled fixture only; external-target execution and generated-code agents remain unavailable until Phases 2–3.
 - Built the importable `frictionlab` package, strict Pydantic contracts, offline reference loader, and reproducibility hash.
 - Added three capability-based profiles, three observable journeys, and the fixture-only policy in `configs/`.
 - Built six local storefront variants, run-scoped synthetic accounts, deterministic reset, six integration mocks, and a rejected-dispatch sentinel control.
@@ -393,9 +393,9 @@ Run the phase configuration/fixture tests and a consolidated lint check. Confirm
 
 **Exit gate:** The project starts locally and provides reproducible healthy and defective application states.
 
-## Phase 2 â€” Build browser observation and execution
+## Phase 2 — Build browser observation and execution
 
-### Execution checkpoint â€” September 29, 2026
+### Execution checkpoint — September 29, 2026
 
 **Status: Complete for the owned-fixture browser/proxy gate.** All 83 distinct checks pass: 34 Phase 2 checks and 49 relevant Phase 1 regressions. Ruff and JavaScript syntax pass. [Detailed validation and review](docs/phase2-validation.md) records every attempt, repair, and known limitation.
 
@@ -428,7 +428,7 @@ Remaining:
 
 **Host limitation:** Podman/Docker remain unavailable. This phase can validate the supported browser/proxy boundary for owned fixtures; it cannot claim OS/container isolation. External replicas and generated-code workers stay disabled until their stronger boundary is available.
 
-**Goal:** Provide dependable observe â†’ act â†’ verify operations on dynamic pages.
+**Goal:** Provide dependable observe → act → verify operations on dynamic pages.
 
 **Tools:** Playwright, browser-use adapter, Pydantic, axe-core.
 
@@ -463,11 +463,11 @@ Run the browser suite once against fixtures covering form submission, DOM rerend
 
 **Exit gate:** Supported fixture actions consistently produce the intended outcome and usable before/after evidence, while policy checks prevent traffic and changes outside the replica boundary.
 
-## Phase 3 â€” Add a single autonomous persona
+## Phase 3 — Add a single autonomous persona
 
-**Execution checkpoint â€” September 30, 2026 (completion attempt):** The typed-tools fixture implementation is built and verified after targeted repairs. **Full Phase 3 remains PARTIAL** pending an actual OS/container worker gate. A fresh host check still finds no Podman, Docker, or installed WSL. The OCI-side code process, rootless Podman launcher, bounded stdio broker channel, pinned-image Containerfile, and `smolagents.CodeAgent` adapter are constructed. A host/image acceptance record is required before code mode starts a browser or model. **Twenty new worker/adapter checks plus two existing blocked-mode guards pass**, with targeted lint; they do not validate kernel isolation. `isolated_code` remains blocked on this host and no external target is accepted. A real runtime, escape/cleanup batch, and one reviewed CodeAgent fixture journey remain required.
+**Execution checkpoint — September 30, 2026 (completion attempt):** The typed-tools fixture implementation is built and verified after targeted repairs. **Full Phase 3 remains PARTIAL** pending an actual OS/container worker gate. A fresh host check still finds no Podman, Docker, or installed WSL. The OCI-side code process, rootless Podman launcher, bounded stdio broker channel, pinned-image Containerfile, and `smolagents.CodeAgent` adapter are constructed. A host/image acceptance record is required before code mode starts a browser or model. **Twenty new worker/adapter checks plus two existing blocked-mode guards pass**, with targeted lint; they do not validate kernel isolation. `isolated_code` remains blocked on this host and no external target is accepted. A real runtime, escape/cleanup batch, and one reviewed CodeAgent fixture journey remain required.
 
-**Remote completion checkpoint â€” September 30, 2026 (in progress):** The user selected `TEE123754/Agentic` for a laptop-safe GitHub Actions gate. GitHub CLI confirms the repository is private and empty; the connected GitHub app has no access, so authenticated CLI Git operations will be used. Source, configuration, workflow, and review notes are being prepared for the remote runner. The local model weights, Windows runtime binaries, saved reports, caches, and credentials must remain untracked. A Linux runtime manifest/setup path, one manual fixture-only Actions workflow, the actual rootless container boundary batch, a generated-code fixture journey, report review, and final status update remain. No remote workflow has run yet.
+**Remote completion checkpoint — September 30, 2026 (in progress):** The user selected `TEE123754/Agentic` for a laptop-safe GitHub Actions gate. GitHub CLI confirms the repository is private and empty; the connected GitHub app has no access, so authenticated CLI Git operations will be used. Source, configuration, workflow, and review notes are being prepared for the remote runner. The local model weights, Windows runtime binaries, saved reports, caches, and credentials must remain untracked. A Linux runtime manifest/setup path, one manual fixture-only Actions workflow, the actual rootless container boundary batch, a generated-code fixture journey, report review, and final status update remain. No remote workflow has run yet.
 
 **Remote construction checkpoint:** Added a checksum-pinned Linux llama.cpp runtime path, the manual Actions workflow, a real-container boundary batch, an offline saved-report reviewer, and a remote-gate guide. The workflow accepts no website URL and runs only the bundled fixture. The worker boundary now includes an unapproved-import probe as well as escape, quota, IPC, cleanup, and sentinel checks. Local boundary-related source checks passed 23/23; targeted Ruff findings were repaired. The rootless Linux batch and CodeAgent journey have not yet run. The next steps are to publish the source to the named private repository, dispatch one workflow, inspect its artifacts, fix only failing checks if needed, and update this checkpoint with the observed result. This does not install a container runtime or model on the laptop.
 
@@ -485,7 +485,7 @@ Run the browser suite once against fixtures covering form submission, DOM rerend
 
 **Seventh remote attempt:** The stronger action prompt was sent to Qwen, but the runner's CPU model request timed out at the prior 45-second ceiling before returning code. The saved partial report records a model-provider timeout, no worker execution or browser action, zero sentinel requests, and cleaned owned resources. The prompt has been shortened while retaining an exact schema example; the configured request ceiling is now the contract's 60-second maximum. This is an affected model-journey retry, not a reason to repeat previously passing local suites. Phase 3 stays partial until an actual generated-code fixture journey completes and its report passes offline review. [Run and terminal report artifact](https://github.com/TEE123754/Agentic/actions/runs/36704023265).
 
-**Final remote completion â€” September 30, 2026:** [Workflow run 36704845110](https://github.com/TEE123754/Agentic/actions/runs/36704845110) passed on a disposable Ubuntu runner. All 14 real-worker boundary checks passed for image `sha256:372acaec51b5fdc5cda5f9f5db8f2aba186b1039e043ebbf2edb63a1deb564b2`; the gate is host/image-specific. The CodeAgent generated and executed Python in that worker, selected the grounded delivery-policy button, and completed the independent delivery/returns criteria in one decision and one browser action. The saved offline reviewer passed without reopening the browser. The terminal [JSON](artifacts/phase3/remote-36704845110/runs/49824634-7fd8-4b5d-8fde-24becbb00f8e/report.json), [Markdown](artifacts/phase3/remote-36704845110/runs/49824634-7fd8-4b5d-8fde-24becbb00f8e/report.md), and [HTML](artifacts/phase3/remote-36704845110/runs/49824634-7fd8-4b5d-8fde-24becbb00f8e/report.html) record zero sentinel requests, unchanged sentinel data, and owned-service cleanup. The final screenshot visibly shows the delivery/returns terms. Report status is **partial** because calibrated UX findings/heatmaps and cohort orchestration belong to later phases; this does not affect the completed Phase 3 single-persona gate. Prior failed attempts and their evidence remain retained. No deployed website was contacted and no container runtime or model weights were installed on the laptop.
+**Final remote completion — September 30, 2026:** [Workflow run 36704845110](https://github.com/TEE123754/Agentic/actions/runs/36704845110) passed on a disposable Ubuntu runner. All 14 real-worker boundary checks passed for image `sha256:372acaec51b5fdc5cda5f9f5db8f2aba186b1039e043ebbf2edb63a1deb564b2`; the gate is host/image-specific. The CodeAgent generated and executed Python in that worker, selected the grounded delivery-policy button, and completed the independent delivery/returns criteria in one decision and one browser action. The saved offline reviewer passed without reopening the browser. The terminal [JSON](artifacts/phase3/remote-36704845110/runs/49824634-7fd8-4b5d-8fde-24becbb00f8e/report.json), [Markdown](artifacts/phase3/remote-36704845110/runs/49824634-7fd8-4b5d-8fde-24becbb00f8e/report.md), and [HTML](artifacts/phase3/remote-36704845110/runs/49824634-7fd8-4b5d-8fde-24becbb00f8e/report.html) record zero sentinel requests, unchanged sentinel data, and owned-service cleanup. The final screenshot visibly shows the delivery/returns terms. Report status is **partial** because calibrated UX findings/heatmaps and cohort orchestration belong to later phases; this does not affect the completed Phase 3 single-persona gate. Prior failed attempts and their evidence remain retained. No deployed website was contacted and no container runtime or model weights were installed on the laptop.
 
 ### Completed and verified
 
@@ -554,9 +554,9 @@ Run a consolidated batch of healthy fixture journeys with recorded seeds. Includ
 
 **Exit gate:** The supported typed-tools fixture scope has verified completion for each profile after explicit repairs and passing negative limits/protection/report checks. The initial provisional first-pass threshold remains failed and recorded. The full phase additionally requires the generated-code worker and its separate isolation checks; it is not marked complete until that boundary passes.
 
-## Phase 4 â€” Add friction detection and cognitive state
+## Phase 4 — Add friction detection and cognitive state
 
-**Execution checkpoint â€” September 30, 2026:** **COMPLETE for the supported owned-fixture cognitive gate.** Construction preceded one consolidated boundary batch. The first batch passed **104/104** checks. Later review added five distinct checks, including a corrected protected-control harness, dialog attribution, and information-only dialog memory. Latest merged result: **109/109 distinct checks pass**. One failed harness attempt and the first unfavorable real-Qwen attempt remain retained. Only affected/new checks and one repaired real-Qwen journey were run afterward; passing defect/healthy/delayed browser journeys and the full regression suite were not repeated. All changed Python files pass targeted Ruff checks.
+**Execution checkpoint — September 30, 2026:** **COMPLETE for the supported owned-fixture cognitive gate.** Construction preceded one consolidated boundary batch. The first batch passed **104/104** checks. Later review added five distinct checks, including a corrected protected-control harness, dialog attribution, and information-only dialog memory. Latest merged result: **109/109 distinct checks pass**. One failed harness attempt and the first unfavorable real-Qwen attempt remain retained. Only affected/new checks and one repaired real-Qwen journey were run afterward; passing defect/healthy/delayed browser journeys and the full regression suite were not repeated. All changed Python files pass targeted Ruff checks.
 
 Delivered:
 
@@ -567,9 +567,9 @@ Delivered:
 - [x] Opt-in `python -m frictionlab behavioral` CLI using the Phase 3 local Qwen/smolagents browser runtime; immutable JSON/Markdown/offline HTML reports with observed friction, ledger, diagnosis, outcome denominator, reproducibility, and limitations. No new paid dependencies or external URLs.
 - [x] Phase-boundary acceptance, targeted checks, offline evidence review, 31 exported contract schemas, [guide](docs/phase4-cognition.md), and [validation review](docs/phase4-validation.md).
 
-Observed matched acceptance used **seed 42, the same mobile profile and checkout goal, and the same fixture build**. A deterministic semantic-control smolagents harness chose actions from current observed candidates; this controls action variance for exact detector/ledger checks and is identified in the record. On the `dead_button` fixture it scrolled twice, clicked **Start checkout**, observed no visible change in the bounded feedback window, and stopped at **55 â†’ 0 patience** with one event (confidence 0.94) and a final screenshot. On `healthy` it completed Order review in five actions with **55 â†’ 63** from two verified milestones, no friction event, and no order placed. `delayed_feedback` also completed in five actions with a 2.5-second-plus application delay and **zero** false friction events. Model timeout and invalid output produced inconclusive agent outcomes, with no abandonment explanation.
+Observed matched acceptance used **seed 42, the same mobile profile and checkout goal, and the same fixture build**. A deterministic semantic-control smolagents harness chose actions from current observed candidates; this controls action variance for exact detector/ledger checks and is identified in the record. On the `dead_button` fixture it scrolled twice, clicked **Start checkout**, observed no visible change in the bounded feedback window, and stopped at **55 → 0 patience** with one event (confidence 0.94) and a final screenshot. On `healthy` it completed Order review in five actions with **55 → 63** from two verified milestones, no friction event, and no order placed. `delayed_feedback` also completed in five actions with a 2.5-second-plus application delay and **zero** false friction events. Model timeout and invalid output produced inconclusive agent outcomes, with no abandonment explanation.
 
-**Actual local-Qwen check:** Two defect attempts are preserved. The first timed out after repeatedly opening/closing delivery information. The then-current detector recorded two false navigation-loop events, but the report made **no abandonment diagnosis**; these events are explicitly rejected as contaminated review evidence. After excluding dialog transitions and remembering information-only dialogs, a fresh local-Qwen attempt reached **Start checkout** in six model decisions, observed one dead interaction, and abandoned at **55 â†’ 0** with linked terminal evidence. Model inference took **75.186 s**, while application actions took **5.312 s**. This is one repaired success, not a population completion rate.
+**Actual local-Qwen check:** Two defect attempts are preserved. The first timed out after repeatedly opening/closing delivery information. The then-current detector recorded two false navigation-loop events, but the report made **no abandonment diagnosis**; these events are explicitly rejected as contaminated review evidence. After excluding dialog transitions and remembering information-only dialogs, a fresh local-Qwen attempt reached **Start checkout** in six model decisions, observed one dead interaction, and abandoned at **55 → 0** with linked terminal evidence. Model inference took **75.186 s**, while application actions took **5.312 s**. This is one repaired success, not a population completion rate.
 
 **Protection/report review:** Ten Phase 4 terminal run reports, one protected-control probe, and one information-dialog probe were retained, including unfavorable attempts. All ten initialized sentinel reports had zero requests and unchanged state; the separate preflight rejection started no sentinel or browser and made zero target requests. All report exports, visual references, friction references, and diagnosis evidence links resolved. Dead/healthy and repaired-Qwen terminal screenshots were visually reviewed; the dead runs stayed at the product control and the healthy run reached Order review without placing an order. Report review was offline and launched no new browser/model journey. No real website, generated Python, or vision model was used.
 
@@ -607,9 +607,9 @@ Run seeded-defect and healthy-control scenarios in one batch. Include model time
 
 **Exit gate:** Passed for the owned-fixture cognitive scope with deterministic observed-control action selection and one repaired real-Qwen defect journey. A defective checkout produced evidence-linked synthetic abandonment; the matched healthy journey completed. Infrastructure failures remained separate. Real-Qwen robustness across repeated seeds and human calibration are not established by this gate.
 
-## Phase 5 â€” Add cohorts, persistence, and recovery
+## Phase 5 — Add cohorts, persistence, and recovery
 
-**Execution checkpoint â€” September 30, 2026 (owned-fixture gate passed):** DuckDB 1.5.5 and OpenTelemetry SDK 1.45.0 are pinned. Implemented a one/two-worker asyncio cohort coordinator with a six-session cap, isolated session UUID/seed/artifact/browser/runtime state, owned-fixture-only run-control API, cohort-wide rate/concurrency/health stops, one-writer DuckDB projections, fsynced JSONL replay, cancellation and interruption recovery, explicit linked retry attempts, local OTel JSONL spans, and automatically exported partial aggregate reports with individual session links. The default is one worker. Updated JSON schemas, guide, offline reviewer, and manual GitHub Actions gate are present. The [remote acceptance run](https://github.com/TEE123754/Agentic/actions/runs/36711155345) passed **57/57** checks, including two real browsers, one cancelled session, journal replay, and selected earlier-phase regressions; no browser gate used the laptop. The saved factual report records two executed sessions (one completed, one cancelled), 13 bounded fixture requests, zero sentinel requests, and unchanged sentinel data. After that batch, targeted local checks passed for interrupted-session retry, partial-report export recovery, Phase 1 report regressions (**16/16**), and health-stop contamination (**1/1**); the full remote batch was not repeated. [Validation and evidence review](docs/phase5-validation.md). **Remaining:** No required Phase 5 work remains for the bundled fixture. Phase 6 must add calibrated cross-session UX findings, heatmaps, and remediation synthesis; two-worker live-Qwen throughput and external replicas remain unvalidated and are not claimed by this gate.
+**Execution checkpoint — September 30, 2026 (owned-fixture gate passed):** DuckDB 1.5.5 and OpenTelemetry SDK 1.45.0 are pinned. Implemented a one/two-worker asyncio cohort coordinator with a six-session cap, isolated session UUID/seed/artifact/browser/runtime state, owned-fixture-only run-control API, cohort-wide rate/concurrency/health stops, one-writer DuckDB projections, fsynced JSONL replay, cancellation and interruption recovery, explicit linked retry attempts, local OTel JSONL spans, and automatically exported partial aggregate reports with individual session links. The default is one worker. Updated JSON schemas, guide, offline reviewer, and manual GitHub Actions gate are present. The [remote acceptance run](https://github.com/TEE123754/Agentic/actions/runs/36711155345) passed **57/57** checks, including two real browsers, one cancelled session, journal replay, and selected earlier-phase regressions; no browser gate used the laptop. The saved factual report records two executed sessions (one completed, one cancelled), 13 bounded fixture requests, zero sentinel requests, and unchanged sentinel data. After that batch, targeted local checks passed for interrupted-session retry, partial-report export recovery, Phase 1 report regressions (**16/16**), and health-stop contamination (**1/1**); the full remote batch was not repeated. [Validation and evidence review](docs/phase5-validation.md). **Remaining:** No required Phase 5 work remains for the bundled fixture. Phase 6 must add calibrated cross-session UX findings, heatmaps, and remediation synthesis; two-worker live-Qwen throughput and external replicas remain unvalidated and are not claimed by this gate.
 
 **Goal:** Run multiple independent users without state leakage or lost records.
 
@@ -646,11 +646,11 @@ Run a small two-worker cohort, cancel one session, and interrupt/recover persist
 
 **Exit gate:** Passed for the bundled fixture: a two-browser cohort completed with independent state, durable evidence, accurate cancellation and interruption classification, explicit fresh retry attempts, and an offline-reviewed partial report. This is not a calibrated UX audit.
 
-## Phase 6 â€” Generate audits and recommendations
+## Phase 6 — Generate audits and recommendations
 
-**Completed â€” September 30, 2026:** Added Phase 6 report contracts for verified finding context, exclusions, milestone funnels, trajectory indexing, and compatible click heatmaps. Implemented an offline session/evidence validator, deterministic grouped findings and remediation templates, coordinate-mapped SVG/JSON heatmaps, immutable revision-2 export with revision-1 fallback, restart recovery, local human finding dispositions as later revisions, and latest/revision report API routes. The synthesis path reads only saved reports, observations, screenshots, manifests, and DuckDB rows; no browser or target request is used for report review. Added the Phase 6 acceptance suite, offline evidence reviewer, manual private GitHub Actions gate, [operator guide](docs/phase6-audits.md), and exported 37 contract schemas. Ruff passed. The [single post-build remote gate](https://github.com/TEE123754/Agentic/actions/runs/36718564621) passed **39/39** checks in 43.85 seconds; no passing browser case was repeated. Its downloaded two-browser defect audit recorded 2/2 eligible synthetic abandonments, one evidence-backed Start checkout finding, one screenshot-backed heatmap, six trajectory entries, zero exclusions, zero sentinel requests, and unchanged sentinel data. The screenshot, report, evidence refs, denominators, and loopback-only manifest were reviewed offline. Unsupported claims are excluded; synthesis faults retain the downloadable partial revision 1. [Detailed validation](docs/phase6-validation.md) and [saved audit](artifacts/phase6/remote-36718564621/17d53cfb-59c5-4379-8a32-2ac19bd45540/reports/1dd8e02b-8901-488b-8c63-40484990c1f9/revisions/2/report.html).
+**Completed — September 30, 2026:** Added Phase 6 report contracts for verified finding context, exclusions, milestone funnels, trajectory indexing, and compatible click heatmaps. Implemented an offline session/evidence validator, deterministic grouped findings and remediation templates, coordinate-mapped SVG/JSON heatmaps, immutable revision-2 export with revision-1 fallback, restart recovery, local human finding dispositions as later revisions, and latest/revision report API routes. The synthesis path reads only saved reports, observations, screenshots, manifests, and DuckDB rows; no browser or target request is used for report review. Added the Phase 6 acceptance suite, offline evidence reviewer, manual private GitHub Actions gate, [operator guide](docs/phase6-audits.md), and exported 37 contract schemas. Ruff passed. The [single post-build remote gate](https://github.com/TEE123754/Agentic/actions/runs/36718564621) passed **39/39** checks in 43.85 seconds; no passing browser case was repeated. Its downloaded two-browser defect audit recorded 2/2 eligible synthetic abandonments, one evidence-backed Start checkout finding, one screenshot-backed heatmap, six trajectory entries, zero exclusions, zero sentinel requests, and unchanged sentinel data. The screenshot, report, evidence refs, denominators, and loopback-only manifest were reviewed offline. Unsupported claims are excluded; synthesis faults retain the downloadable partial revision 1. [Detailed validation](docs/phase6-validation.md) and [saved audit](artifacts/phase6/remote-36718564621/17d53cfb-59c5-4379-8a32-2ac19bd45540/reports/1dd8e02b-8901-488b-8c63-40484990c1f9/revisions/2/report.html).
 
-**Follow-up completed â€” September 30, 2026:** A second source review found three report-fidelity gaps, now closed: readable HTML/Markdown link each finding's copied evidence and the heatmap JSON data directly; capture PNG dimensions are checked against the saved coordinate map and differing pixel-density screenshots form separate heatmap groups; any excluded click makes the audit partial with an explanation. Export now fails closed when a published finding/heatmap asset is absent, preserving revision 1 until the offline retry succeeds. The [affected-only remote batch](https://github.com/TEE123754/Agentic/actions/runs/36722154919) passed **14/14** Phase 6 checks in 17.47 seconds after construction, including one affected two-browser owned-fixture report flow; passing Phase 1/4/5 suites were not repeated. Its [saved revision-2 audit](artifacts/phase6/remote-36722154919/7fba3ea7-10d6-40c2-9c43-89e827e3e762/reports/69c52003-b811-4c93-9dce-62cb6ce4e14e/revisions/2/report.html) passed the stricter offline reviewer: 2/2 eligible synthetic abandonments, one finding, one heatmap, zero exclusions, zero sentinel requests, unchanged sentinel data, and only the loopback fixture in the manifest. The masked screenshot was inspected. [Follow-up validation details](docs/phase6-validation.md).
+**Follow-up completed — September 30, 2026:** A second source review found three report-fidelity gaps, now closed: readable HTML/Markdown link each finding's copied evidence and the heatmap JSON data directly; capture PNG dimensions are checked against the saved coordinate map and differing pixel-density screenshots form separate heatmap groups; any excluded click makes the audit partial with an explanation. Export now fails closed when a published finding/heatmap asset is absent, preserving revision 1 until the offline retry succeeds. The [affected-only remote batch](https://github.com/TEE123754/Agentic/actions/runs/36722154919) passed **14/14** Phase 6 checks in 17.47 seconds after construction, including one affected two-browser owned-fixture report flow; passing Phase 1/4/5 suites were not repeated. Its [saved revision-2 audit](artifacts/phase6/remote-36722154919/7fba3ea7-10d6-40c2-9c43-89e827e3e762/reports/69c52003-b811-4c93-9dce-62cb6ce4e14e/revisions/2/report.html) passed the stricter offline reviewer: 2/2 eligible synthetic abandonments, one finding, one heatmap, zero exclusions, zero sentinel requests, unchanged sentinel data, and only the loopback fixture in the manifest. The masked screenshot was inspected. [Follow-up validation details](docs/phase6-validation.md).
 
 **Goal:** Automatically produce the detailed report required above after every run and its evidence review.
 
@@ -687,9 +687,9 @@ Generate detailed reports from completed, abandoned, cancelled, blocked, and int
 
 **Exit gate:** Passed for the owned-fixture scope, including the follow-up report-fidelity checks. Every terminal run automatically has a detailed or explicitly partial report; every published finding is supported by stored evidence and includes an actionable remediation and verification step. Report review has no interaction with the tested website or replica. **Phase 6 remaining:** no required work in the authorized owned-fixture scope. External staging support requires an independently validated no-impact replica boundary; calibrated human churn claims and the dashboard belong to later phases.
 
-## Phase 7 â€” Build the local command center
+## Phase 7 — Build the local command center
 
-**Execution checkpoint â€” September 30, 2026 (COMPLETE for the owned-fixture dashboard gate):** Added the optional local Streamlit/Plotly command center, loopback-only API client, bounded owned-fixture setup and live cancellation, read-only progress/run discovery, stored trajectory screenshots, compatible heatmaps, findings and human review, and full JSON/Markdown/HTML downloads. The FastAPI evidence routes serve only saved assets referenced by a session or published report. Added the operator guide, a browser/API acceptance walkthrough, an offline evidence reviewer, and a manual private GitHub Actions gate. Ruff formatting and lint pass for the changed Python. The [initial remote batch](https://github.com/TEE123754/Agentic/actions/runs/36727805142) passed the existing Phase 6 review regression but failed a visibility assertion that selected text inside a hidden Streamlit tab. An [affected-only rerun](https://github.com/TEE123754/Agentic/actions/runs/36728402840) exposed the same locator ambiguity after opening the tab. The check now targets the visible review control. The [final affected-only gate](https://github.com/TEE123754/Agentic/actions/runs/36729027247) passed **1/1** complete dashboard walkthrough in 21.98 seconds. Its offline reviewer confirmed a revision-4 ready report with one evidence-backed finding, one compatible heatmap, a saved screenshot, a human confirmation, zero sentinel requests, and unchanged sentinel data. The screenshot was visually inspected. The API review check also proved report review made no target socket connection. No Phase 7 owned-fixture gate work remains. The UI cannot accept an external staging origin; arbitrary staging replicas and calibrated human-churn claims remain future scope. [Validation record](docs/phase7-validation.md), [operator guide](docs/phase7-dashboard.md), and [saved remote review](artifacts/phase7/remote-36729027247/phase7-owned-fixture-dashboard-evidence/validation-review.md).
+**Execution checkpoint — September 30, 2026 (COMPLETE for the owned-fixture dashboard gate):** Added the optional local Streamlit/Plotly command center, loopback-only API client, bounded owned-fixture setup and live cancellation, read-only progress/run discovery, stored trajectory screenshots, compatible heatmaps, findings and human review, and full JSON/Markdown/HTML downloads. The FastAPI evidence routes serve only saved assets referenced by a session or published report. Added the operator guide, a browser/API acceptance walkthrough, an offline evidence reviewer, and a manual private GitHub Actions gate. Ruff formatting and lint pass for the changed Python. The [initial remote batch](https://github.com/TEE123754/Agentic/actions/runs/36727805142) passed the existing Phase 6 review regression but failed a visibility assertion that selected text inside a hidden Streamlit tab. An [affected-only rerun](https://github.com/TEE123754/Agentic/actions/runs/36728402840) exposed the same locator ambiguity after opening the tab. The check now targets the visible review control. The [final affected-only gate](https://github.com/TEE123754/Agentic/actions/runs/36729027247) passed **1/1** complete dashboard walkthrough in 21.98 seconds. Its offline reviewer confirmed a revision-4 ready report with one evidence-backed finding, one compatible heatmap, a saved screenshot, a human confirmation, zero sentinel requests, and unchanged sentinel data. The screenshot was visually inspected. The API review check also proved report review made no target socket connection. No Phase 7 owned-fixture gate work remains. The UI cannot accept an external staging origin; arbitrary staging replicas and calibrated human-churn claims remain future scope. [Validation record](docs/phase7-validation.md), [operator guide](docs/phase7-dashboard.md), and [saved remote review](artifacts/phase7/remote-36729027247/phase7-owned-fixture-dashboard-evidence/validation-review.md).
 
 **Goal:** Let a product team configure runs and inspect findings without using development tools.
 
@@ -723,9 +723,9 @@ Perform one complete dashboard acceptance walkthrough after all views are implem
 
 **Exit gate:** A reviewer can run a fixture audit and understand the cause of a finding entirely through the dashboard.
 
-## Phase 8 â€” Evaluate quality and implement comparisons
+## Phase 8 — Evaluate quality and implement comparisons
 
-**Execution checkpoint â€” September 30, 2026 (COMPLETE for the frozen owned-fixture evaluation gate):** Added a SHA-pinned, split-aware Mind2Web JSON loader and offline candidate/action scorer; a frozen two-seed healthy/defect fixture batch with order reversed between pairs; saved-report matching and comparison with raw counts, exclusions, findings/confidence, evidence completeness, and measured protection; a FastAPI comparison route and Streamlit tab; a human-review rubric; and an ephemeral GitHub Actions gate with offline evidence review. The [single post-build remote gate](https://github.com/TEE123754/Agentic/actions/runs/36734421811) passed **3/3** checks in 66.40 seconds (two Phase 8 checks and one affected Phase 7 regression). Four ready fixture reports produced two matched defect â†’ healthy comparisons; each candidate completed one more checkout-review journey and resolved the seeded finding. Healthy completion, high-severity precision, seeded-blocker detection, and finding-reference validity were each 100% on this small deterministic batch. The sentinel received zero requests and its data was unchanged. The comparison dashboard screenshot and offline review were inspected. The pinned Mind2Web training-shard diagnostic covered nine tasks and 49 steps; its deliberately untuned lexical reference scored 3/46 grounded element choices, 42/46 operations, 3/49 joint steps, and 0/9 full tasks. **Remaining beyond this gate:** held-out Mind2Web scoring of the actual browser planner, broader seeds/personas and human review, arbitrary staging replicas with proven no-impact isolation, and calibrated human-churn claims. No required work remains for the declared fixture gate. [Validation record](docs/phase8-validation.md), [operator guide](docs/phase8-evaluation.md), [saved remote review](artifacts/phase8/remote-36734421811/phase8-owned-fixture-evaluation-evidence/validation-review.md).
+**Execution checkpoint — September 30, 2026 (COMPLETE for the frozen owned-fixture evaluation gate):** Added a SHA-pinned, split-aware Mind2Web JSON loader and offline candidate/action scorer; a frozen two-seed healthy/defect fixture batch with order reversed between pairs; saved-report matching and comparison with raw counts, exclusions, findings/confidence, evidence completeness, and measured protection; a FastAPI comparison route and Streamlit tab; a human-review rubric; and an ephemeral GitHub Actions gate with offline evidence review. The [single post-build remote gate](https://github.com/TEE123754/Agentic/actions/runs/36734421811) passed **3/3** checks in 66.40 seconds (two Phase 8 checks and one affected Phase 7 regression). Four ready fixture reports produced two matched defect → healthy comparisons; each candidate completed one more checkout-review journey and resolved the seeded finding. Healthy completion, high-severity precision, seeded-blocker detection, and finding-reference validity were each 100% on this small deterministic batch. The sentinel received zero requests and its data was unchanged. The comparison dashboard screenshot and offline review were inspected. The pinned Mind2Web training-shard diagnostic covered nine tasks and 49 steps; its deliberately untuned lexical reference scored 3/46 grounded element choices, 42/46 operations, 3/49 joint steps, and 0/9 full tasks. **Remaining beyond this gate:** held-out Mind2Web scoring of the actual browser planner, broader seeds/personas and human review, arbitrary staging replicas with proven no-impact isolation, and calibrated human-churn claims. No required work remains for the declared fixture gate. [Validation record](docs/phase8-validation.md), [operator guide](docs/phase8-evaluation.md), [saved remote review](artifacts/phase8/remote-36734421811/phase8-owned-fixture-evaluation-evidence/validation-review.md).
 
 **Goal:** Measure navigation competence, detector quality, and repeatability separately.
 
@@ -759,9 +759,9 @@ Run one frozen benchmark batch and one matched broken/fixed fixture comparison. 
 
 **Exit gate:** Quality is measured, limitations are explicit, and the fixed fixture shows a supported improvement.
 
-## Phase 9 â€” Add sharing and optional free API acceleration
+## Phase 9 — Add sharing and optional free API acceleration
 
-**Execution checkpoint - October 1, 2026 (built; gate pending):** Built static CLI export, allowlisted bounded JSON, credential/URL/email redaction, embedded PNGs, offline filters/playback/heatmaps/report view and synthetic sample. Added quota guard, disabled configuration and mocked guard acceptance. Actual cloud transport/enforcement moves to Phase 10. **Left:** single remote batch, artifact/screenshot inspection, affected-only repairs and checklist update. No Phase 9 tests run yet.
+**Execution checkpoint - October 1, 2026 (built; gate pending):** Built static CLI export, allowlisted bounded JSON, credential/URL/email redaction, embedded PNGs, offline filters/playback/heatmaps/report view and synthetic sample. Added quota guard, disabled configuration and mocked guard acceptance. Actual cloud transport/enforcement moves to Phase 10. **Left:** single remote batch, artifact/screenshot inspection, affected-only repairs and checklist update. Initial remote batch: 1 quota check passed; offline walkthrough failed on test-only relative file URI. Fixed path resolution; rerun only affected walkthrough.
 
 **Goal:** Share audits without requiring cloud browser infrastructure.
 
@@ -811,7 +811,7 @@ One disposable-runner clean-install batch after construction: package/CLI/doctor
 
 **Exit gate:** Clean documented installation, working BYOK enforcement and local evidence ownership, accurate public claims, and no product billing escalation.
 
-## Phase 11 â€” Validate and package the release
+## Phase 11 — Validate and package the release
 
 **Goal:** Deliver a repeatable installation and complete pilot workflow.
 
@@ -858,7 +858,7 @@ If a release check fails, fix the issue and rerun the failed checks plus directl
 
 ## 6. First milestone to prioritize
 
-Complete Phases 0â€“4 before expanding the dashboard or cohort size.
+Complete Phases 0–4 before expanding the dashboard or cohort size.
 
 The milestone is a single agent that attempts checkout, encounters a deliberately unhelpful validation message, records the failed interactions, loses patience according to explicit rules, and saves a defensible abandonment explanation. The same goal should succeed after the fixture is fixed.
 
@@ -866,17 +866,17 @@ This proves the core product behavior before investment in larger swarms, additi
 
 ## 7. Progress checklist
 
-- [x] Phase 0 â€” Feasibility and integration boundaries (16/16 fixture-only checks passed; see checkpoint)
-- [x] Phase 1 â€” Foundation and fixtures (78 distinct passing checks; see execution checkpoint)
-- [x] Phase 2 â€” Browser execution (owned-fixture gate; 83 distinct passing checks)
-- [x] Phase 3 â€” Autonomous persona (typed-tools fixture scope: 100 distinct checks; remote CodeAgent: 14/14 real boundary checks and one reviewed completed journey)
-- [x] Phase 4 â€” Friction and abandonment (owned-fixture cognitive gate; 109 distinct checks)
-- [x] Phase 5 â€” Cohorts and persistence (57 remote checks; targeted 16 + 1 post-batch checks)
-- [x] Phase 6 â€” Audit generation (owned-fixture gate: 39/39 remote checks; 14/14 affected follow-up checks and offline report review)
-- [x] Phase 7 â€” Local dashboard (owned-fixture gate: initial Phase 6 regression passed; final affected-only dashboard walkthrough 1/1 passed with reviewed report and offline screenshot)
-- [x] Phase 8 â€” Evaluation and comparisons (frozen owned-fixture gate: 3/3 remote checks; four reports, two matched comparisons, pinned Mind2Web training-shard diagnostic)
-- [ ] Phase 9 â€” Sharing and optional acceleration
+- [x] Phase 0 — Feasibility and integration boundaries (16/16 fixture-only checks passed; see checkpoint)
+- [x] Phase 1 — Foundation and fixtures (78 distinct passing checks; see execution checkpoint)
+- [x] Phase 2 — Browser execution (owned-fixture gate; 83 distinct passing checks)
+- [x] Phase 3 — Autonomous persona (typed-tools fixture scope: 100 distinct checks; remote CodeAgent: 14/14 real boundary checks and one reviewed completed journey)
+- [x] Phase 4 — Friction and abandonment (owned-fixture cognitive gate; 109 distinct checks)
+- [x] Phase 5 — Cohorts and persistence (57 remote checks; targeted 16 + 1 post-batch checks)
+- [x] Phase 6 — Audit generation (owned-fixture gate: 39/39 remote checks; 14/14 affected follow-up checks and offline report review)
+- [x] Phase 7 — Local dashboard (owned-fixture gate: initial Phase 6 regression passed; final affected-only dashboard walkthrough 1/1 passed with reviewed report and offline screenshot)
+- [x] Phase 8 — Evaluation and comparisons (frozen owned-fixture gate: 3/3 remote checks; four reports, two matched comparisons, pinned Mind2Web training-shard diagnostic)
+- [ ] Phase 9 — Sharing and optional acceleration
 - [ ] Phase 10 - Open-source local CLI and BYOK
-- [ ] Phase 11 â€” Release validation
+- [ ] Phase 11 — Release validation
 
 Update a checkbox only after completing its phase and its consolidated boundary checks.

@@ -2,6 +2,11 @@ name: Phase 9 offline sharing gate
 
 on:
   workflow_dispatch:
+    inputs:
+      affected_only:
+        type: boolean
+        default: false
+        description: Rerun only offline walkthrough after an affected fix
 
 permissions:
   contents: read
@@ -33,7 +38,12 @@ jobs:
           uv sync --locked --group dev
 
       - name: One post-build offline viewer and sanitization batch
-        run: uv run pytest -q tests/phase_09
+        run: |
+          if [ "${{ inputs.affected_only }}" = "true" ]; then
+            uv run pytest -q tests/phase_09/test_sharing.py::test_phase9_offline_export_import_and_sanitization
+          else
+            uv run pytest -q tests/phase_09
+          fi
 
       - name: Review saved synthetic sharing evidence offline
         if: always()
