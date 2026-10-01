@@ -458,6 +458,14 @@ class AuditEngine:
         eligible = [session for session in sessions if session.eligible]
         summaries = {str(item.session_id): item for item in base.session_summaries}
         result = []
+        if "journeys" not in self.manifest:
+            self.exclusions.append(
+                excluded(
+                    "session",
+                    "Recovered manifest has no journey definitions; milestone synthesis unavailable.",
+                )
+            )
+            return result
         for journey_id, journey in self.manifest["journeys"].items():
             same = [session for session in eligible if session.row["journey_id"] == journey_id]
             for criterion in journey["completion"]:

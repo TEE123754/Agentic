@@ -37,10 +37,14 @@ jobs:
         with:
           python-version: '3.12'
       - name: Locked clean installation and explicit local resource setup
+        env:
+          AFFECTED: ${{ inputs.affected }}
         run: |
           python -m pip install uv==0.11.18
           uv sync --locked --group dev --extra dashboard --no-install-project
-          .venv/bin/python scripts/setup_resources.py --download
+          if [[ "$AFFECTED" == all || "$AFFECTED" == *test_healthy_seeded* || "$AFFECTED" == tests/phase_11/* ]]; then
+            .venv/bin/python scripts/setup_resources.py --workspace "$PWD" --download
+          fi
           uv build
           uv pip install --python .venv/bin/python --no-deps dist/*.whl
       - name: One consolidated release window
@@ -52,6 +56,9 @@ jobs:
             .venv/bin/python -m pytest -q --basetemp=artifacts/phase11/pytest-temp --junitxml=artifacts/phase11/validation/regression.xml
             .venv/bin/python -I scripts/accept_phase10_install.py
           elif [ "$AFFECTED" = install ]; then
+            .venv/bin/python -I scripts/accept_phase10_install.py
+          elif [ "$AFFECTED" = recovery ]; then
+            .venv/bin/python -m pytest -q tests/phase_05/test_cohorts.py tests/phase_06 --basetemp=artifacts/phase11/affected-temp --junitxml=artifacts/phase11/validation/affected.xml
             .venv/bin/python -I scripts/accept_phase10_install.py
           else
             .venv/bin/python -m pytest -q "$AFFECTED" --basetemp=artifacts/phase11/affected-temp --junitxml=artifacts/phase11/validation/affected.xml
@@ -73,5 +80,6 @@ jobs:
             artifacts/phase11/pytest-temp/
             artifacts/phase11/affected-temp/
             artifacts/phase3/healthy-*.json
+            artifacts/phase3/runs/
           retention-days: 14
           if-no-files-found: warn
