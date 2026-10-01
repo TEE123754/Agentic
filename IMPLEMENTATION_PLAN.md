@@ -761,7 +761,7 @@ Run one frozen benchmark batch and one matched broken/fixed fixture comparison. 
 
 ## Phase 9 — Add sharing and optional free API acceleration
 
-**Execution checkpoint - October 1, 2026 (built; gate pending):** Built static CLI export, allowlisted bounded JSON, credential/URL/email redaction, embedded PNGs, offline filters/playback/heatmaps/report view and synthetic sample. Added quota guard, disabled configuration and mocked guard acceptance. Actual cloud transport/enforcement moves to Phase 10. **Left:** single remote batch, artifact/screenshot inspection, affected-only repairs and checklist update. Initial remote batch: 1 quota check passed; offline walkthrough failed on test-only relative file URI. Fixed path resolution; rerun only affected walkthrough.
+**Execution checkpoint - October 1, 2026 (built; gate pending):** Built static CLI export, allowlisted bounded JSON, credential/URL/email redaction, embedded PNGs, offline filters/playback/heatmaps/report view and synthetic sample. Added quota guard, disabled configuration and mocked guard acceptance. Actual cloud transport/enforcement moves to Phase 10. **Left:** single remote batch, artifact/screenshot inspection, affected-only repairs and checklist update. Initial remote batch: 1 quota check passed; offline walkthrough failed on test-only relative file URI. Fixed path resolution. Affected rerun passed viewer/import/redaction and found mobile landing overflow from grid minimum sizing. Fixed responsive sizing; rerun only affected walkthrough.
 
 **Goal:** Share audits without requiring cloud browser infrastructure.
 
