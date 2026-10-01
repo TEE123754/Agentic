@@ -1,0 +1,13 @@
+# Release candidate license and pin review
+
+Reviewed October 2, 2026. This is a distribution-scope inventory, not a blanket legal clearance for unrelated integrations or captured website content.
+
+Project code is MIT. The wheel and source archive include project files, synthetic fixtures, configuration, documentation and the unchanged axe-core 4.13.0 bundle. Its MPL-2.0 license and third-party notices are retained with corresponding [upstream source](https://github.com/dequelabs/axe-core/tree/v4.13.0). The [versioned license](https://github.com/dequelabs/axe-core/blob/v4.13.0/LICENSE) was reviewed. No dependency binaries, browser executables, model weights, datasets, environment files or private run evidence are redistributed in the package.
+
+The optional [llama.cpp b11247 license](https://raw.githubusercontent.com/ggml-org/llama.cpp/b11247/LICENSE) is MIT. The [pinned Qwen3-4B-GGUF license](https://huggingface.co/Qwen/Qwen3-4B-GGUF/blob/bc640142c66e1fdd12af0bd68f40445458f3869b/LICENSE) is Apache-2.0. Both are separately downloaded at operator request; archive/weight digest and model revision are pinned in configs/resource-manifest.json. Do not bundle their downloads without retaining their original notices. Optional unvalidated vision assets are not part of this release candidate.
+
+`uv.lock` freezes Python resolution; Hatchling 1.27.0 is the pinned build backend and uv 0.11.18 is used in release validation. Archive-only wheel installation uses dependency constraints unless supplied with the source lock. Browser builds may update separately; runtime reports record actual versions. Read THIRD_PARTY_NOTICES.md for direct dependency licensing and optional dataset attribution.
+
+The existing local inventory contained 126 distributions. Ten had blank metadata license fields. Their installed distribution license files were inspected: browser-use 0.13.10, bubus 1.5.6, markdown-it-py 4.2.0 (including its upstream notice), markdownify 1.2.2, mdurl 0.1.2 and wcwidth 0.9.1 contain MIT text; smolagents 1.26.0 contains Apache-2.0 text; colorama 0.4.6, Jinja2 3.1.6 and prompt_toolkit 3.0.53 contain BSD-style terms. Blank metadata alone is not treated as a missing license. Original notices remain installed with dependencies; project MIT does not replace them.
+
+The clean Linux runner exports its actual installed metadata as `release-dependencies.json`, including optional dashboard distributions, alongside archive SHA256SUMS. Compare that inventory with uv.lock when reviewing the final gate. Platform-dependent transitive distributions can differ from the earlier Windows inventory. License review does not imply a security vulnerability audit, human-behavior calibration or permission to redistribute arbitrary website content.
