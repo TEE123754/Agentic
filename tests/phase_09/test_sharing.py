@@ -56,6 +56,13 @@ async def _inspect_offline(viewer, private_bundle, bad_bundle, screenshot):
             assert await page.locator("#trajectory img").count() >= 1
             await page.get_by_role("button", name="Heatmaps").click()
             assert await page.locator("#heatmap .dot").count() >= 1
+            await page.locator("#heatmap img").evaluate("image => image.decode()")
+            assert await page.locator("#heatmap .heat-stage").evaluate(
+                "stage => { const s=stage.getBoundingClientRect(); "
+                "const i=stage.querySelector('img').getBoundingClientRect(); "
+                "return Math.abs(s.height-i.height)<=3 && Math.abs(s.width-i.width)<=3; }"
+            )
+
             await page.locator("#import-file").set_input_files(str(private_bundle))
             await page.get_by_text("Opened private local bundle", exact=False).wait_for()
             assert await page.evaluate("window.evil") is None
