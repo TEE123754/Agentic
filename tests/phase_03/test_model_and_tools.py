@@ -464,3 +464,18 @@ def test_multiple_tool_calls_cannot_mutate_browser():
         assert not broker.steps
 
     asyncio.run(run())
+
+
+def test_local_exploration_prefers_grounded_controls_without_scripting_actions():
+    from frictionlab.planning.choices import available_choices
+
+    state = model_state()
+    choices = available_choices(state)
+    assert "click:7" in choices and "wait:1000" in choices
+    assert not any(choice.startswith("scroll:") for choice in choices)
+    state["input_mode"] = "keyboard"
+    choices = available_choices(state)
+    assert "press_key:Tab" in choices and "press_key:Enter" not in choices
+    assert not any(choice.startswith(("click:", "scroll:")) for choice in choices)
+    state.update(input_mode="touch", candidates=[])
+    assert "scroll:down:600" in available_choices(state)
