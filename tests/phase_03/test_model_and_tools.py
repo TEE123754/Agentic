@@ -512,3 +512,37 @@ def test_information_memory_applies_without_cognition_but_only_after_opening(kin
     assert not memory.inspected_information_controls
     memory.remember_interaction(before, after, action, informational_dialog=True)
     assert memory.inspected_information_controls == {"Details"}
+
+
+def test_filled_input_choices_prevent_idempotent_typing_without_selecting_navigation():
+    from frictionlab.planning.choices import available_choices
+
+    state = model_state()
+    state["candidates"] = [
+        {"id": 7, "role": "textbox", "name": "Email", "focused": True},
+        {"id": 8, "role": "button", "name": "Continue", "focused": False},
+    ]
+    assert "type_text:7:synthetic_email" in available_choices(state)
+    state["candidates"][0]["filled_text_reference"] = "invalid_email"
+    choices = available_choices(state)
+    assert "type_text:7:synthetic_email" in choices
+    assert "type_text:7:invalid_email" not in choices
+    state["candidates"][0]["filled_text_reference"] = "synthetic_email"
+    for mode in ("mouse", "keyboard"):
+        state["input_mode"] = mode
+        choices = available_choices(state)
+        assert not any(key.startswith("type_text:") for key in choices)
+        assert ("press_key:Tab" if mode == "keyboard" else "click:8") in choices
+    state["candidates"][0].pop("filled_text_reference")
+    assert "type_text:7:synthetic_email" in available_choices(state)
+
+
+def test_input_reference_description_never_returns_private_or_unknown_values():
+    from frictionlab.planning.memory import synthetic_reference
+
+    references = {"synthetic_email": "generated@fixture.invalid", "invalid_email": "test.user",
+                  "private_password": "sensitive"}
+    assert synthetic_reference("generated@fixture.invalid", references) == "synthetic_email"
+    assert synthetic_reference("test.user", references) == "invalid_email"
+    assert synthetic_reference("sensitive", references) is None
+    assert synthetic_reference("unknown@example.invalid", references) is None

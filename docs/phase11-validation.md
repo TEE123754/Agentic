@@ -48,3 +48,12 @@ The existing [complete synthetic audit](../examples/phase9-static/index.html) an
 - [ ] Rebuild final archives with reviewed gate records and examples; check off Phase 11 only after its remaining acceptance succeeds.
 
 Live BYOK behavior, clean Windows/macOS archive acceptance, public GitHub/PyPI/release/site publication, arbitrary replicas, optional vision/Phoenix and human churn calibration remain outside this gate. Faster eligible BYOK inference is an operator option using an operator-owned free account/key, not a tested substitute for the failed local-model checks. Do not paste keys into chat or issues.
+
+## Local planner follow-up checkpoints
+
+- v1 [36903630720](https://github.com/TEE123754/Agentic/actions/runs/36903630720): 118 passed/4 failed; compact output alone did not resolve CPU prompt processing.
+- v2 [36906806192](https://github.com/TEE123754/Agentic/actions/runs/36906806192): 48 passed/3 failed; enterprise delivery recovered, but agents repeatedly scrolled despite available controls.
+- v3 [36908753768](https://github.com/TEE123754/Agentic/actions/runs/36908753768): 49 passed/3 failed; mobile defect abandonment was grounded, non-cognitive mobile reopened information, keyboard reached checkout but timed out.
+- v4 [36911723397](https://github.com/TEE123754/Agentic/actions/runs/36911723397): **126 passed/1 failed in 1097.67 seconds**. All three healthy seeded journeys passed using actual pinned local inference. Mobile took 8 actions/166.38 inference seconds; keyboard took 23 actions/209.79 seconds; enterprise delivery took 1 action/32.05 seconds. These are observed samples, not latency guarantees. Zero sentinel requests and unchanged data. The only failure required ready status from an explicitly partial defect audit with excluded planner failures.
+
+The corrected pilot requires valid blocker/abandonment evidence, accurate eligible counts and exclusion notices for a partial baseline; the healthy candidate still requires ready status, no missing evidence and 3/3 completions. No infrastructure fault becomes UX churn. [Remaining targeted pilot](https://github.com/TEE123754/Agentic/actions/runs/36914366167) is running. Current evidence union: 261 passing distinct cases out of 262; only the pilot remains. The three original unresolved-model items above are historical, superseded by this checkpoint. Final archive acceptance remains pending.
