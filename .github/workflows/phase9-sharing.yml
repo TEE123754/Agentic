@@ -1,0 +1,49 @@
+name: Phase 9 offline sharing gate
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: phase9-sharing
+  cancel-in-progress: false
+
+jobs:
+  sharing:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    env:
+      PYTHONPATH: .
+      FRICTIONLAB_BROWSER_PATH: /usr/bin/google-chrome
+      FRICTIONLAB_PHASE9_EVIDENCE: artifacts/phase9/validation
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install locked free/open-source dependencies
+        run: |
+          python -m pip install uv==0.11.18
+          uv sync --locked --group dev
+
+      - name: One post-build offline viewer and sanitization batch
+        run: uv run pytest -q tests/phase_09
+
+      - name: Review saved synthetic sharing evidence offline
+        if: always()
+        run: uv run python scripts/review_phase9.py
+
+      - name: Upload synthetic sharing evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: phase9-offline-sharing-evidence
+          path: artifacts/phase9/validation/
+          if-no-files-found: warn
+          retention-days: 7

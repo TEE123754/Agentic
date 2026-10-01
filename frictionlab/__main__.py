@@ -22,6 +22,13 @@ def main(argv=None):
     serve.add_argument("--port", type=int, default=8765)
     dashboard = commands.add_parser("dashboard", help="Open the local Streamlit command center")
     dashboard.add_argument("--port", type=int, default=8501)
+    static_export = commands.add_parser(
+        "export-static", help="Export a saved audit as a self-contained offline viewer"
+    )
+    static_export.add_argument("run_id")
+    static_export.add_argument("--root", type=Path, default=ROOT / "artifacts" / "phase5")
+    static_export.add_argument("--output", type=Path, required=True)
+    static_export.add_argument("--public-fixture", action="store_true")
     validate = commands.add_parser("validate", help="Review JSON configuration offline")
     validate.add_argument("path", type=Path)
     browser_demo = commands.add_parser(
@@ -76,6 +83,24 @@ def main(argv=None):
             "--mode", choices=("typed_tools", "isolated_code"), default="typed_tools"
         )
     args = parser.parse_args(argv)
+    if args.command == "export-static":
+        from frictionlab.sharing.bundle import export_bundle
+
+        try:
+            destination = export_bundle(
+                args.root, args.run_id, args.output, public_fixture=args.public_fixture
+            )
+        except (ValueError, FileExistsError, OSError) as exc:
+            parser.error(str(exc))
+        print(
+            json.dumps(
+                {
+                    "viewer": str(destination / "index.html"),
+                    "bundle": str(destination / "bundle.json"),
+                }
+            )
+        )
+        return 0
     if args.command == "dashboard":
         if not 1024 <= args.port <= 65535:
             parser.error("Use an unprivileged dashboard port between 1024 and 65535")
