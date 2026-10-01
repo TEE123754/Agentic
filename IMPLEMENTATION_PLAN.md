@@ -4,7 +4,7 @@
 **Architecture:** Python application running locally, with an interactive dashboard and exportable reports.  
 **Cost constraint:** No required paid APIs, subscriptions, cloud compute, or credit card. Uses existing local hardware.  
 **Document date:** October 2, 2026 (Asia/Kuala_Lumpur).
-**Status:** Phases 0-9 complete for their declared owned-fixture/offline-sharing gates. Phase 10 documentation/landing page complete; installable CLI packaging and BYOK transports remain. External replicas stay blocked. See verified checkpoints below.
+**Status:** Phases 0-10 complete for their declared owned-fixture, offline-sharing and Linux/mocked-BYOK gates. Phase 11 release validation remains. Live provider/account verification, clean Windows/macOS archive installation and external replicas remain unverified or blocked; no public publication was performed.
 
 ## 1. Intended outcome
 
@@ -795,7 +795,7 @@ Open a report in the static viewer without the backend, import a local private b
 
 ## Phase 10 - Open-source local product and BYOK
 
-**Execution checkpoint - October 2, 2026 (construction in progress):** Added installable package/console entry point and bundled assets with writable workspace separation; local init/doctor and resource-light cohort CLI; opt-in Groq/Gemini HTTP transports with environment-only keys, sanitized semantic input, integrated request/token/runtime/retry limits and pause; actual model provenance and strict comparison rejection. Updated third-party distribution notices. **Left:** run the consolidated remote acceptance (new integration cases plus affected configuration checks and isolated wheel installation), inspect reports/archives and update verification checklist. README/site/operator guide and acceptance fixtures are now built. Initial remote gate passed 48/48 checks plus isolated wheel CLI/browser acceptance. Archive checksums/assets and detailed reports were reviewed offline; no key marker in any evidence file including DuckDB. Installed-asset navigation follow-up passed with zero HTTP requests. Review found invalid inference policy could raise before terminal cohort finalization; added frozen per-run inference settings and factual no-navigation failure reporting. One affected cohort follow-up remains before checklist finalization. Live provider smoke remains unverified without supplied keys.
+**Execution checkpoint - October 2, 2026 (COMPLETE for Linux installation and mocked-BYOK integration):** Delivered installable `frictionlab` 0.1.0 wheel/source archives, bundled assets and writable workspace separation, init/doctor, one-worker fixture cohort CLI, environment-only keys, opt-in Groq/Gemini transports, bounded sanitized semantic inputs, shared request/token/runtime/retry controls, quota pause, actual-model provenance and strict comparison checks. Added distribution notices and professional source/site/install guides. [Initial remote gate](https://github.com/TEE123754/Agentic/actions/runs/36892800838) passed 48/48 checks in 33.21 seconds plus isolated installed-wheel CLI/browser acceptance. [Installed navigation follow-up](https://github.com/TEE123754/Agentic/actions/runs/36893880901) passed with zero review HTTP requests. Review found and fixed invalid inference preflight reporting and froze settings per submitted run; [affected cohort gate](https://github.com/TEE123754/Agentic/actions/runs/36894867219) passed 2/2 in 42.77 seconds. Total: 49 distinct passing pytest cases, plus installed CLI/browser/navigation checks. Detailed defect/healthy reports, remediation, screenshot, archive contents/checksums and all 151 saved evidence files including DuckDB were reviewed offline; zero sentinel traffic, unchanged data and no synthetic key marker. **Left for this gate:** none. **Unverified/outside gate:** live free-account/model smoke (requires operator-owned key and eligibility), real-model behavior, clean Windows/macOS installation, public repository/release/PyPI/site publication, external replicas and human calibration. [Validation record](docs/phase10-validation.md), [operator guide](docs/phase10-installation.md), [remaining release phase](#phase-11--validate-and-package-the-release). No heavy tests/models or container installation ran on the laptop.
 
 **Goal:** Downloadable local software using the user's own inference keys, with no hosted execution or FrictionLab billing.
 
@@ -876,7 +876,7 @@ This proves the core product behavior before investment in larger swarms, additi
 - [x] Phase 7 — Local dashboard (owned-fixture gate: initial Phase 6 regression passed; final affected-only dashboard walkthrough 1/1 passed with reviewed report and offline screenshot)
 - [x] Phase 8 — Evaluation and comparisons (frozen owned-fixture gate: 3/3 remote checks; four reports, two matched comparisons, pinned Mind2Web training-shard diagnostic)
 - [x] Phase 9 — Offline sharing (2 distinct remote checks verified; cloud transports deferred to Phase 10)
-- [ ] Phase 10 - Open-source local CLI and BYOK
+- [x] Phase 10 - Open-source local CLI and BYOK (Linux/mock gate; 49 distinct pytest cases plus installed CLI/browser/navigation)
 - [ ] Phase 11 — Release validation
 
 Update a checkbox only after completing its phase and its consolidated boundary checks.

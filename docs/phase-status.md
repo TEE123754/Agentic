@@ -147,6 +147,12 @@ Phases 0–6 have completed their documented owned-fixture gates. Phases 7–10 
 
 **Remaining:** None for the declared gate. Optional publication was not performed. See [validation record](phase9-validation.md).
 
-## Phase 10 - Partial: open-source local product and BYOK
+## Phase 10 - Complete for Linux installation and mocked BYOK
 
-Professional README, local clickable landing page, MIT license and contribution/security guidance are complete. Installable console command, downloadable releases, init/doctor, real user-key transports, integrated quotas/provenance, license review and the consolidated acceptance remain. Current source CLI works with the local-model backend; no cloud API key support is implied. Repository visibility remains unchanged. [Detailed checklist](phase10-local-product.md).
+**Date:** October 2, 2026 (Asia/Kuala_Lumpur).
+
+**Delivered:** Installable FrictionLab 0.1.0 console/wheel/source, bundled local assets, init/doctor, one-worker fixture cohort CLI, opt-in Groq/Gemini adapters with environment-only keys, sanitized bounded semantic inputs, shared inference budget/runtime/retries/quota pause, provider provenance and strict comparison rejection. Source README/site/operator guide, third-party notices and downloadable development archives are included.
+
+**Acceptance:** [Initial batch](https://github.com/TEE123754/Agentic/actions/runs/36892800838) passed 48/48 checks in 33.21 seconds plus isolated installed-wheel/browser acceptance. [Installed navigation](https://github.com/TEE123754/Agentic/actions/runs/36893880901) passed without review HTTP requests. Review found invalid inference preflight could escape terminal reporting; settings were frozen at submission and the [affected cohort repair](https://github.com/TEE123754/Agentic/actions/runs/36894867219) passed 2/2 in 42.77 seconds. Overall 49 distinct pytest cases, plus installed CLI/browser/navigation, are verified. Defect abandoned, healthy completed, seeded finding resolved; reports were ready with valid references. Sentinel zero traffic/data unchanged. Screenshot/advice, archive contents/checksums and all 151 evidence files including DuckDB reviewed offline; no synthetic key marker. No heavy local tests/model downloads.
+
+**Remaining:** No required work for this declared gate. Live account/model API smoke and actual model behavior need the operator's own eligible free key; clean Windows/macOS archive installation, public publication, arbitrary isolated replicas and human calibration remain unverified. Phase 11 consolidated release validation remains unchecked. [Validation](phase10-validation.md); [setup guide](phase10-installation.md).

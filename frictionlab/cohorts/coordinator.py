@@ -19,8 +19,8 @@ from frictionlab.cohorts.traffic import SharedTrafficBudget
 from frictionlab.configuration import CONFIG_DIRECTORY, ROOT, ResolvedRun, resolve_run
 from frictionlab.contracts.models import RunReport
 from frictionlab.planning.cloud_model import CloudModelRuntime
-from frictionlab.planning.inference import load_inference
 from frictionlab.planning.contracts import PlannerStopped
+from frictionlab.planning.inference import load_inference
 from frictionlab.planning.local_model import LocalModelRuntime
 from frictionlab.planning.runner import run_persona
 from frictionlab.reporting import unexecuted_report, write_report
