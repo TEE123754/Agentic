@@ -84,3 +84,5 @@ Mind2Web reference scores are separate from actual planner evaluation. Optional 
 [Phase 10](docs/phase10-local-product.md) records local CLI distribution and BYOK implementation/verification. Phase 11 covers clean installation, consolidated regression and pilot release validation. External replicas and human calibration remain additional work.
 
 Acceptance runs once after construction; rerun affected failures only. See [CONTRIBUTING](CONTRIBUTING.md), [SECURITY](SECURITY.md) and the [implementation plan](IMPLEMENTATION_PLAN.md). Project code is licensed under [MIT](LICENSE); third-party components retain their notices.
+
+Release validation is in progress: 250 distinct regression cases pass, while two real local-model journeys and the three-profile real-model pilot remain unresolved on the free CPU runner. FrictionLab 0.1.0 is a development candidate. See [Phase 11 results and remaining work](docs/phase11-validation.md) and [release operations](docs/phase11-release.md).

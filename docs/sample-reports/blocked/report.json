@@ -1,0 +1,79 @@
+{
+  "run_id": "ff26ae15-bf92-4471-a7bd-937e5c17d74c",
+  "revision": 1,
+  "created_at": "2026-10-01T17:45:29.362115Z",
+  "execution_status": "blocked",
+  "report_status": "partial",
+  "terminal_reason": "Illustrative configuration rejection: arbitrary external targets are unsupported.",
+  "executive_summary": "Illustrative partial-report example. No website, model or user cohort was run to produce this example. No UX conclusions are supported.",
+  "scope": {
+    "phase": 1,
+    "build_id": null,
+    "environment_id": null,
+    "personas": [],
+    "journeys": [],
+    "seed": null,
+    "configuration_hash": null,
+    "runtime_metadata": {
+      "illustrative_example": true
+    }
+  },
+  "protection": {
+    "target_requests": 0,
+    "environment_validated": false,
+    "network_boundary_validated": false,
+    "events": [
+      {
+        "id": "1ca18cd3-c27f-4a1d-a7c5-faeb2ef50ab4",
+        "decision": "blocked",
+        "layer": "configuration",
+        "reason": "Illustrative configuration rejection: arbitrary external targets are unsupported.",
+        "occurred_at": "2026-10-01T17:45:29.362115Z"
+      }
+    ],
+    "cleanup_outcome": "No browser, model process, or external resources were started.",
+    "boundary_scope": "unvalidated",
+    "traffic_metrics": {},
+    "sentinel_requests": null,
+    "sentinel_data_unchanged": null
+  },
+  "cohort_results": {
+    "requested_sessions": 0,
+    "executed_sessions": 0,
+    "eligible_sessions": 0,
+    "outcome_counts": {}
+  },
+  "session_summaries": [],
+  "trajectories": [],
+  "trajectory_index": [],
+  "planner_decisions": [],
+  "friction_events": [],
+  "patience_ledger": [],
+  "abandonment_diagnosis": null,
+  "findings": [],
+  "heatmaps": [],
+  "exclusions": [],
+  "milestone_funnel": [],
+  "visual_evidence": [],
+  "abandonment_explanations": [],
+  "recommendations": [
+    "Resolve the documented configuration issue or finish the browser execution phase before running a cohort.",
+    "Require validated replica/network and generated-code isolation before enabling external application targets."
+  ],
+  "comparison": "No baseline/candidate comparison exists because execution did not start.",
+  "review": {
+    "status": "configuration_reviewed",
+    "method": "Documentation example generated locally from the partial-report contract; not an execution measurement.",
+    "missing_evidence": [
+      "Browser trajectories",
+      "Screenshots",
+      "Observed UX events",
+      "Outcome measurements"
+    ],
+    "limitations": [
+      "This report contains configuration review only; autonomous cohort execution is unavailable.",
+      "No UX issue, human abandonment cause, or network sandbox guarantee can be inferred from this report."
+    ],
+    "dispositions": []
+  }
+}
