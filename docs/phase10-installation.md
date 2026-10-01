@@ -85,7 +85,7 @@ Use `uv run frictionlab` in a source checkout. The cohort command defaults to on
 
 For the dashboard, start `frictionlab serve` and `frictionlab dashboard` in separate terminals. Both bind loopback. `--inference-config PATH` is available for single-persona commands and doctor; cohort/API use the workspace's `frictionlab.local.json` so the shared budget has one declared configuration.
 
-Terminal cohort audits are under `artifacts/phase5/reports/RUN_UUID/revisions/`; session evidence is under `artifacts/phase5/runs/`. Export with `frictionlab export-static RUN_UUID --output NEW_DIRECTORY`. Opening reports stays offline. Local-model setup remains available through the source archive's explicit `scripts/setup_resources.py --download` step; verify its pinned paths and hardware guide before downloading several GB. No cloud key is needed for local inference.
+Terminal cohort audits are under `artifacts/phase5/reports/RUN_UUID/revisions/`; session evidence is under `artifacts/phase5/runs/`. Export with `frictionlab export-static RUN_UUID --output NEW_DIRECTORY`. Opening reports stays offline. Local-model setup remains available through the source archive's explicit `scripts/setup_resources.py --workspace /absolute/path/to/workspace --download` step; verify its pinned paths and hardware guide before downloading several GB. No cloud key is needed for local inference.
 
 ## Stop and cleanup
 

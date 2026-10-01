@@ -89,19 +89,23 @@ def download(url: str, path: Path, expected_sha256: str | None):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--download", action="store_true")
+    parser.add_argument("--workspace", type=Path, help="Initialized writable workspace")
     args = parser.parse_args()
-    manifest_path = ROOT / "configs" / "resource-manifest.json"
+    root = args.workspace.resolve() if args.workspace else ROOT
+    if not (root / "configs" / "models.json").is_file():
+        parser.error("Initialize the workspace first; configs/models.json is required")
+    manifest_path = root / "configs" / "resource-manifest.json"
     manifest = json.loads(manifest_path.read_text()) if manifest_path.exists() else metadata()
     manifest_path.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
     if args.download:
         runtime_key = "runtime" if os.name == "nt" else "runtime_linux"
         runtime, model = manifest[runtime_key], manifest["model"]
-        archive = ROOT / ".runtime" / runtime["asset"]
+        archive = root / ".runtime" / runtime["asset"]
         expected = runtime.get("expected_digest")
         runtime["sha256"] = download(
             runtime["url"], archive, expected.removeprefix("sha256:") if expected else None
         )
-        target = (ROOT / ".runtime" / "llama").resolve()
+        target = (root / ".runtime" / "llama").resolve()
         target.mkdir(parents=True, exist_ok=True)
         if os.name == "nt":
             with zipfile.ZipFile(archive) as bundle:
@@ -123,12 +127,12 @@ def main():
                 bundle.extractall(target, filter="data")
             server = next(target.rglob("llama-server"))
             server.chmod(server.stat().st_mode | 0o111)
-        model_path = ROOT / "models" / model["filename"]
+        model_path = root / "models" / model["filename"]
         model["sha256"] = download(model["url"], model_path, model.get("expected_sha256"))
-        runtime["local_path"] = str(server.relative_to(ROOT))
-        model["local_path"] = str(model_path.relative_to(ROOT))
+        runtime["local_path"] = str(server.relative_to(root))
+        model["local_path"] = str(model_path.relative_to(root))
         manifest_path.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
-        config_path = ROOT / "configs" / "models.json"
+        config_path = root / "configs" / "models.json"
         config = json.loads(config_path.read_text())
         config["planner"]["revision"] = model["revision"]
         config_path.write_text(json.dumps(config, indent=2) + "\n", encoding="utf-8")

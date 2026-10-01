@@ -1,0 +1,77 @@
+name: Phase 11 local release validation
+
+on:
+  workflow_dispatch:
+    inputs:
+      affected:
+        description: Full once; targeted selectors only after a relevant failure
+        type: string
+        default: all
+
+permissions:
+  contents: read
+
+concurrency:
+  group: phase11-release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 75
+    env:
+      FRICTIONLAB_BROWSER_PATH: /usr/bin/google-chrome
+      FRICTIONLAB_PHASE11_EVIDENCE: artifacts/phase11/validation
+      FRICTIONLAB_PHASE10_EVIDENCE: artifacts/phase11/validation/installed
+      FRICTIONLAB_PHASE6_EVIDENCE: artifacts/phase11/validation/audits
+      FRICTIONLAB_PHASE7_EVIDENCE: artifacts/phase11/validation/dashboard
+      FRICTIONLAB_PHASE8_EVIDENCE: artifacts/phase11/validation/quality
+      FRICTIONLAB_PHASE9_EVIDENCE: artifacts/phase11/validation/sharing
+      ANONYMIZED_TELEMETRY: 'false'
+      DO_NOT_TRACK: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Locked clean installation and explicit local resource setup
+        run: |
+          python -m pip install uv==0.11.18
+          uv sync --locked --group dev --extra dashboard --no-install-project
+          .venv/bin/python scripts/setup_resources.py --download
+          uv build
+          uv pip install --python .venv/bin/python --no-deps dist/*.whl
+      - name: One consolidated release window
+        env:
+          AFFECTED: ${{ inputs.affected }}
+        run: |
+          mkdir -p artifacts/phase11/validation
+          if [ "$AFFECTED" = all ]; then
+            .venv/bin/python -m pytest -q --basetemp=artifacts/phase11/pytest-temp --junitxml=artifacts/phase11/validation/regression.xml
+            .venv/bin/python -I scripts/accept_phase10_install.py
+          elif [ "$AFFECTED" = install ]; then
+            .venv/bin/python -I scripts/accept_phase10_install.py
+          else
+            .venv/bin/python -m pytest -q "$AFFECTED" --basetemp=artifacts/phase11/affected-temp --junitxml=artifacts/phase11/validation/affected.xml
+          fi
+      - name: Record installed dependency license metadata and archive checksums
+        if: always()
+        run: |
+          .venv/bin/python scripts/record_dependencies.py
+          cp docs/dependency-manifest.json artifacts/phase11/validation/release-dependencies.json
+          sha256sum dist/* > dist/SHA256SUMS
+      - name: Retain synthetic release evidence and download archives
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: phase11-local-release-and-evidence
+          path: |
+            dist/
+            artifacts/phase11/validation/
+            artifacts/phase11/pytest-temp/
+            artifacts/phase11/affected-temp/
+            artifacts/phase3/healthy-*.json
+          retention-days: 14
+          if-no-files-found: warn

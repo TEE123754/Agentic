@@ -813,6 +813,8 @@ One disposable-runner clean-install batch after construction: package/CLI/doctor
 
 ## Phase 11 — Validate and package the release
 
+**Execution checkpoint - October 2, 2026 (IN PROGRESS):** Added the Phase 11 operator/release guide, explicit resource setup into an initialized workspace, a disposable Linux release workflow, installed-wheel acceptance, a three-profile real-local-inference pilot with defect/healthy comparison and offline viewer review, illustrative partial-report exports, and release dependency/checksum evidence. Construction is complete; the one consolidated full regression and release window is pending. No heavy resources are installed on the laptop and no publication or external-site testing is enabled. **Left for this gate:** execute the remote window, repair only affected failures, inspect retained reports/screenshots/licenses/archives, and record the final result. Live BYOK, macOS/Windows clean archive acceptance, public distribution, arbitrary replicas and human calibration remain outside this fixture release gate. [Release operations](docs/phase11-release.md).
+
 **Goal:** Deliver a repeatable installation and complete pilot workflow.
 
 **Tools:** uv, pytest, Ruff, Playwright, Podman, local model services, complete application stack.
