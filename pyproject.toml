@@ -1,8 +1,11 @@
 [project]
 name = "frictionlab"
-version = "0.0.1"
+version = "0.1.0"
 description = "Local-first synthetic UX audit platform"
 requires-python = ">=3.12,<3.13"
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
 dependencies = [
   "browser-use",
   "playwright",
@@ -26,8 +29,31 @@ dashboard = [
 [dependency-groups]
 dev = ["pytest", "ruff"]
 
-[tool.uv]
-package = false
+[project.scripts]
+frictionlab = "frictionlab.__main__:main"
+
+[build-system]
+requires = ["hatchling==1.27.0"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["frictionlab"]
+
+[tool.hatch.build.targets.wheel.force-include]
+"configs" = "frictionlab/_assets/configs"
+"vendor" = "frictionlab/_assets/vendor"
+"site" = "frictionlab/_assets/site"
+"examples/phase9-static" = "frictionlab/_assets/examples/phase9-static"
+"README.md" = "frictionlab/_assets/README.md"
+"LICENSE" = "frictionlab/_assets/LICENSE"
+"CONTRIBUTING.md" = "frictionlab/_assets/CONTRIBUTING.md"
+"SECURITY.md" = "frictionlab/_assets/SECURITY.md"
+"IMPLEMENTATION_PLAN.md" = "frictionlab/_assets/IMPLEMENTATION_PLAN.md"
+"docs" = "frictionlab/_assets/docs"
+"THIRD_PARTY_NOTICES.md" = "frictionlab/_assets/THIRD_PARTY_NOTICES.md"
+
+[tool.hatch.build.targets.sdist]
+include = ["frictionlab", "configs", "vendor", "site", "examples/phase9-static", "docs", "scripts/setup_resources.py", "pyproject.toml", "uv.lock", "README.md", "LICENSE", "CONTRIBUTING.md", "SECURITY.md", "IMPLEMENTATION_PLAN.md", "THIRD_PARTY_NOTICES.md"]
 
 [tool.ruff]
 line-length = 100

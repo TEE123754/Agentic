@@ -16,8 +16,10 @@ from frictionlab.audit.service import review_finding as save_finding_review
 from frictionlab.cohorts.persistence import EventStore
 from frictionlab.cohorts.tracing import local_tracer
 from frictionlab.cohorts.traffic import SharedTrafficBudget
-from frictionlab.configuration import ROOT, ResolvedRun, resolve_run
+from frictionlab.configuration import CONFIG_DIRECTORY, ROOT, ResolvedRun, resolve_run
 from frictionlab.contracts.models import RunReport
+from frictionlab.planning.cloud_model import CloudModelRuntime
+from frictionlab.planning.inference import load_inference
 from frictionlab.planning.local_model import LocalModelRuntime
 from frictionlab.planning.runner import run_persona
 from frictionlab.reporting import unexecuted_report, write_report
@@ -148,10 +150,12 @@ class CohortCoordinator:
                 "profiles": {p.id: p.model_dump(mode="json") for p in resolved.personas},
                 "journeys": {j.id: j.model_dump(mode="json") for j in resolved.journeys},
                 "sessions": [spec.__dict__ for spec in specs],
-                "model": json.loads((ROOT / "configs" / "resource-manifest.json").read_text())[
-                    "model"
-                ]["revision"],
-                "detector_policy": json.loads((ROOT / "configs" / "cognition.json").read_text())[
+                "model": (
+                    load_inference().model_dump(mode="json")
+                    if self.executor is run_persona
+                    else {"executor": "custom_acceptance_or_extension"}
+                ),
+                "detector_policy": json.loads((CONFIG_DIRECTORY / "cognition.json").read_text())[
                     "version"
                 ],
                 "workers": self.settings.workers,
@@ -290,7 +294,12 @@ class CohortCoordinator:
         self.store.append("run_status", run_id, {"status": "running"})
         try:
             if self.executor is run_persona:
-                runtime = LocalModelRuntime(self.root / "runs" / run_id / "model")
+                inference = load_inference()
+                runtime = (
+                    CloudModelRuntime(inference)
+                    if inference.provider != "local"
+                    else LocalModelRuntime(self.root / "runs" / run_id / "model")
+                )
                 await runtime.__aenter__()
 
             async def worker():

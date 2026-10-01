@@ -29,7 +29,7 @@ from frictionlab.browser.state import (
     redact,
     semantic_signature,
 )
-from frictionlab.configuration import ROOT
+from frictionlab.configuration import PACKAGE_DIRECTORY, ROOT
 from frictionlab.contracts.models import (
     Action,
     Candidate,
@@ -186,6 +186,23 @@ class BrowserBroker:
         self.context = await self.playwright.chromium.launch_persistent_context(
             user_data_dir=self.profile.name,
             executable_path=str(self.browser_path),
+            env={
+                key: value
+                for key, value in os.environ.items()
+                if key.upper()
+                in {
+                    "PATH",
+                    "HOME",
+                    "USERPROFILE",
+                    "SYSTEMROOT",
+                    "WINDIR",
+                    "TEMP",
+                    "TMP",
+                    "LANG",
+                    "LC_ALL",
+                    "LD_LIBRARY_PATH",
+                }
+            },
             headless=True,
             viewport=viewport,
             device_scale_factor=1,
@@ -765,9 +782,9 @@ class BrowserBroker:
             },
         }
         fixture_files = [
-            ROOT / "frictionlab" / "api.py",
-            ROOT / "frictionlab" / "fixtures" / "store.py",
-            *sorted((ROOT / "frictionlab" / "fixtures" / "web").glob("*")),
+            PACKAGE_DIRECTORY / "api.py",
+            PACKAGE_DIRECTORY / "fixtures" / "store.py",
+            *sorted((PACKAGE_DIRECTORY / "fixtures" / "web").glob("*")),
         ]
         metadata["fixture_content_sha256"] = hashlib.sha256(
             b"".join(path.read_bytes() for path in fixture_files if path.is_file())

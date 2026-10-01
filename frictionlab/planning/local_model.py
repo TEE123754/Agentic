@@ -47,8 +47,10 @@ class LocalModelRuntime:
         self.verified_model_sha256 = None
 
     def check_resources(self):
-        runtime = (ROOT / self.resources[self.runtime_key]["local_path"]).resolve()
-        weights = (ROOT / self.resources["model"]["local_path"]).resolve()
+        runtime = (
+            ROOT / self.resources[self.runtime_key]["local_path"].replace("\\", "/")
+        ).resolve()
+        weights = (ROOT / self.resources["model"]["local_path"].replace("\\", "/")).resolve()
         if not runtime.is_relative_to((ROOT / ".runtime").resolve()) or not weights.is_relative_to(
             (ROOT / "models").resolve()
         ):

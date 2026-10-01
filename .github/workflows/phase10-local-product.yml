@@ -1,0 +1,61 @@
+name: Phase 10 local CLI and BYOK gate
+
+on:
+  workflow_dispatch:
+    inputs:
+      affected:
+        description: all, install, or cohort (only after a relevant repair)
+        type: choice
+        options: [all, install, cohort]
+        default: all
+
+permissions:
+  contents: read
+
+concurrency:
+  group: phase10-local-product
+  cancel-in-progress: false
+
+jobs:
+  product:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    env:
+      FRICTIONLAB_BROWSER_PATH: /usr/bin/google-chrome
+      FRICTIONLAB_PHASE10_EVIDENCE: artifacts/phase10/validation
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install locked dependencies and build wheel/source downloads
+        run: |
+          python -m pip install uv==0.11.18
+          uv sync --locked --group dev --no-install-project
+          uv build
+          uv pip install --python .venv/bin/python --no-deps dist/*.whl
+      - name: One post-build acceptance window
+        run: |
+          case "${{ inputs.affected }}" in
+            all)
+              .venv/bin/python -m pytest -q tests/phase_10 tests/phase_01/test_configuration.py
+              .venv/bin/python -I scripts/accept_phase10_install.py
+              ;;
+            install) .venv/bin/python -I scripts/accept_phase10_install.py ;;
+            cohort) .venv/bin/python -m pytest -q tests/phase_10/test_local_product.py::test_byok_cohorts_reports_comparability_and_secret_exclusion ;;
+          esac
+      - name: Archive checksum manifest
+        if: always()
+        run: sha256sum dist/* > dist/SHA256SUMS
+      - name: Upload downloadable archives and synthetic evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: phase10-local-downloads-and-evidence
+          path: |
+            dist/
+            artifacts/phase10/validation/
+          retention-days: 14
+          if-no-files-found: warn

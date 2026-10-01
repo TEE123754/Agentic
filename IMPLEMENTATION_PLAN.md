@@ -795,7 +795,7 @@ Open a report in the static viewer without the backend, import a local private b
 
 ## Phase 10 - Open-source local product and BYOK
 
-**Execution checkpoint - October 1, 2026 (PARTIAL):** Completed professional README, local static landing page, MIT license and contribution/security guidance. **Remaining:** package/console entry point, portable downloadable release, init/doctor, BYOK transports, secret isolation, enforced budgets/fallback/provider provenance, license review and the end-of-phase acceptance. See [detailed checklist](docs/phase10-local-product.md). Phase remains unchecked.
+**Execution checkpoint - October 2, 2026 (construction in progress):** Added installable package/console entry point and bundled assets with writable workspace separation; local init/doctor and resource-light cohort CLI; opt-in Groq/Gemini HTTP transports with environment-only keys, sanitized semantic input, integrated request/token/runtime/retry limits and pause; actual model provenance and strict comparison rejection. Updated third-party distribution notices. **Left:** run the consolidated remote acceptance (new integration cases plus affected configuration checks and isolated wheel installation), inspect reports/archives and update verification checklist. README/site/operator guide and acceptance fixtures are now built. No Phase 10 tests run yet. Live provider smoke remains unverified without supplied keys.
 
 **Goal:** Downloadable local software using the user's own inference keys, with no hosted execution or FrictionLab billing.
 

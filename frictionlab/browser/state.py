@@ -62,7 +62,9 @@ SANITIZED_DOM = """() => {
 
 
 def redact(text):
-    return re.sub(r"[\w.+-]+@[\w.-]+", "[redacted email]", text)
+    from frictionlab.planning.inference import safe_text
+
+    return safe_text(re.sub(r"[\w.+-]+@[\w.-]+", "[redacted email]", text))
 
 
 def fingerprint(state):

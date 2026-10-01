@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -11,8 +12,15 @@ from pydantic import ValidationError
 
 from frictionlab.contracts import EnvironmentPolicy, Journey, Persona, RunConfig
 
-ROOT = Path(__file__).resolve().parents[1]
-CONFIG_DIRECTORY = ROOT / "configs"
+PACKAGE_DIRECTORY = Path(__file__).resolve().parent
+SOURCE_ROOT = PACKAGE_DIRECTORY.parent
+ASSET_ROOT = SOURCE_ROOT if (SOURCE_ROOT / "configs").is_dir() else PACKAGE_DIRECTORY / "_assets"
+ROOT = Path(
+    os.environ.get(
+        "FRICTIONLAB_HOME", str(SOURCE_ROOT if ASSET_ROOT == SOURCE_ROOT else Path.cwd())
+    )
+).resolve()
+CONFIG_DIRECTORY = ROOT / "configs" if (ROOT / "configs").is_dir() else ASSET_ROOT / "configs"
 DEFAULT_ORIGIN = "http://127.0.0.1:8765"
 
 

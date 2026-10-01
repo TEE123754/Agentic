@@ -44,6 +44,32 @@ def _evidence_status(report, directory):
     }
 
 
+def _inference_identities(root, report):
+    """Prefer actual session provenance over a requested model label in a manifest."""
+    identities = {}
+    for summary in report.session_summaries:
+        path = (root / summary.report_path).with_name("report.json").resolve()
+        if not path.is_relative_to(root.resolve()) or not path.is_file():
+            raise ValueError("Matched comparison needs each saved session report")
+        session = RunReport.model_validate_json(path.read_text(encoding="utf-8"))
+        metadata = session.scope.runtime_metadata
+        inference = metadata.get("inference")
+        if inference:
+            inference = json.loads(inference)
+            models = inference.get("actual_models", [])
+            if not inference.get("strict_comparable") or len(models) != 1:
+                raise ValueError(
+                    "Mixed or unverified inference identity excludes strict comparison"
+                )
+            identities[_session_key(summary)] = (
+                inference.get("provider"),
+                tuple(models),
+                metadata.get("model_sha256"),
+                metadata.get("model_revision"),
+            )
+    return identities
+
+
 def compare_runs(root: Path, store, baseline_id: str, candidate_id: str):
     """Compare two immutable audited runs without opening a browser or target URL."""
     root = Path(root).resolve()
@@ -76,6 +102,8 @@ def compare_runs(root: Path, store, baseline_id: str, candidate_id: str):
         mismatches.append("sampled_sessions")
     if mismatches:
         raise ValueError("Runs are not matched: " + ", ".join(mismatches))
+    if _inference_identities(root, baseline) != _inference_identities(root, candidate):
+        raise ValueError("Actual provider/model identities do not match")
     if baseline.revision < 2 or candidate.revision < 2:
         raise ValueError("Both runs need completed audit revisions")
     base_sessions = {_session_key(item): item for item in baseline.session_summaries}

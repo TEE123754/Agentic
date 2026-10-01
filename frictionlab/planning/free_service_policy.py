@@ -1,6 +1,6 @@
-"""Fail-closed policy for future opt-in free-service transports.
+"""Fail-closed budget policy used by opt-in BYOK transports.
 
-No transport is enabled by this module or the shipped configuration.
+The shipped local defaults enable no remote transport.
 """
 
 from __future__ import annotations

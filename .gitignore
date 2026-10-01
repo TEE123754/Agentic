@@ -10,3 +10,7 @@ __pycache__/
 .pytest_cache/
 .ruff_cache/
 *.log
+dist/
+build/
+*.egg-info/
+frictionlab.local.json

@@ -22,8 +22,10 @@ from frictionlab.configuration import (
     resolve_run,
 )
 from frictionlab.contracts.models import CohortResults, PlannerDecisionRecord, RunReport
+from frictionlab.planning.cloud_model import CloudModelRuntime, CloudPlannerModel
 from frictionlab.planning.code_agent import BoundedCodeAgent, CodePersonaMemory, LocalCodeModel
 from frictionlab.planning.contracts import PlannerStopped, load_limits
+from frictionlab.planning.inference import load_inference
 from frictionlab.planning.local_model import LocalModelRuntime, LocalPlannerModel
 from frictionlab.planning.memory import PersonaMemory
 from frictionlab.planning.tools import BoundedPersonaAgent, ToolBridge
@@ -45,6 +47,7 @@ async def run_persona(
     artifact_root=None,
     global_budget=None,
     session_id=None,
+    inference=None,
 ):
     limits = limits or load_limits()
     state = {
@@ -107,7 +110,22 @@ async def run_persona(
                     "code_worker_rootless_required": True,
                 }
             )
-        if model_runtime:
+        if model_runtime and getattr(model_runtime, "is_remote", False):
+            metadata["inference"] = json.dumps(model_runtime.provenance(), sort_keys=True)
+            metadata["provider_retries"] = model_runtime.retries
+            metadata["max_input_tokens"] = model_runtime.config.max_input_bytes + 512
+            metadata["max_input_bytes"] = model_runtime.config.max_input_bytes
+            metadata["input_token_accounting"] = "conservative UTF-8 byte and framing reservation"
+        else:
+            metadata["inference"] = json.dumps(
+                {
+                    "provider": "local",
+                    "actual_models": [getattr(model, "model_id", "not_started")],
+                    "strict_comparable": model is not None,
+                },
+                sort_keys=True,
+            )
+        if model_runtime and not getattr(model_runtime, "is_remote", False):
             metadata.update(
                 {
                     "model_repository": model_runtime.settings["repository"],
@@ -262,11 +280,24 @@ async def run_persona(
                 "code_isolation_unavailable",
                 "Unknown execution mode; no browser or model was started.",
             )
+        if mode != "typed_tools" and getattr(runtime, "is_remote", False):
+            raise PlannerStopped("model_setup", "BYOK supports reviewed typed tools only")
         code_settings = require_worker_gate() if mode == "isolated_code" else None
         state["execution_mode"] = mode
         state["code_settings"] = code_settings
         if runtime is None and model_factory is None:
-            runtime = LocalModelRuntime(broker.directory / "model")
+            inference = (
+                load_inference(inference)
+                if inference is None or hasattr(inference, "read_text")
+                else inference
+            )
+            if inference.provider != "local" and mode != "typed_tools":
+                raise PlannerStopped("model_setup", "BYOK supports reviewed typed tools only")
+            runtime = (
+                CloudModelRuntime(inference)
+                if inference.provider != "local"
+                else LocalModelRuntime(broker.directory / "model")
+            )
             state["runtime"] = runtime
             await runtime.__aenter__()
         # Startup is managed here so failures are classified before immutable export.
@@ -276,9 +307,16 @@ async def run_persona(
             broker.cognitive_runtime = state["cognition"]
         memory = (CodePersonaMemory if code_settings else PersonaMemory)(broker, limits)
         await memory.refresh()
-        model = (model_factory or (LocalCodeModel if code_settings else LocalPlannerModel))(
-            runtime, memory, limits, resolved.config.seed, broker.writer
-        )
+        model = (
+            model_factory
+            or (
+                CloudPlannerModel
+                if getattr(runtime, "is_remote", False)
+                else LocalCodeModel
+                if code_settings
+                else LocalPlannerModel
+            )
+        )(runtime, memory, limits, resolved.config.seed, broker.writer)
         state["model"] = model
         bridge = ToolBridge(
             broker,
@@ -377,7 +415,7 @@ async def run_persona(
     return broker
 
 
-async def autonomous_cli(persona, journey, variant, mode, *, behavioral=False):
+async def autonomous_cli(persona, journey, variant, mode, *, behavioral=False, inference_path=None):
     resolved = None
     try:
         resolved = resolve_run(read_json(CONFIG_DIRECTORY / "run.example.json"))
@@ -426,6 +464,7 @@ async def autonomous_cli(persona, journey, variant, mode, *, behavioral=False):
             mode=mode,
             behavioral=behavioral,
             limits=limits,
+            inference=inference_path,
         )
     print(
         json.dumps(

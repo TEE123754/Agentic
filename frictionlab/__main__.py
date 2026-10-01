@@ -11,13 +11,43 @@ import subprocess
 import sys
 from pathlib import Path
 
-from frictionlab.configuration import ROOT, ConfigurationRejected, read_json, resolve_run
+from frictionlab.configuration import (
+    CONFIG_DIRECTORY,
+    PACKAGE_DIRECTORY,
+    ROOT,
+    ConfigurationRejected,
+    read_json,
+    resolve_run,
+)
 from frictionlab.reporting import blocked_report, write_report
 
 
 def main(argv=None):
-    parser = argparse.ArgumentParser(prog="python -m frictionlab")
+    parser = argparse.ArgumentParser(prog="frictionlab")
+    parser.add_argument("--version", action="version", version="FrictionLab 0.1.0")
     commands = parser.add_subparsers(dest="command", required=True)
+    init = commands.add_parser("init", help="Create a local workspace without downloads")
+    init.add_argument("directory", type=Path)
+    diagnostic = commands.add_parser(
+        "doctor", help="Offline setup checks; no browser or model launch"
+    )
+    diagnostic.add_argument("--inference-config", type=Path)
+    cohort = commands.add_parser(
+        "cohort", help="Run an owned-fixture cohort and generate a detailed audit"
+    )
+    cohort.add_argument("--config", type=Path, default=CONFIG_DIRECTORY / "run.quickstart.json")
+    cohort.add_argument(
+        "--variant",
+        choices=(
+            "healthy",
+            "dead_button",
+            "generic_validation",
+            "delayed_feedback",
+            "hidden_shipping",
+            "focus_trap",
+        ),
+        default="healthy",
+    )
     serve = commands.add_parser("serve", help="Serve the bundled fixture and local cohort API")
     serve.add_argument("--port", type=int, default=8765)
     dashboard = commands.add_parser("dashboard", help="Open the local Streamlit command center")
@@ -82,7 +112,56 @@ def main(argv=None):
         command.add_argument(
             "--mode", choices=("typed_tools", "isolated_code"), default="typed_tools"
         )
+        command.add_argument("--inference-config", type=Path)
     args = parser.parse_args(argv)
+    if args.command == "init":
+        from frictionlab.product import initialize
+
+        try:
+            print(json.dumps(initialize(args.directory), indent=2))
+        except (OSError, ValueError):
+            parser.error("Workspace initialization failed; choose a new writable directory")
+        return 0
+    if args.command == "doctor":
+        from frictionlab.product import doctor
+
+        result = doctor(args.inference_config)
+        print(json.dumps(result, indent=2))
+        return 0 if result["ready_for_audit"] else 2
+    if args.command == "cohort":
+        from uuid import uuid4
+
+        from frictionlab.cohorts.coordinator import CohortCoordinator, CohortSettings
+
+        async def run_cohort():
+            payload = read_json(args.config)
+            payload["id"] = str(uuid4())
+            resolved = resolve_run(payload)
+            coordinator = CohortCoordinator(settings=CohortSettings(workers=1))
+            try:
+                await coordinator.submit(resolved, variant=args.variant)
+                await coordinator.wait(payload["id"])
+                result = coordinator.status(payload["id"])
+                print(
+                    json.dumps(
+                        {
+                            "run_id": payload["id"],
+                            "status": result,
+                            "report_root": str(coordinator.root / "reports" / payload["id"]),
+                        }
+                    )
+                )
+                return 0 if result["run"]["status"] == "completed" else 1
+            finally:
+                await coordinator.close()
+
+        try:
+            return asyncio.run(run_cohort())
+        except (ConfigurationRejected, ValueError):
+            parser.error(
+                "Cohort configuration rejected; use an owned fixture and documented limits"
+            )
+        return 0
     if args.command == "export-static":
         from frictionlab.sharing.bundle import export_bundle
 
@@ -106,7 +185,7 @@ def main(argv=None):
             parser.error("Use an unprivileged dashboard port between 1024 and 65535")
         if importlib.util.find_spec("streamlit") is None:
             parser.error("Install the optional dashboard with `uv sync --extra dashboard`")
-        path = ROOT / "frictionlab" / "dashboard" / "app.py"
+        path = PACKAGE_DIRECTORY / "dashboard" / "app.py"
         environment = os.environ.copy()
         environment["PYTHONPATH"] = str(ROOT)
         return subprocess.call(
@@ -138,6 +217,7 @@ def main(argv=None):
                 args.variant,
                 args.mode,
                 behavioral=args.command == "behavioral",
+                inference_path=args.inference_config,
             )
         )
     if args.command == "browser-demo":
