@@ -20,6 +20,7 @@ from frictionlab.configuration import CONFIG_DIRECTORY, ROOT, ResolvedRun, resol
 from frictionlab.contracts.models import RunReport
 from frictionlab.planning.cloud_model import CloudModelRuntime
 from frictionlab.planning.inference import load_inference
+from frictionlab.planning.contracts import PlannerStopped
 from frictionlab.planning.local_model import LocalModelRuntime
 from frictionlab.planning.runner import run_persona
 from frictionlab.reporting import unexecuted_report, write_report
@@ -68,6 +69,7 @@ class CohortCoordinator:
         self.interrupting_runs = set()
         self.budgets = {}
         self.started = False
+        self.inference_settings = {}
         self._submit_lock = asyncio.Lock()
 
     async def start(self):
@@ -141,6 +143,15 @@ class CohortCoordinator:
                 ]
             directory = self.root / "runs" / run_id
             directory.mkdir(parents=True, exist_ok=False)
+            requested_model = {"executor": "custom_acceptance_or_extension"}
+            if self.executor is run_persona:
+                try:
+                    inference = load_inference()
+                    requested_model = inference.model_dump(mode="json")
+                except PlannerStopped:
+                    inference = None
+                    requested_model = {"provider": "configuration_rejected"}
+                self.inference_settings[run_id] = inference
             manifest = {
                 "run_id": run_id,
                 "configuration": resolved.config.model_dump(mode="json"),
@@ -150,11 +161,7 @@ class CohortCoordinator:
                 "profiles": {p.id: p.model_dump(mode="json") for p in resolved.personas},
                 "journeys": {j.id: j.model_dump(mode="json") for j in resolved.journeys},
                 "sessions": [spec.__dict__ for spec in specs],
-                "model": (
-                    load_inference().model_dump(mode="json")
-                    if self.executor is run_persona
-                    else {"executor": "custom_acceptance_or_extension"}
-                ),
+                "model": requested_model,
                 "detector_policy": json.loads((CONFIG_DIRECTORY / "cognition.json").read_text())[
                     "version"
                 ],
@@ -294,7 +301,11 @@ class CohortCoordinator:
         self.store.append("run_status", run_id, {"status": "running"})
         try:
             if self.executor is run_persona:
-                inference = load_inference()
+                inference = self.inference_settings.get(run_id)
+                if inference is None:
+                    raise PlannerStopped(
+                        "model_setup", "Inference configuration rejected before navigation"
+                    )
                 runtime = (
                     CloudModelRuntime(inference)
                     if inference.provider != "local"
@@ -361,6 +372,7 @@ class CohortCoordinator:
         except Exception as exc:  # noqa: BLE001 -- terminal reports must survive model startup faults
             reason = f"Cohort infrastructure failed ({type(exc).__name__}); no UX inference."
         finally:
+            self.inference_settings.pop(run_id, None)
             if monitor:
                 monitor.cancel()
                 await asyncio.gather(monitor, return_exceptions=True)

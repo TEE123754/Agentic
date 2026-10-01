@@ -225,6 +225,36 @@ def _decision_response(request):
     )
 
 
+def test_invalid_inference_cohort_retains_report_without_navigation(tmp_path):
+    async def run():
+        payload = read_json(CONFIG_DIRECTORY / "run.quickstart.json")
+        payload["id"] = str(uuid4())
+        coordinator = CohortCoordinator(tmp_path)
+        try:
+            with (
+                patch(
+                    "frictionlab.cohorts.coordinator.load_inference",
+                    side_effect=PlannerStopped("model_setup", "Invalid policy"),
+                ),
+                patch(
+                    "frictionlab.cohorts.coordinator.CloudModelRuntime",
+                    side_effect=AssertionError("Rejected policy must not create a transport"),
+                ),
+            ):
+                await coordinator.submit(resolve_run(payload))
+                await coordinator.wait(payload["id"])
+            reports = list((tmp_path / "reports" / payload["id"]).rglob("report.json"))
+            assert reports
+            report = RunReport.model_validate_json(reports[-1].read_text())
+            assert report.execution_status == "failed"
+            assert report.cohort_results.executed_sessions == 0
+            assert report.abandonment_diagnosis is None
+        finally:
+            await coordinator.close()
+
+    asyncio.run(run())
+
+
 def test_byok_cohorts_reports_comparability_and_secret_exclusion(tmp_path, monkeypatch):
     monkeypatch.setenv("GROQ_API_KEY", KEY)
     root = Path(os.environ.get("FRICTIONLAB_PHASE10_EVIDENCE", tmp_path)) / str(uuid4())

@@ -44,7 +44,7 @@ jobs:
               .venv/bin/python -I scripts/accept_phase10_install.py
               ;;
             install) .venv/bin/python -I scripts/accept_phase10_install.py ;;
-            cohort) .venv/bin/python -m pytest -q tests/phase_10/test_local_product.py::test_byok_cohorts_reports_comparability_and_secret_exclusion ;;
+            cohort) .venv/bin/python -m pytest -q tests/phase_10/test_local_product.py -k cohort ;;
           esac
       - name: Archive checksum manifest
         if: always()
