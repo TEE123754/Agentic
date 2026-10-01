@@ -42,7 +42,7 @@ jobs:
         run: |
           python -m pip install uv==0.11.18
           uv sync --locked --group dev --extra dashboard --no-install-project
-          if [[ "$AFFECTED" == all || "$AFFECTED" == planner || "$AFFECTED" == *test_healthy_seeded* || "$AFFECTED" == tests/phase_11/* ]]; then
+          if [[ "$AFFECTED" == all || "$AFFECTED" == planner || "$AFFECTED" == compact || "$AFFECTED" == *test_healthy_seeded* || "$AFFECTED" == tests/phase_11/* ]]; then
             .venv/bin/python scripts/setup_resources.py --workspace "$PWD" --download
           fi
           uv build
@@ -62,6 +62,9 @@ jobs:
             .venv/bin/python -I scripts/accept_phase10_install.py
           elif [ "$AFFECTED" = planner ]; then
             .venv/bin/python -m pytest -q tests/phase_03 tests/phase_04 tests/phase_08 tests/phase_10 tests/phase_11 --basetemp=artifacts/phase11/affected-temp --junitxml=artifacts/phase11/validation/affected.xml
+            .venv/bin/python -I scripts/accept_phase10_install.py
+          elif [ "$AFFECTED" = compact ]; then
+            .venv/bin/python -m pytest -q tests/phase_03/test_model_and_tools.py tests/phase_03/test_autonomous.py tests/phase_11 --basetemp=artifacts/phase11/affected-temp --junitxml=artifacts/phase11/validation/affected.xml
             .venv/bin/python -I scripts/accept_phase10_install.py
           else
             .venv/bin/python -m pytest -q "$AFFECTED" --basetemp=artifacts/phase11/affected-temp --junitxml=artifacts/phase11/validation/affected.xml

@@ -25,7 +25,13 @@ from smolagents.models import (
 from frictionlab.browser.broker import free_port
 from frictionlab.browser.state import redact
 from frictionlab.configuration import CONFIG_DIRECTORY, ROOT, read_json
-from frictionlab.planning.choices import INSTRUCTION, PROTOCOL, available_choices, expand_choice
+from frictionlab.planning.choices import (
+    INSTRUCTION,
+    PROTOCOL,
+    available_choices,
+    compact_state,
+    expand_choice,
+)
 from frictionlab.planning.contracts import PlannerStopped
 
 
@@ -188,6 +194,7 @@ class LocalPlannerModel(Model):
     """smolagents adapter; replace this interface without changing broker or persona memory."""
 
     planning_protocol = PROTOCOL
+    rationale_source = "trusted_action_description"
 
     def __init__(self, runtime, memory, limits, seed, writer):
         super().__init__(model_id="frictionlab-local")
@@ -227,15 +234,11 @@ class LocalPlannerModel(Model):
             try:
                 state = deepcopy(self.memory.state)
                 choices = available_choices(state)
-                state.pop("observation_id", None)
-                state["action_choices"] = list(choices)
-                system = next(
-                    (message.content for message in messages if message.role == MessageRole.SYSTEM),
-                    "Select a permitted action for the observed user goal.",
-                )
                 payload_messages = [
-                    {"role": "system", "content": system + "\n" + INSTRUCTION},
-                    {"role": "user", "content": json.dumps(state, separators=(",", ":"))},
+                    {"role": "system", "content": INSTRUCTION + " /no_think"},
+                    {"role": "user", "content": json.dumps(
+                        compact_state(state, choices), separators=(",", ":")
+                    )},
                 ]
                 timeout = min(
                     self.limits.request_timeout_seconds, max(0.1, self.deadline - time.monotonic())

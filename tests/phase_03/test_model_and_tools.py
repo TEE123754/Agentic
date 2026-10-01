@@ -141,6 +141,23 @@ def test_compact_choices_preserve_keyboard_focus_and_current_observation():
     assert list(available_choices(state)) == ["finish"]
 
 
+def test_compact_input_keeps_current_grounding_without_duplicate_history():
+    from frictionlab.planning.choices import available_choices, compact_state
+
+    state = model_state()
+    state.update(page_text=" ".join(["visible"] * 300), known_information=["past fact"],
+                 focus={"name": "Start"}, validation=["Required field"],
+                 recent_actions=[{"kind": "click", "result": "no_change", "detail": "x" * 1000}] * 6)
+    projected = compact_state(state, available_choices(state))
+    assert projected["candidates"] == state["candidates"]
+    assert projected["focus"] == state["focus"] and projected["validation"] == ["Required field"]
+    assert len(projected["page_text"].split()) == 80
+    assert len(projected["recent_actions"]) == 3
+    assert "detail" not in projected["recent_actions"][0]
+    assert "observation_id" not in projected and "past fact" in projected["known_information"]
+    assert len(state["recent_actions"]) == 6
+
+
 def test_context_ceiling_stops_before_inference():
     model, runtime, _, messages = adapter("{}", tokens=3001)
     with pytest.raises(PlannerStopped, match="token ceiling"):

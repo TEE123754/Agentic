@@ -98,11 +98,7 @@ async def run_persona(
                 "model_owned_by_session": state["model_owned"],
                 "planner_worker_drained": state["worker_drained"],
                 "planning_protocol": getattr(model, "planning_protocol", "json_decision_v1"),
-                "planner_rationale_source": (
-                    "trusted_action_description"
-                    if getattr(model, "planning_protocol", "") == "semantic_choice_v1"
-                    else "model"
-                ),
+                "planner_rationale_source": getattr(model, "rationale_source", "model"),
             }
         )
         if state["code_settings"]:
