@@ -72,6 +72,9 @@ def adapter(content, *, tokens=10, error=None, limits=None):
     [
         "print('unsafe')",
         "{}",
+        '{"choice":"click:999999"}',
+        '{"choice":true}',
+        '{"choice":"click:7","observation_id":"overridden"}',
         '{"action":{"kind":"exec"},"rationale":"run code"}',
         '{"action":{"kind":"wait","observation_id":"bad","timeout_ms":1},"rationale":"wait"}',
         lambda state: json.dumps(
@@ -109,23 +112,33 @@ def test_malformed_output_is_recorded_and_never_executed(content):
 
 
 def test_valid_local_response_becomes_one_framework_tool_call():
-    model, runtime, writer, messages = adapter(
-        lambda state: json.dumps(
-            {
-                "action": {
-                    "kind": "click",
-                    "observation_id": state["observation_id"],
-                    "candidate_id": 7,
-                },
-                "rationale": "Start the assigned goal",
-            }
-        )
-    )
+    model, runtime, writer, messages = adapter('{"choice":"click:7"}')
     result = model.generate(messages)
     assert len(result.tool_calls) == 1 and result.tool_calls[0].function.name == "browser_action"
     assert runtime.requests[-1][1]["seed"] == 42
     assert runtime.requests[-1][1]["chat_template_kwargs"]["enable_thinking"] is False
     assert writer.files["planner-decisions.json"][0]["input_tokens"] == 10
+    action = result.tool_calls[0].function.arguments["action"]
+    assert action["candidate_id"] == 7
+    assert action["observation_id"] == model.memory.state["observation_id"]
+    assert runtime.requests[-1][1]["max_tokens"] == 64
+
+
+def test_compact_choices_preserve_keyboard_focus_and_current_observation():
+    from frictionlab.planning.choices import available_choices, expand_choice
+
+    state = model_state()
+    state["input_mode"] = "keyboard"
+    choices = available_choices(state)
+    assert not any(choice.startswith("click:") for choice in choices)
+    assert "press_key:Enter" not in choices
+    state["candidates"][0]["focused"] = True
+    choices = available_choices(state)
+    assert "press_key:Enter" in choices
+    decision = expand_choice({"choice": "press_key:Enter"}, choices)
+    assert str(decision.action.observation_id) == state["observation_id"]
+    state["milestones"] = {"goal": True}
+    assert list(available_choices(state)) == ["finish"]
 
 
 def test_context_ceiling_stops_before_inference():

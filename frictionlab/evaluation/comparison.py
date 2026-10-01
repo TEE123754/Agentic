@@ -66,6 +66,7 @@ def _inference_identities(root, report):
                 tuple(models),
                 metadata.get("model_sha256"),
                 metadata.get("model_revision"),
+                metadata.get("planning_protocol", "json_decision_v1"),
             )
     return identities
 

@@ -9,6 +9,7 @@ import os
 import subprocess
 import threading
 import time
+from copy import deepcopy
 
 import httpx
 import psutil
@@ -24,7 +25,8 @@ from smolagents.models import (
 from frictionlab.browser.broker import free_port
 from frictionlab.browser.state import redact
 from frictionlab.configuration import CONFIG_DIRECTORY, ROOT, read_json
-from frictionlab.planning.contracts import Decision, PlannerStopped, action_schema
+from frictionlab.planning.choices import INSTRUCTION, PROTOCOL, available_choices, expand_choice
+from frictionlab.planning.contracts import PlannerStopped
 
 
 class LocalModelRuntime:
@@ -185,6 +187,8 @@ class LocalModelRuntime:
 class LocalPlannerModel(Model):
     """smolagents adapter; replace this interface without changing broker or persona memory."""
 
+    planning_protocol = PROTOCOL
+
     def __init__(self, runtime, memory, limits, seed, writer):
         super().__init__(model_id="frictionlab-local")
         self.runtime = runtime
@@ -221,8 +225,17 @@ class LocalPlannerModel(Model):
                     "model_queue_timeout", "Local inference queue deadline exceeded."
                 )
             try:
+                state = deepcopy(self.memory.state)
+                choices = available_choices(state)
+                state.pop("observation_id", None)
+                state["action_choices"] = list(choices)
+                system = next(
+                    (message.content for message in messages if message.role == MessageRole.SYSTEM),
+                    "Select a permitted action for the observed user goal.",
+                )
                 payload_messages = [
-                    {"role": message.role.value, "content": message.content} for message in messages
+                    {"role": "system", "content": system + "\n" + INSTRUCTION},
+                    {"role": "user", "content": json.dumps(state, separators=(",", ":"))},
                 ]
                 timeout = min(
                     self.limits.request_timeout_seconds, max(0.1, self.deadline - time.monotonic())
@@ -250,14 +263,21 @@ class LocalPlannerModel(Model):
                         "messages": payload_messages,
                         "seed": self.seed,
                         "temperature": 0,
-                        "max_tokens": self.limits.max_output_tokens,
+                        "max_tokens": min(64, self.limits.max_output_tokens),
                         "chat_template_kwargs": {"enable_thinking": False},
                         "response_format": {
                             "type": "json_schema",
                             "json_schema": {
                                 "name": "browser_decision",
                                 "strict": True,
-                                "schema": action_schema(self.memory.state),
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": False,
+                                    "properties": {
+                                        "choice": {"type": "string", "enum": list(choices)},
+                                    },
+                                    "required": ["choice"],
+                                },
                             },
                         },
                     },
@@ -280,12 +300,7 @@ class LocalPlannerModel(Model):
                 raise PlannerStopped(
                     "invalid_model_output", "Model output reached its token ceiling."
                 )
-            decision = Decision.model_validate_json(content)
-            decision = decision.model_copy(update={"rationale": redact(decision.rationale)})
-            if "id" in json.loads(content)["action"]:
-                raise PlannerStopped(
-                    "invalid_model_output", "Action IDs are assigned by the trusted tool only."
-                )
+            decision = expand_choice(json.loads(content), choices)
             if self.stopped.is_set() or time.monotonic() >= self.deadline:
                 raise PlannerStopped(
                     "runtime_limit", "Planner stopped before dispatching the generated action."
