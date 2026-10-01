@@ -47,8 +47,7 @@ class PersonaMemory:
         coordinate = observation.coordinates
         for candidate in observation.candidates:
             if (
-                getattr(broker, "cognitive_runtime", None) is not None
-                and candidate.role == "button"
+                candidate.role == "button"
                 and candidate.name in self.inspected_information_controls
             ):
                 continue
@@ -190,13 +189,12 @@ class PersonaMemory:
     def remember_interaction(self, before, after, action, *, informational_dialog=False):
         """Remember successful keyboard transitions; ineffective keys remain retryable."""
         if (
-            getattr(self.broker, "cognitive_runtime", None) is not None
-            and action.kind == "click"
+            (action.kind == "click" or (action.kind == "press_key" and action.key in {"Enter", "Space"}))
             and informational_dialog
             and before.semantic_signature != after.semantic_signature
             and len(self.inspected_information_controls) < 4
         ):
-            name = next(
+            name = before.focus.get("name", "") if action.kind == "press_key" else next(
                 (
                     candidate.name
                     for candidate in before.candidates

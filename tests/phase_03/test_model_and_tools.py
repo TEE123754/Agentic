@@ -479,3 +479,36 @@ def test_local_exploration_prefers_grounded_controls_without_scripting_actions()
     assert not any(choice.startswith(("click:", "scroll:")) for choice in choices)
     state.update(input_mode="touch", candidates=[])
     assert "scroll:down:600" in available_choices(state)
+
+
+def test_keyboard_projection_uses_perceived_facts_and_separate_current_focus():
+    from frictionlab.planning.choices import available_choices, compact_state
+
+    state = model_state()
+    state.update(input_mode="keyboard", focus={"name": "Start", "role": "button"},
+                 page_text='- region "Settings": - option "Noise" - heading "Checkout" [level=2] - paragraph: Delivery takes 3 days.')
+    state["candidates"][0]["focused"] = True
+    result = compact_state(state, available_choices(state))
+    assert result["page_text"] == "Checkout Delivery takes 3 days."
+    assert result["candidates"] == [{"id": 7, "name": "Start", "role": "button"}]
+    assert result["focus"]["name"] == "Start" and "press_key:Enter" in result["action_choices"]
+    assert state["candidates"][0]["focused"]
+
+
+@pytest.mark.parametrize("kind,key", [("click", None), ("press_key", "Enter")])
+def test_information_memory_applies_without_cognition_but_only_after_opening(kind, key):
+    from frictionlab.planning.memory import PersonaMemory
+
+    memory = PersonaMemory.__new__(PersonaMemory)
+    memory.broker = SimpleNamespace(persona=SimpleNamespace(device=SimpleNamespace(input_mode="mouse")))
+    memory.inspected_information_controls = set()
+    before = SimpleNamespace(semantic_signature="closed", focus={"name": "Details"},
+                             candidates=[SimpleNamespace(candidate_id=7, name="Details")])
+    after = SimpleNamespace(semantic_signature="open")
+    action = SimpleNamespace(kind=kind, key=key, candidate_id=7)
+    memory.remember_interaction(before, before, action, informational_dialog=True)
+    assert not memory.inspected_information_controls
+    memory.remember_interaction(before, after, action, informational_dialog=False)
+    assert not memory.inspected_information_controls
+    memory.remember_interaction(before, after, action, informational_dialog=True)
+    assert memory.inspected_information_controls == {"Details"}

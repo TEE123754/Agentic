@@ -125,7 +125,8 @@ class ToolBridge:
                 self.repeated_failures.clear()
             if hasattr(self.memory, "remember_interaction"):
                 informational_dialog = False
-                if self.cognition and dialog_open:
+                page = getattr(self.broker, "page", None)
+                if page is not None and await page.get_by_role("dialog").count() > 0:
                     fields = (
                         await self.broker.page.get_by_role("dialog")
                         .locator("input, select, textarea")
