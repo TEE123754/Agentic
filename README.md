@@ -31,7 +31,7 @@ For the native desktop launcher:
 uv run frictionlab desktop
 ```
 
-The native window provides masked key setup and start/open/stop controls for the same local assessment workspace. Optional remembering uses your OS credential store; session-only keys never become plaintext files. The Windows workflow builds a portable desktop ZIP. Read the [setup, safety and category coverage guide](docs/local-assessment.md) before running or downloading a candidate.
+The native window provides masked key setup and start/open/stop controls for the same local assessment workspace. Optional remembering uses your OS credential store; session-only keys never become plaintext files. The [Windows portable ZIP](https://github.com/TEE123754/Agentic/releases/download/v0.1.0/FrictionLab-windows-x64.zip) contains the desktop app. Read the [setup, safety and category coverage guide](docs/local-assessment.md) before running it.
 
 ## What you receive
 
@@ -103,4 +103,4 @@ Mind2Web reference scores are separate from actual planner evaluation. Optional 
 
 Acceptance runs once after construction; rerun affected failures only. See [CONTRIBUTING](CONTRIBUTING.md), [SECURITY](SECURITY.md) and the [implementation plan](IMPLEMENTATION_PLAN.md). Project code is licensed under [MIT](LICENSE); third-party components retain their notices.
 
-The owned-fixture release gate passed: 265 distinct regression cases, healthy real checkout 3/3 completed, with a reviewed partial defect baseline that excludes two planner faults. The offline assessment and Windows desktop gates also passed. FrictionLab 0.1.0 is a development candidate. See [Phase 11 results and remaining work](docs/phase11-validation.md) and [release operations](docs/phase11-release.md).
+The owned-fixture release gate passed: 265 distinct regression cases, healthy real checkout 3/3 completed, with a reviewed partial defect baseline that excludes two planner faults. The offline assessment and Windows desktop gates also passed. FrictionLab 0.1.0 is a public development release with explicit offline and owned-fixture limits. See [Phase 11 results and remaining work](docs/phase11-validation.md) and [release operations](docs/phase11-release.md).

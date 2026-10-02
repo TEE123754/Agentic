@@ -887,7 +887,7 @@ If a release check fails, fix the issue and rerun the failed checks plus directl
 **Construction checkpoint:** Built the native Tkinter/ttk masked key connection, shared dashboard launch/open/stop controls and graceful shutdown. Added a Windows-only native credential round-trip and widget/service acceptance batch, PyInstaller portable packaging with local web/axe assets and license notices, extracted-download self-check and real offline browser/report smoke. The workflow uses a disposable Windows runner; desktop build dependencies/models are not installed on the laptop. **Completion checkpoint — October 2, 2026:** [Final Windows gate 36961560859](https://github.com/TEE123754/Agentic/actions/runs/36961560859), build `1fb5d5c`, passed the two native window/keyring/service checks and extracted portable `FrictionLab.exe` self-check/local dashboard/offline Chrome/axe/report smoke. The report recorded zero target requests and three saved viewport screenshots. The binary archive's axe bytes are verified against the pinned manifest; Windows Git now checks that minified file out without line-ending conversion. The ZIP includes the application, local web assets, axe license/third-party notices and dependency metadata; no models, credentials or personal reports. The exact archive/hash and download receipt are retained in the workflow artifact. This closes the Windows desktop gate. Source mode supports other platforms, while frozen macOS/Linux binaries require their own qualification.
 
 
-## Phase 14 — Public open-source distribution and product landing (IN PROGRESS)
+## Phase 14 — Public open-source distribution and product landing (COMPLETE for declared public release gate)
 
 **Goal:** Make the MIT-licensed local tool discoverable and permanently downloadable. This fulfills the earlier open-source and clickable landing-page requirement; it publishes no user assessments, keys, models or production target content.
 
@@ -897,7 +897,7 @@ If a release check fails, fix the issue and rerun the failed checks plus directl
 
 **End-of-phase verification:** Confirm repository visibility, license and README, GitHub Release assets/checksums, page HTTP status and major links, and a clean workspace. No repeat browser/model regression is necessary because product code passed Phase 12 and the Windows binary passed Phase 13; only publication artifacts and links are checked.
 
-**Remaining:** finish history review, build and verify public archives/site, publish and check URLs, then tick this phase.
+**Completion checkpoint — October 2, 2026:** Reviewed 847 Git history objects/489 blobs for credential-like strings: seven matches were synthetic fixtures and no real key or private-key material was identified. The MIT [repository](https://github.com/TEE123754/Agentic) is public with the [landing page](https://tee123754.github.io/Agentic/) set as its homepage. [Release v0.1.0](https://github.com/TEE123754/Agentic/releases/tag/v0.1.0) has the qualified Windows ZIP (SHA-256 `1181c7498d1d8f3abdd823135af0424b8af49ac93e135ad3fe9ef4d8f2d63d78`), wheel (`0eb2d29b3b510097760b2bf1c16dd115ac9195cee6cf74917069860b9a8fda37`), source archive (`a604dfde6afac71ac2043dc8ed7f46ddcd8ef1d8c86f636a6c392aa8f883f3d7`) and combined `SHA256SUMS`; local recomputation matched all three and GitHub asset digests matched. The [Pages deployment](https://github.com/TEE123754/Agentic/actions/runs/36962346221) succeeded. The landing URL and [sample audit](https://tee123754.github.io/Agentic/examples/phase9-static/index.html) returned HTTP 200, and the staged site passed internal-link validation. A final editorial update to current scope/download wording was redeployed and verified. No repeat product/browser test was needed after the Phase 12–13 gates; publication checks covered only archives, visibility, links and static site. Remaining qualification is declared product scope: real provider/account smoke, arbitrary isolated interactive replicas, other OS frozen binaries and human-churn calibration. These are not represented as completed release gates.
 
 ## 6. First milestone to prioritize
 
@@ -923,6 +923,6 @@ This proves the core product behavior before investment in larger swarms, additi
 - [x] Phase 11 — Release validation (265 distinct cases; real healthy 3/3; partial defect baseline and limitations reviewed)
 - [x] Phase 12 — Simple local assessment workspace (51 initial passes; 3/3 affected and installed-wheel acceptance; report and screenshot reviewed)
 - [x] Phase 13 — Native desktop and downloadable distribution (Windows native 2/2; extracted executable offline smoke and checksum passed)
-- [ ] Phase 14 — Public open-source distribution and product landing
+- [x] Phase 14 — Public open-source distribution and product landing (public MIT repo/release and Pages landing/sample; archive digests and HTTP 200 checked)
 
 Update a checkbox only after completing its phase and its consolidated boundary checks.
