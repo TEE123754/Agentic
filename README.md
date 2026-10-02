@@ -4,7 +4,15 @@
 
 FrictionLab is an open-source Python tool for product and engineering teams investigating difficult user journeys. It combines a simple local website assessment dashboard with controlled synthetic-user cohorts. Teams can inspect offline snapshots, review evidence-backed findings, and investigate behavioral friction on disposable fixtures.
 
-[Product landing page](site/index.html) | [Sample offline audit](examples/phase9-static/index.html) | [Implementation plan](IMPLEMENTATION_PLAN.md) | [Verified progress](docs/phase-status.md)
+[Product landing page](https://tee123754.github.io/Agentic/) | [Sample offline audit](examples/phase9-static/index.html) | [Implementation plan](IMPLEMENTATION_PLAN.md) | [Verified progress](docs/phase-status.md)
+
+## Download
+
+- [Windows desktop ZIP and SHA256SUMS](https://github.com/TEE123754/Agentic/releases/tag/v0.1.0): extract the ZIP and open `FrictionLab.exe`. Chrome or Edge is needed for viewport and accessibility inspection. Connect your own eligible AI key in the native launcher when you want AI advice.
+- [Source, Python wheel and checksums](https://github.com/TEE123754/Agentic/releases/tag/v0.1.0): use Python 3.12 and uv for the CLI. No bundled model or browser download is required for URL-only checks.
+- [Public product landing](https://tee123754.github.io/Agentic/) and [detailed setup and safety scope](docs/local-assessment.md).
+
+These releases are development builds for the declared offline and owned-fixture gates. A score must be read alongside coverage, skipped checks and the report's limitations.
 
 ## Start a local assessment
 
@@ -95,4 +103,4 @@ Mind2Web reference scores are separate from actual planner evaluation. Optional 
 
 Acceptance runs once after construction; rerun affected failures only. See [CONTRIBUTING](CONTRIBUTING.md), [SECURITY](SECURITY.md) and the [implementation plan](IMPLEMENTATION_PLAN.md). Project code is licensed under [MIT](LICENSE); third-party components retain their notices.
 
-The owned-fixture release gate passed: 265 distinct regression cases, healthy real checkout 3/3 completed, with a reviewed partial defect baseline that excludes two planner faults. New assessment/desktop acceptance is in progress. FrictionLab 0.1.0 is a development candidate. See [Phase 11 results and remaining work](docs/phase11-validation.md) and [release operations](docs/phase11-release.md).
+The owned-fixture release gate passed: 265 distinct regression cases, healthy real checkout 3/3 completed, with a reviewed partial defect baseline that excludes two planner faults. The offline assessment and Windows desktop gates also passed. FrictionLab 0.1.0 is a development candidate. See [Phase 11 results and remaining work](docs/phase11-validation.md) and [release operations](docs/phase11-release.md).

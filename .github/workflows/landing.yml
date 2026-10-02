@@ -1,0 +1,41 @@
+name: Public product landing
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - site/**
+      - examples/phase9-static/**
+      - scripts/build_landing.py
+      - .github/workflows/landing.yml
+permissions:
+  contents: read
+jobs:
+  build:
+    if: github.event.repository.private == false
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Stage static product information and synthetic sample
+        run: python scripts/build_landing.py "$RUNNER_TEMP/frictionlab-pages"
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: ${{ runner.temp }}/frictionlab-pages
+  deploy:
+    needs: build
+    runs-on: ubuntu-24.04
+    environment:
+      name: github-pages
+      url: ${{ steps.publish.outputs.page_url }}
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    steps:
+      - id: publish
+        uses: actions/deploy-pages@v4

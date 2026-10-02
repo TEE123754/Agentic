@@ -151,7 +151,7 @@ Phases 0–6 have completed their documented owned-fixture gates. Phases 7–10 
 
 **Date:** October 2, 2026 (Asia/Kuala_Lumpur).
 
-**Delivered:** Installable FrictionLab 0.1.0 console/wheel/source, bundled local assets, init/doctor, one-worker fixture cohort CLI, opt-in Groq/Gemini adapters with environment-only keys, sanitized bounded semantic inputs, shared inference budget/runtime/retries/quota pause, provider provenance and strict comparison rejection. Source README/site/operator guide, third-party notices and downloadable development archives are included.
+**Delivered:** Installable FrictionLab 0.1.0 console/wheel/source, bundled local assets, init/doctor, one-worker fixture cohort CLI, opt-in Groq/Gemini adapters with environment keys at that phase (native credential storage was added in Phase 12), sanitized bounded semantic inputs, shared inference budget/runtime/retries/quota pause, provider provenance and strict comparison rejection. Source README/site/operator guide, third-party notices and downloadable development archives are included.
 
 **Acceptance:** [Initial batch](https://github.com/TEE123754/Agentic/actions/runs/36892800838) passed 48/48 checks in 33.21 seconds plus isolated installed-wheel/browser acceptance. [Installed navigation](https://github.com/TEE123754/Agentic/actions/runs/36893880901) passed without review HTTP requests. Review found invalid inference preflight could escape terminal reporting; settings were frozen at submission and the [affected cohort repair](https://github.com/TEE123754/Agentic/actions/runs/36894867219) passed 2/2 in 42.77 seconds. Overall 49 distinct pytest cases, plus installed CLI/browser/navigation, are verified. Defect abandoned, healthy completed, seeded finding resolved; reports were ready with valid references. Sentinel zero traffic/data unchanged. Screenshot/advice, archive contents/checksums and all 151 evidence files including DuckDB reviewed offline; no synthetic key marker. No heavy local tests/model downloads.
 
@@ -165,7 +165,7 @@ Phases 0–6 have completed their documented owned-fixture gates. Phases 7–10 
 
 [36956658903](https://github.com/TEE123754/Agentic/actions/runs/36956658903) passed 71/71 in 1319.509 seconds plus installed-wheel acceptance; 265 distinct regression cases pass across full/affected windows. Healthy real checkout: ready, 3/3 completed/no missing evidence. Defect baseline: partial, one grounded mobile abandonment, two excluded planner faults. Reviewed latest reports, comparison, exports, portable screenshot, archives and cleanup; zero sentinel requests and unchanged data. Earlier unresolved statements are historical. See [complete validation receipt](phase11-validation.md).
 
-## Phases 12–13 - Built; affected acceptance remaining
+## Phases 12–13 - Historical construction window
 
 The shared FastAPI/vanilla dashboard, six-category static catalog, zero-contact URL/snapshots, separately approved single-GET capture, offline renderer, axe/viewports, scores/coverage/confidence, progress/cancel/recovery and JSON/MD/HTML/ZIP reports are built. CLI `frictionlab start` prints localhost; Tkinter desktop provides masked key setup and service launch/open/stop. Keys use process memory or explicitly selected native OS keyring, with no plaintext fallback. AI only suggests fixes for measured findings; active/dynamic checks need a verified replica or source/access and are skipped here.
 
@@ -173,4 +173,8 @@ The shared FastAPI/vanilla dashboard, six-category static catalog, zero-contact 
 
 ### Phase 12 completion receipt
 
-[Initial 36959441855](https://github.com/TEE123754/Agentic/actions/runs/36959441855) had 51/52 passes. [Affected 36961176346](https://github.com/TEE123754/Agentic/actions/runs/36961176346) passed 3/3 and the installed-wheel dashboard/export smoke. Reviewed saved real Chrome dashboard/snapshot screenshots, report counts (5 passed, 11 failed, 7 skipped, 0 incomplete), scores (31 overall, 70% coverage), axe/viewport issues, reproduction and limitations. The zero-contact sentinel received no requests. Phase 12 is checked for this offline/static capability. Phase 13 remains awaiting the pinned axe resource's Windows binary checkout and final archive acceptance.
+[Initial 36959441855](https://github.com/TEE123754/Agentic/actions/runs/36959441855) had 51/52 passes. [Affected 36961176346](https://github.com/TEE123754/Agentic/actions/runs/36961176346) passed 3/3 and the installed-wheel dashboard/export smoke. Reviewed saved real Chrome dashboard/snapshot screenshots, report counts (5 passed, 11 failed, 7 skipped, 0 incomplete), scores (31 overall, 70% coverage), axe/viewport issues, reproduction and limitations. The zero-contact sentinel received no requests. Phase 12 is checked for this offline/static capability. Phase 13 was still awaiting Windows archive acceptance at that point; its final receipt follows.
+
+### Phase 13 completion and Phase 14 publication
+
+[36961560859](https://github.com/TEE123754/Agentic/actions/runs/36961560859) passed two Windows native checks and the extracted portable executable self-check/local dashboard/offline Chromium/axe/report smoke after Git pinned the minified axe resource as binary. The saved report shows zero target requests and three viewport screenshots. Phase 13's Windows gate is complete; macOS/Linux frozen downloads are not qualified. Phase 14 is preparing public MIT source, durable Release assets and a static landing page. No real provider key, production site or personal data was used in acceptance.

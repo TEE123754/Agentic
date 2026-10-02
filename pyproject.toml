@@ -50,6 +50,7 @@ packages = ["frictionlab"]
 "site" = "frictionlab/_assets/site"
 "examples/phase9-static" = "frictionlab/_assets/examples/phase9-static"
 "README.md" = "frictionlab/_assets/README.md"
+"RELEASE_NOTES.md" = "frictionlab/_assets/RELEASE_NOTES.md"
 "LICENSE" = "frictionlab/_assets/LICENSE"
 "CONTRIBUTING.md" = "frictionlab/_assets/CONTRIBUTING.md"
 "SECURITY.md" = "frictionlab/_assets/SECURITY.md"
@@ -58,7 +59,7 @@ packages = ["frictionlab"]
 "THIRD_PARTY_NOTICES.md" = "frictionlab/_assets/THIRD_PARTY_NOTICES.md"
 
 [tool.hatch.build.targets.sdist]
-include = ["frictionlab", "configs", "vendor", "site", "examples/phase9-static", "docs", "scripts/setup_resources.py", "scripts/build_desktop.py", "scripts/desktop_entry.py", "scripts/accept_desktop.py", "scripts/accept_local_workspace.py", "pyproject.toml", "uv.lock", "README.md", "LICENSE", "CONTRIBUTING.md", "SECURITY.md", "IMPLEMENTATION_PLAN.md", "THIRD_PARTY_NOTICES.md"]
+include = ["frictionlab", "configs", "vendor", "site", "examples/phase9-static", "docs", "scripts/setup_resources.py", "scripts/build_desktop.py", "scripts/desktop_entry.py", "scripts/accept_desktop.py", "scripts/accept_local_workspace.py", "scripts/build_landing.py", "scripts/verify_release_archives.py", "pyproject.toml", "uv.lock", "README.md", "RELEASE_NOTES.md", "LICENSE", "CONTRIBUTING.md", "SECURITY.md", "IMPLEMENTATION_PLAN.md", "THIRD_PARTY_NOTICES.md"]
 
 [tool.ruff]
 line-length = 100
