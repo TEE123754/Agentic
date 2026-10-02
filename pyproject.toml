@@ -10,6 +10,7 @@ dependencies = [
   "browser-use",
   "playwright",
   "httpx",
+  "keyring>=25,<27",
   "psutil",
   "pydantic",
   "fastapi",
@@ -28,6 +29,10 @@ dashboard = [
 
 [dependency-groups]
 dev = ["pytest", "ruff"]
+desktop-build = ["pyinstaller>=6,<7"]
+
+[project.gui-scripts]
+frictionlab-desktop = "frictionlab.desktop:main"
 
 [project.scripts]
 frictionlab = "frictionlab.__main__:main"
@@ -53,7 +58,7 @@ packages = ["frictionlab"]
 "THIRD_PARTY_NOTICES.md" = "frictionlab/_assets/THIRD_PARTY_NOTICES.md"
 
 [tool.hatch.build.targets.sdist]
-include = ["frictionlab", "configs", "vendor", "site", "examples/phase9-static", "docs", "scripts/setup_resources.py", "pyproject.toml", "uv.lock", "README.md", "LICENSE", "CONTRIBUTING.md", "SECURITY.md", "IMPLEMENTATION_PLAN.md", "THIRD_PARTY_NOTICES.md"]
+include = ["frictionlab", "configs", "vendor", "site", "examples/phase9-static", "docs", "scripts/setup_resources.py", "scripts/build_desktop.py", "scripts/desktop_entry.py", "scripts/accept_desktop.py", "scripts/accept_local_workspace.py", "pyproject.toml", "uv.lock", "README.md", "LICENSE", "CONTRIBUTING.md", "SECURITY.md", "IMPLEMENTATION_PLAN.md", "THIRD_PARTY_NOTICES.md"]
 
 [tool.ruff]
 line-length = 100

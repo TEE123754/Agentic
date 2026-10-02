@@ -63,11 +63,12 @@ def load_inference(path: Path | None = None):
 
 
 def provider_key(provider):
-    name = {"groq": "GROQ_API_KEY", "gemini": "GEMINI_API_KEY"}[provider]
-    value = os.environ.get(name, "")
-    if not 8 <= len(value) <= 4096 or any(char.isspace() for char in value):
+    from frictionlab.credentials import get_key
+
+    value = get_key(provider)
+    if not value:
         raise PlannerStopped(
-            "model_setup", f"Set a valid {name} in your terminal; no browser was started"
+            "model_setup", "Connect a provider key in the app or configure your environment"
         )
     return value
 
@@ -76,7 +77,11 @@ def safe_text(value):
     """Known runtime keys and recognizable tokens never enter stored model output."""
     import re
 
+    from frictionlab.credentials import known_keys
+
     text = str(value)
+    for secret in known_keys():
+        text = text.replace(secret, "[redacted credential]")
     for name in ("GROQ_API_KEY", "GEMINI_API_KEY"):
         secret = os.environ.get(name, "")
         if secret:

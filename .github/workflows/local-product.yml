@@ -1,0 +1,88 @@
+name: Local workspace and desktop acceptance
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: Completed phase or affected follow-up
+        type: choice
+        options: [all, linux, windows]
+        default: all
+permissions:
+  contents: read
+concurrency:
+  group: local-product
+  cancel-in-progress: false
+jobs:
+  workspace:
+    if: inputs.target == 'all' || inputs.target == 'linux'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    env:
+      FRICTIONLAB_BROWSER_PATH: /usr/bin/google-chrome
+      FRICTIONLAB_APP_EVIDENCE: artifacts/local-workspace
+      ANONYMIZED_TELEMETRY: 'false'
+      DO_NOT_TRACK: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Clean locked installation and wheel
+        run: |
+          python -m pip install uv==0.11.18
+          uv sync --locked --group dev --extra dashboard --no-install-project
+          uv build
+          uv pip install --python .venv/bin/python --no-deps dist/*.whl
+      - name: Completed workspace gate and affected BYOK integration
+        run: |
+          mkdir -p artifacts/local-workspace
+          .venv/bin/python -m pytest -q tests/phase_12 tests/phase_10 --junitxml=artifacts/local-workspace/acceptance.xml
+          .venv/bin/python -I scripts/accept_local_workspace.py
+          cp /tmp/frictionlab-installed-acceptance.json artifacts/local-workspace/
+          sha256sum dist/* > dist/SHA256SUMS
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: local-workspace-download-and-evidence
+          path: |
+            dist/
+            artifacts/local-workspace/
+          retention-days: 14
+  desktop:
+    if: inputs.target == 'all' || inputs.target == 'windows'
+    runs-on: windows-2025
+    timeout-minutes: 35
+    env:
+      ANONYMIZED_TELEMETRY: 'false'
+      DO_NOT_TRACK: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Clean locked desktop build dependencies
+        run: |
+          python -m pip install uv==0.11.18
+          uv sync --locked --group dev --group desktop-build --no-install-project
+      - name: Native phase gate and portable packaging
+        run: |
+          New-Item -ItemType Directory -Force artifacts/desktop | Out-Null
+          .venv/Scripts/python.exe -m pytest -q tests/phase_13 --junitxml=artifacts/desktop/native.xml
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          .venv/Scripts/python.exe scripts/build_desktop.py
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          .venv/Scripts/python.exe scripts/accept_desktop.py
+          exit $LASTEXITCODE
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: windows-desktop-download-and-evidence
+          path: |
+            dist/FrictionLab-windows-x64.zip
+            dist/DESKTOP-SHA256SUMS
+            artifacts/desktop/
+          retention-days: 14

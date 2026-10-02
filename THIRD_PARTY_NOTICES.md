@@ -19,3 +19,11 @@ Groq and Gemini are optional remote services subject to their own terms and free
 ## Release boundary
 
 Wheel/source delivery includes project code, synthetic fixtures, configuration, local report viewer/site, documentation and the licensed axe bundle. It excludes keys, `.env` files, local inference configuration, run evidence, downloaded weights/runtime, virtual environments and Git history. Public visibility/package-index publication is a separate release action. Dependency license updates and optional redistribution still need review at each release.
+
+## Local desktop and credential storage
+
+- [jaraco/keyring](https://github.com/jaraco/keyring): MIT; the tool selects only core native OS credential backends. No plaintext fallback.
+- [PyInstaller](https://github.com/pyinstaller/pyinstaller): GPL with the stated distribution/bootloader exception; some components retain their separately stated licenses. A frozen FrictionLab app is distributed under the project's MIT license with third-party notices retained. The desktop archive includes available dependency LICENSE/COPYING files and build-environment metadata.
+- Tkinter/Tcl/Tk: Python standard GUI bindings and Tcl/Tk libraries retain their respective PSF/Tcl/Tk notices; PyInstaller collects the required runtime components.
+
+The frozen launcher excludes local model runtimes and development dashboards. It includes Playwright's driver resources and bundled axe-core; Chrome/Edge is supplied by the operator and is not redistributed in this archive. API keys, models, uploaded source and personal reports are never part of the desktop build.

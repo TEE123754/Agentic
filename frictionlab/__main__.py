@@ -26,6 +26,20 @@ def main(argv=None):
     parser = argparse.ArgumentParser(prog="frictionlab")
     parser.add_argument("--version", action="version", version="FrictionLab 0.1.0")
     commands = parser.add_subparsers(dest="command", required=True)
+    start = commands.add_parser("start", help="Start the local website assessment dashboard")
+    start.add_argument("--port", type=int, default=0)
+    start.add_argument("--workspace", type=Path)
+    start.add_argument("--no-open", action="store_true")
+    setup = commands.add_parser(
+        "configure", help="Connect your own API key through a masked prompt"
+    )
+    setup.add_argument("--provider", choices=("groq", "gemini"), required=True)
+    setup.add_argument("--model", required=True)
+    setup.add_argument("--workspace", type=Path)
+    setup.add_argument("--session-only", action="store_true")
+    setup.add_argument("--share-findings", action="store_true", required=True)
+    setup.add_argument("--free-tier-confirmed", action="store_true", required=True)
+    commands.add_parser("desktop", help="Open the native desktop launcher and key setup")
     init = commands.add_parser("init", help="Create a local workspace without downloads")
     init.add_argument("directory", type=Path)
     diagnostic = commands.add_parser(
@@ -114,6 +128,69 @@ def main(argv=None):
         )
         command.add_argument("--inference-config", type=Path)
     args = parser.parse_args(argv)
+    if args.command == "desktop":
+        from frictionlab.desktop import main as desktop_main
+
+        return desktop_main()
+    if args.command == "configure":
+        import getpass
+
+        from frictionlab.app import Connection, connect
+        from frictionlab.launcher import LocalServer, workspace
+
+        root = args.workspace or workspace()
+        try:
+            connect(
+                root,
+                Connection(
+                    provider=args.provider,
+                    model=args.model,
+                    key=getpass.getpass("Your API key (hidden): "),
+                    remember=not args.session_only,
+                    share_findings=args.share_findings,
+                    free_tier_confirmed=args.free_tier_confirmed,
+                ),
+            )
+        except Exception:  # noqa: BLE001 - Boundary faults must yield safe diagnostics, never raw secrets.
+            print(
+                "Key setup failed. Native storage must be available, or use session-only mode in the dashboard.",
+                file=sys.stderr,
+            )
+            return 1
+        if args.session_only:
+            print("Session-only key configured. Starting dashboard in this process.")
+            server = LocalServer(root)
+            print("Dashboard: " + server.url, flush=True)
+            server.run()
+        else:
+            print("Key stored in native OS credential storage. Run frictionlab start.")
+        return 0
+    if args.command == "start":
+        from frictionlab.launcher import LocalServer
+
+        server = LocalServer(args.workspace, args.port)
+        print("Dashboard: " + server.url, flush=True)
+        print(
+            "Runs locally. Paste a URL and choose evidence/checks. Ctrl+C stops the service.",
+            flush=True,
+        )
+        if not args.no_open:
+            import threading
+            import webbrowser
+
+            def open_when_ready():
+                import time
+
+                for _ in range(100):
+                    if server.ready:
+                        webbrowser.open(server.url)
+                        return
+                    time.sleep(0.1)
+
+            threading.Thread(target=open_when_ready, daemon=True).start()
+        server.run()
+        return 0
+
     if args.command == "init":
         from frictionlab.product import initialize
 

@@ -2,58 +2,67 @@
 
 **Find interface friction before release, with synthetic users and evidence you can review.**
 
-FrictionLab is an open-source Python tool for product and engineering teams investigating difficult user journeys. Configurable personas navigate disposable web fixtures, record interaction friction, and produce detailed audits with screenshots, patience changes, abandonment explanations and remediation advice.
+FrictionLab is an open-source Python tool for product and engineering teams investigating difficult user journeys. It combines a simple local website assessment dashboard with controlled synthetic-user cohorts. Teams can inspect offline snapshots, review evidence-backed findings, and investigate behavioral friction on disposable fixtures.
 
 [Product landing page](site/index.html) | [Sample offline audit](examples/phase9-static/index.html) | [Implementation plan](IMPLEMENTATION_PLAN.md) | [Verified progress](docs/phase-status.md)
 
-## What teams can inspect
-
-- Behavioral evidence: failed interactions, validation, stalled progress and evidence-linked synthetic abandonment diagnoses.
-- Cohort results: completion, abandonment, blocked and infrastructure-failure counts, with inconclusive sessions visible.
-- Actionable audits: prioritized findings, observations, inferred mechanisms, recommendations and verification steps.
-- Replay and review: saved screenshots, compatible synthetic click heatmaps, finding dispositions and report revisions.
-- Comparisons: matched fixture baseline/candidate results with raw counts and exclusions.
-- Portable reports: JSON, Markdown and HTML, plus an interactive viewer that works without the backend.
-
-## Current scope
-
-This is a development-stage tool. Phases 0-10 passed their declared fixture, sharing and Linux/mocked-BYOK gates. See the [Phase 10 validation record](docs/phase10-validation.md). Synthetic persona behavior is not a prediction of human conversion or proof of human usability.
-
-**Execution currently accepts bundled disposable fixtures only.** Arbitrary deployed products and external staging replicas remain blocked. Future replica support requires separate data, mocked integrations and a proven network boundary. FrictionLab provides advice; it does not change application source or deploy fixes. Reports and replay read saved evidence without contacting the tested website.
-
-The current planner uses local llama.cpp/Qwen. **Phase 10 adds an installable `frictionlab` CLI and opt-in Groq/Gemini inference using your own API key.** See the [local installation and BYOK guide](docs/phase10-installation.md). Cloud transports passed mocked integration checks; live account/model behavior is unverified without your key and an opted-in run. The application, browser and evidence remain local. BYOK inference sends bounded sanitized semantic inputs to the chosen provider; fully offline inference uses a local model without a key. No FrictionLab account, subscription or billing proxy is required. Provider free-tier availability is not guaranteed.
-
-## Download and run from source
-
-Install Git, Python 3.12 and [uv](https://github.com/astral-sh/uv). Clone this repository or download its ZIP from GitHub's **Code** menu, then open a terminal in the extracted directory.
+## Start a local assessment
 
 ```sh
 git clone https://github.com/TEE123754/Agentic.git
 cd Agentic
-uv sync --locked --extra dashboard
-uv run frictionlab --help
-uv run frictionlab init ../frictionlab-workspace
+uv sync --locked
+uv run frictionlab start
+```
+
+The CLI opens a localhost dashboard. Paste a URL, choose an evidence source, select individual checks or all six categories, and start. Connect your own Groq or Gemini key in the dashboard if you want AI recommendations. Core structural checks work without a key. No models or browsers download automatically.
+
+For the native desktop launcher:
+
+```sh
+uv run frictionlab desktop
+```
+
+The native window provides masked key setup and start/open/stop controls for the same local assessment workspace. Optional remembering uses your OS credential store; session-only keys never become plaintext files. The Windows workflow builds a portable desktop ZIP. Read the [setup, safety and category coverage guide](docs/local-assessment.md) before running or downloading a candidate.
+
+## What you receive
+
+- Overall and per-category scores accompanied by executed coverage and confidence.
+- Severity-ranked issues with observations, reproduction steps and practical recommendations.
+- Passed, failed, skipped and incomplete checks, with missing prerequisites visible.
+- Progress, cancellation, local history, three viewport screenshots and JSON/Markdown/HTML/ZIP exports.
+- Optional bounded AI advice for measured findings; provider faults retain the deterministic report.
+- Existing owned-fixture cohort tools for synthetic behavioral journeys, patience, abandonment evidence, replay and comparisons.
+
+## Production protection and current scope
+
+**Browser isolation alone cannot prevent production side effects.** URL-only inspection makes no DNS or website requests. Uploaded offline snapshots are rendered on a synthetic origin with application scripts, forms, frames, workers and external requests disabled. This dashboard never navigates its inspection browser to your submitted URL.
+
+Public HTML capture is a separate, explicitly approved one-GET operation, without authentication, redirects or subresource fetching. A GET can affect logs or trigger server state changes: use an uploaded snapshot when zero target contact is required.
+
+| Category | Available offline evidence | Additional access required |
+|---|---|---|
+| Functionality | Declared link structure | Interactive flows, APIs and integrations require an isolated application/backend. |
+| Usability | Titles, headings and structural signals | Cognitive journeys require an isolated interactive replica; real churn needs human calibration. |
+| Accessibility | Alt/label declarations and axe-core | Keyboard, screen reader and compliance conclusions require interactive/manual review. |
+| Responsiveness | Viewport metadata and three static viewport checks | Dynamic layouts and complete asset fidelity require a replica. |
+| Performance | HTML size heuristic | Real load measurements and Core Web Vitals require a controlled replica/benchmark. |
+| Security | URL scheme; selected original headers on approved capture | TLS/server configuration, source/dependency and auth/exploit checks require additional access and authorization. |
+
+Unsupported work is explicitly skipped. An unavailable browser or interrupted check is incomplete. Scores do not count unknown checks as passing and are not production readiness or security certification.
+
+Autonomous browser execution still accepts **bundled disposable fixtures only**; arbitrary deployed/staging application workflows remain blocked until a separate backend/data/integration boundary is verified. FrictionLab provides advice and does not modify application source or deploy fixes. Local report review does not contact the tested website. Screenshot pixels can contain supplied content: review exports before sharing.
+
+## Existing behavioral cohort workflow
+
+For deeper controlled persona investigations, see the [local CLI/BYOK guide](docs/phase10-installation.md) and [autonomous runner guide](docs/phase3-autonomous.md). Local model downloads are optional and can be several GB; the new snapshot dashboard does not need them. Cloud inference sends opted-in sanitized inputs to your chosen provider and uses your own eligible account. Free-tier availability and quotas are not guaranteed; no paid fallback is provided.
+
+```sh
 uv run frictionlab doctor
+uv run frictionlab cohort --variant dead_button
 ```
 
-GitHub access depends on repository visibility; public publication is a later release step. Development wheel/source downloads are produced by the Phase 10 GitHub Actions workflow; install instructions and free-account configuration are in the [operator guide](docs/phase10-installation.md). No package-index publication is promised here.
-
-For the local fixture/API and dashboard, use two terminals:
-
-```sh
-uv run frictionlab serve
-uv run frictionlab dashboard
-```
-
-Open `http://127.0.0.1:8501` for the dashboard. Automation requires a compatible local Chromium/Chrome path; follow the [browser setup guide](docs/phase2-browser.md). Autonomous runs need either an opted-in BYOK provider or the separately configured local model resources in the [autonomous runner guide](docs/phase3-autonomous.md). Model downloads are optional setup steps and can be several GB; opening a saved report needs none.
-
-```sh
-uv run frictionlab behavioral --persona impatient_mobile --journey checkout_review --variant dead_button
-```
-
-Profiles include an impatient mobile shopper, a keyboard/low-vision user and an enterprise evaluator. These are explicit synthetic configurations, not clinical or demographic simulations.
-
-Use `frictionlab cohort --variant dead_button` for a detailed cohort audit. It defaults to one profile, one journey and one worker. `doctor` checks local setup without any browser/model launch or network request. Configure your workspace and key as described in the operator guide before running.
+Synthetic personas include an impatient mobile shopper, a keyboard/low-vision user and an enterprise evaluator. They are explicit behavioral configurations, not demographic, clinical or human conversion predictions. The older Streamlit cohort review uses `frictionlab serve` and `frictionlab dashboard`; the simple assessment interface uses the single `frictionlab start` command.
 
 ## Inspect and share a report
 
@@ -73,7 +82,8 @@ Replace `RUN_UUID` with a saved cohort run identifier and use a new output direc
 | Planning | [smolagents](https://github.com/huggingface/smolagents), [llama.cpp](https://github.com/ggml-org/llama.cpp), local Qwen | Bounded agent tools and local inference |
 | Runtime/API | Python, Pydantic, FastAPI, uvicorn | Persona budgets, cohorts and local APIs |
 | Storage/traces | DuckDB, OpenTelemetry | Local structured evidence and execution records |
-| Review | Streamlit, Plotly, bundled HTML/CSS/JavaScript | Dashboard, comparisons and offline viewer |
+| Review | FastAPI/local HTML/CSS/JavaScript; Streamlit/Plotly for cohorts | Assessment dashboard, comparisons and offline exports |
+| Desktop/keys | Tkinter/ttk, keyring, PyInstaller | Native launcher, OS credential storage and Windows packaging |
 | Evaluation | [Mind2Web](https://huggingface.co/datasets/osunlp/Mind2Web), owned fixtures | Reference scoring and controlled acceptance |
 | Delivery | GitHub, uv; optional static hosting | Source downloads and reproducible phase gates |
 
