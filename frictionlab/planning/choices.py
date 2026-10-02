@@ -6,7 +6,7 @@ from itertools import product
 from frictionlab.planning.contracts import Decision, PlannerStopped, action_schema
 from frictionlab.planning.memory import keyboard_facts
 
-PROTOCOL = "semantic_choice_v5"
+PROTOCOL = "semantic_choice_v6"
 INSTRUCTION = (
     'Select one action_choices entry as {"choice":"..."}. '
     "Explore current controls toward the goal; scroll if none. "
@@ -67,6 +67,10 @@ def available_choices(state):
         fields = [key for key in properties if key not in {"kind", "observation_id"}]
         values = [properties[key].get("enum", [1000]) for key in fields]
         for selected in product(*values):
+            if kind == "click":
+                candidate = next(item for item in state["candidates"] if item["id"] == selected[0])
+                if candidate["role"] == "textbox" and candidate.get("filled_text_reference") == "synthetic_email":
+                    continue
             if kind == "type_text":
                 arguments = dict(zip(fields, selected, strict=True))
                 candidate = next(item for item in state["candidates"]

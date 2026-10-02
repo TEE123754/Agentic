@@ -327,3 +327,12 @@ def test_report_rejects_unbacked_abandonment_diagnosis():
     }
     with pytest.raises(ValueError, match="recorded friction events"):
         RunReport.model_validate(template)
+
+
+def test_focusing_a_text_field_is_not_a_dead_button_or_false_abandonment():
+    runtime, _ = cognitive()
+    before, after = observation(name="Email"), observation(name="Email")
+    before.candidates = (before.candidates[0].model_copy(update={"role": "textbox"}),)
+    entry = runtime.ingest(step(before, after), before, after, {"review": False})
+    assert entry.kind == "unchanged" and runtime.remaining == runtime.initial
+    assert not runtime.events and not runtime.abandoned

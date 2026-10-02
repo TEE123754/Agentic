@@ -532,6 +532,7 @@ def test_filled_input_choices_prevent_idempotent_typing_without_selecting_naviga
         state["input_mode"] = mode
         choices = available_choices(state)
         assert not any(key.startswith("type_text:") for key in choices)
+        assert "click:7" not in choices
         assert ("press_key:Tab" if mode == "keyboard" else "click:8") in choices
     state["candidates"][0].pop("filled_text_reference")
     assert "type_text:7:synthetic_email" in available_choices(state)

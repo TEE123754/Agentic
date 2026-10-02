@@ -111,7 +111,10 @@ class CognitiveRuntime:
             return None
         if action.kind == "type_text" and step.result == "progress":
             self.corrections.add("Continue to order review")
-        if action.kind == "click" and step.result == "no_change" and target:
+        clicked = next((candidate for candidate in before.candidates
+                        if candidate.candidate_id == action.candidate_id), None)
+        if (action.kind == "click" and step.result == "no_change" and target
+                and clicked is not None and clicked.role not in {"textbox", "searchbox"}):
             return (
                 "dead_interaction",
                 0.94,
