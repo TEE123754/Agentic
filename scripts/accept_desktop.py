@@ -19,7 +19,18 @@ with tempfile.TemporaryDirectory() as temporary:
         archive.extractall(destination)
     executable = destination / "FrictionLab/FrictionLab.exe"
     for flag in ("--self-check", "--serve-smoke"):
-        subprocess.run([str(executable), flag], cwd=destination, check=True, timeout=150)
+        try:
+            subprocess.run([str(executable), flag], cwd=destination, check=True, timeout=150)
+        finally:
+            evidence = root / "artifacts/desktop"
+            if (destination / "smoke-workspace").is_dir():
+                shutil.copytree(
+                    destination / "smoke-workspace", evidence / "packaged-smoke", dirs_exist_ok=True
+                )
+            if (destination / "packaged-failure.json").is_file():
+                shutil.copy2(
+                    destination / "packaged-failure.json", evidence / "packaged-failure.json"
+                )
     evidence = root / "artifacts/desktop"
     shutil.copytree(
         destination / "smoke-workspace", evidence / "packaged-smoke", dirs_exist_ok=True

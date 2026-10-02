@@ -11,6 +11,7 @@ from urllib.parse import unquote, urlsplit
 from frictionlab.assessment.models import Check
 from frictionlab.assessment.snapshot import mime, safe_document
 from frictionlab.browser.accessibility import inspect_accessibility
+from frictionlab.planning.inference import safe_text
 
 
 def browser_path():
@@ -76,7 +77,7 @@ async def render_snapshot(snapshot, categories, directory, stop):
             browser = await pw.chromium.launch(**options)
             try:
                 context = await browser.new_context(
-                    java_script_enabled=False,
+                    java_script_enabled=True,
                     offline=True,
                     service_workers="block",
                     accept_downloads=False,
@@ -143,17 +144,15 @@ async def render_snapshot(snapshot, categories, directory, stop):
                     )
                 if "accessibility" in categories:
                     stage = "trusted axe accessibility audit"
-                    # Chromium's script-disable switch also suppresses axe's asynchronous
-                    # callbacks. Permit trusted audit execution only after sanitization and
-                    # restrictive CSP have removed/blocked all application scripts.
-                    session = await context.new_cdp_session(page)
-                    await session.send("Emulation.setScriptExecutionDisabled", {"value": False})
-                    try:
-                        result = await asyncio.wait_for(inspect_accessibility(page), timeout=20)
-                    finally:
-                        await session.send("Emulation.setScriptExecutionDisabled", {"value": True})
-                        await session.detach()
+                    # Page-authored scripts are removed and blocked by restrictive CSP.
+                    # Trusted Playwright evaluation alone runs the pinned axe audit; its
+                    # asynchronous callbacks need the engine enabled, not application code.
+                    result = await asyncio.wait_for(inspect_accessibility(page), timeout=20)
                     for violation in result["violations"]:
+                        selectors = [
+                            safe_text(" ".join(str(v) for v in item.get("target", [])))[:200]
+                            for item in violation["nodes"][:5]
+                        ]
                         add(
                             "accessibility.axe-" + violation["id"],
                             "accessibility",
@@ -166,7 +165,19 @@ async def render_snapshot(snapshot, categories, directory, stop):
                             [
                                 f"Rule {violation['id']}; affected nodes {len(violation['nodes'])}",
                                 "viewport-1440.png",
+                                *["Affected selector: " + selector for selector in selectors],
                             ],
+                        )
+                        checks[-1].reproduction = [
+                            "Open the same supplied snapshot at 1440 × 900 px.",
+                            "Inspect the affected element selectors: " + "; ".join(selectors),
+                            "Run axe rule "
+                            + violation["id"]
+                            + " and confirm the observed failure.",
+                        ]
+                        checks[-1].recommendation = (
+                            safe_text(violation.get("description", violation["help"]))
+                            + " Verify each affected selector on an isolated interactive copy after fixing it."
                         )
                     add(
                         "accessibility.axe",
@@ -178,14 +189,14 @@ async def render_snapshot(snapshot, categories, directory, stop):
                 await context.close()
             finally:
                 await browser.close()
-    except Exception:  # noqa: BLE001 - Boundary faults must yield safe diagnostics, never raw secrets.
+    except Exception as exc:  # noqa: BLE001 - Boundary faults must yield safe diagnostics, never raw secrets.
         for cat in ("responsiveness", "accessibility"):
             add(
                 cat + ".renderer",
                 cat,
                 "Offline browser inspection",
                 "incomplete",
-                f"Inspection failed or was cancelled at {stage}. Check the installed Chrome/Edge or Playwright Chromium and retry. No target navigation occurred.",
+                f"Inspection failed or was cancelled at {stage} ({type(exc).__name__}). Check the installed Chrome/Edge or Playwright Chromium and retry. No target navigation occurred.",
             )
     limits = (
         [

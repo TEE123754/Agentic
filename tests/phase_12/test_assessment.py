@@ -437,7 +437,12 @@ def test_real_offline_browser_and_dashboard(tmp_path):
             assert report["acquisition"]["target_requests"] == 0
             assert len(report["evidence_files"]) == 3
             assert report["summary"]["failed"] > 0
-            assert any(c["id"].startswith("accessibility.axe-") for c in report["issues"])
+            assert any(c["id"].startswith("accessibility.axe-") for c in report["issues"]), (
+                json.dumps(report)
+            )
+            assert not any(c["id"].endswith(".renderer") for c in report["checks"]), json.dumps(
+                report
+            )
             async with page.expect_download() as download:
                 await page.get_by_role("button", name="ZIP", exact=True).click()
             saved = await download.value
