@@ -43,9 +43,9 @@ The existing [complete synthetic audit](../examples/phase9-static/index.html) an
 - [x] One full regression, retained failed evidence and targeted recovery repair acceptance.
 - [x] Installed-wheel/browser/landing acceptance and offline report/screenshot/archive review.
 - [x] Complete synthetic report and explicitly illustrative partial examples.
-- [ ] Resolve local planner latency/completion within the declared bounds; document any configuration/model change before validation.
-- [ ] Pass the two failed healthy journey selectors and the real three-profile defect/healthy pilot, then inspect comparison, export and protection evidence.
-- [ ] Rebuild final archives with reviewed gate records and examples; check off Phase 11 only after its remaining acceptance succeeds.
+- [x] Resolve local planner latency/completion within the declared bounds; document any configuration/model change before validation.
+- [x] Pass the two failed healthy journey selectors and the real three-profile defect/healthy pilot, then inspect comparison, export and protection evidence.
+- [x] Rebuild final archives with reviewed gate records and examples; check off Phase 11 only after its remaining acceptance succeeds.
 
 Live BYOK behavior, clean Windows/macOS archive acceptance, public GitHub/PyPI/release/site publication, arbitrary replicas, optional vision/Phoenix and human churn calibration remain outside this gate. Faster eligible BYOK inference is an operator option using an operator-owned free account/key, not a tested substitute for the failed local-model checks. Do not paste keys into chat or issues.
 

@@ -359,11 +359,37 @@ def test_mocked_ai_cannot_invent_findings():
 
 
 def test_real_offline_browser_and_dashboard(tmp_path):
+    from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+
     from playwright.async_api import async_playwright
 
     from frictionlab.assessment.render import browser_path
     from frictionlab.launcher import LocalServer
 
+    contacts = []
+
+    class Sentinel(BaseHTTPRequestHandler):
+        def do_GET(self):
+            contacts.append("GET")
+            self.send_response(200)
+            self.end_headers()
+
+        def do_POST(self):
+            contacts.append("POST")
+            self.send_response(200)
+            self.end_headers()
+
+        def log_message(self, *args):
+            pass
+
+    sentinel = ThreadingHTTPServer(("127.0.0.1", 0), Sentinel)
+    sentinel_thread = threading.Thread(target=sentinel.serve_forever, daemon=True)
+    sentinel_thread.start()
+    target = f"http://127.0.0.1:{sentinel.server_port}"
+    document = (
+        HTML.replace("https://sentinel.invalid", target)
+        + f'<iframe src="{target}/frame"></iframe><svg onload="fetch(\'{target}/event\')"></svg>'
+    )
     server = LocalServer(tmp_path)
     server.start()
     for _ in range(200):
@@ -379,10 +405,10 @@ def test_real_offline_browser_and_dashboard(tmp_path):
             errors = []
             page.on("pageerror", lambda error: errors.append(str(error)))
             await page.goto(server.url)
-            await page.locator("#url").fill("https://sentinel.invalid")
+            await page.locator("#url").fill(target)
             await page.locator("#mode").select_option("snapshot")
             await page.locator("#snapshot").set_input_files(
-                {"name": "index.html", "mimeType": "text/html", "buffer": HTML.encode()}
+                {"name": "index.html", "mimeType": "text/html", "buffer": document.encode()}
             )
             await page.locator("#start").click()
             try:
@@ -394,9 +420,13 @@ def test_real_offline_browser_and_dashboard(tmp_path):
                 print("Jobs:", server.app.state.assessments.list())
                 for job in server.app.state.assessments.list():
                     print("Partial report:", server.app.state.assessments.report(job["id"]))
-                destination = Path(__import__("os").environ.get("FRICTIONLAB_APP_EVIDENCE",str(tmp_path)))
+                destination = Path(
+                    __import__("os").environ.get("FRICTIONLAB_APP_EVIDENCE", str(tmp_path))
+                )
                 destination.mkdir(parents=True, exist_ok=True)
-                await page.screenshot(path=str(destination / "failed-dashboard.png"), full_page=True)
+                await page.screenshot(
+                    path=str(destination / "failed-dashboard.png"), full_page=True
+                )
                 raise
             text = await page.locator("#results").inner_text()
             assert "FAILED" in text and "SKIPPED" in text and "Horizontal overflow" in text
@@ -420,6 +450,10 @@ def test_real_offline_browser_and_dashboard(tmp_path):
     finally:
         server.stop()
         server.thread.join(60)
+        sentinel.shutdown()
+        sentinel.server_close()
+        sentinel_thread.join(5)
+    assert contacts == []
     assert not server.thread.is_alive()
     destination = Path(__import__("os").environ.get("FRICTIONLAB_APP_EVIDENCE", str(tmp_path)))
     destination.mkdir(parents=True, exist_ok=True)
@@ -427,3 +461,60 @@ def test_real_offline_browser_and_dashboard(tmp_path):
 
     if destination != tmp_path:
         shutil.copytree(tmp_path, destination / "walkthrough", dirs_exist_ok=True)
+
+
+def test_renderer_deadline_preserves_partial_checks(tmp_path, monkeypatch):
+    from frictionlab.assessment import service as module
+
+    async def blocked(*args):
+        await asyncio.Event().wait()
+
+    monkeypatch.setattr(module, "render_snapshot", blocked)
+    monkeypatch.setattr(module, "RENDER_DEADLINE_SECONDS", 0.01)
+
+    async def run():
+        service = Assessments(tmp_path)
+        id = service.submit(
+            AssessmentRequest(
+                url="https://example.com", mode="snapshot", html="<title>Timeout</title>"
+            )
+        )
+        await service.tasks[id]
+        report = service.report(id)
+        assert report["execution_status"] == "failed"
+        assert report["summary"]["incomplete"] >= 2
+        ids = [c["id"] for c in report["checks"]]
+        assert len(ids) == len(set(ids))
+        assert any(
+            c["id"] == "security.scheme" and c["status"] == "passed" for c in report["checks"]
+        )
+
+    asyncio.run(run())
+
+
+def test_ai_fault_keeps_measured_findings(tmp_path, monkeypatch):
+    from frictionlab.assessment import service as module
+
+    async def rejected(*args):
+        raise ValueError(KEY)
+
+    monkeypatch.setattr(module, "ai_review", rejected)
+
+    async def run():
+        service = Assessments(tmp_path)
+        request = AssessmentRequest(
+            url="https://example.com",
+            mode="snapshot",
+            html="<p>No title or heading</p>",
+            categories=["usability"],
+            ai_enabled=True,
+        )
+        id = service.submit(request)
+        await service.tasks[id]
+        report = service.report(id)
+        assert report["execution_status"] == "completed"
+        assert report["ai_review"]["status"] == "incomplete"
+        assert report["summary"]["failed"] == 2 and report["scores"]["overall"] == 0
+        assert KEY not in json.dumps(report)
+
+    asyncio.run(run())

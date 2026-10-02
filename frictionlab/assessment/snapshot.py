@@ -212,7 +212,7 @@ def uploaded_snapshot(request):
             "mode": "operator_snapshot",
             "target_requests": 0,
             "document_bytes": len(files["index.html"]),
-            "scripts_executed": False,
+            "application_scripts_executed": False,
         },
         [
             "Only the supplied static copy is assessed. Scripts, API calls, forms, frames and live integrations are disabled.",

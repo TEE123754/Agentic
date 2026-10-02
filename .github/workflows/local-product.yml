@@ -44,7 +44,7 @@ jobs:
         run: |
           mkdir -p artifacts/local-workspace
           if [ "${{ inputs.affected }}" = dashboard ]; then
-            .venv/bin/python -m pytest -q tests/phase_12/test_assessment.py::test_real_offline_browser_and_dashboard --junitxml=artifacts/local-workspace/affected.xml
+            .venv/bin/python -m pytest -q tests/phase_12/test_assessment.py::test_real_offline_browser_and_dashboard tests/phase_12/test_assessment.py::test_renderer_deadline_preserves_partial_checks tests/phase_12/test_assessment.py::test_ai_fault_keeps_measured_findings --junitxml=artifacts/local-workspace/affected.xml
           else
             .venv/bin/python -m pytest -q tests/phase_12 tests/phase_10 --junitxml=artifacts/local-workspace/acceptance.xml
           fi

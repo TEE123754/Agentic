@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import asyncio
 import os
 import shutil
 from pathlib import Path
@@ -53,6 +54,7 @@ async def render_snapshot(snapshot, categories, directory, stop):
 
     if not any(c in categories for c in ("responsiveness", "accessibility")):
         return checks, evidence, []
+    stage = "browser startup"
     try:
         from playwright.async_api import async_playwright
 
@@ -108,9 +110,11 @@ async def render_snapshot(snapshot, categories, directory, stop):
 
                 await context.route("**/*", route)
                 page = await context.new_page()
+                stage = "offline document load"
                 await page.goto(
                     "https://snapshot.invalid/index.html", wait_until="load", timeout=15000
                 )
+                stage = "viewport inspection"
                 for width in (360, 768, 1440):
                     if stop.is_set():
                         raise RuntimeError("Cancelled")
@@ -138,7 +142,17 @@ async def render_snapshot(snapshot, categories, directory, stop):
                         ],
                     )
                 if "accessibility" in categories:
-                    result = await inspect_accessibility(page)
+                    stage = "trusted axe accessibility audit"
+                    # Chromium's script-disable switch also suppresses axe's asynchronous
+                    # callbacks. Permit trusted audit execution only after sanitization and
+                    # restrictive CSP have removed/blocked all application scripts.
+                    session = await context.new_cdp_session(page)
+                    await session.send("Emulation.setScriptExecutionDisabled", {"value": False})
+                    try:
+                        result = await asyncio.wait_for(inspect_accessibility(page), timeout=20)
+                    finally:
+                        await session.send("Emulation.setScriptExecutionDisabled", {"value": True})
+                        await session.detach()
                     for violation in result["violations"]:
                         add(
                             "accessibility.axe-" + violation["id"],
@@ -171,7 +185,7 @@ async def render_snapshot(snapshot, categories, directory, stop):
                 cat,
                 "Offline browser inspection",
                 "incomplete",
-                "Browser inspection failed or was cancelled. Install Chrome/Edge or explicitly install Playwright Chromium. No target navigation occurred.",
+                f"Inspection failed or was cancelled at {stage}. Check the installed Chrome/Edge or Playwright Chromium and retry. No target navigation occurred.",
             )
     limits = (
         [

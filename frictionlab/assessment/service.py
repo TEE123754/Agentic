@@ -32,6 +32,9 @@ def save_settings(root, settings):
     temp.replace(root / "app-settings.json")
 
 
+RENDER_DEADLINE_SECONDS = 90
+
+
 async def ai_review(checks, settings):
     if settings.provider == "local":
         raise ValueError("Connect your own cloud provider key and select a model first")
@@ -221,8 +224,9 @@ class Assessments:
                 checks = catalog(request, snapshot)
                 self.progress(id, "running", "Checking offline structure and viewports", 35)
                 if snapshot and not stop.is_set():
-                    more, evidence, limits = await render_snapshot(
-                        snapshot, request.categories, self.path(id), stop
+                    more, evidence, limits = await asyncio.wait_for(
+                        render_snapshot(snapshot, request.categories, self.path(id), stop),
+                        timeout=RENDER_DEADLINE_SECONDS,
                     )
                     checks += more
                     limitations += limits
@@ -253,7 +257,21 @@ class Assessments:
             limitations.append(
                 "Acquisition or assessment could not finish. Check snapshot format, capture policy, browser installation and local permissions; no rejected inputs or credentials are logged."
             )
-            checks += catalog(request)
+            if not checks:
+                checks = catalog(request)
+            else:
+                for category in ("accessibility", "responsiveness"):
+                    if category in request.categories:
+                        checks.append(
+                            Check(
+                                id=category + ".renderer",
+                                category=category,
+                                title="Offline browser inspection",
+                                status="incomplete",
+                                confidence=0,
+                                detail="Offline inspection did not finish within its bounded deadline; previous structural checks remain valid.",
+                            )
+                        )
             checks.append(
                 Check(
                     id="assessment.execution",
