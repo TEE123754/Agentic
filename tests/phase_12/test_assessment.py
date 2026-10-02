@@ -385,7 +385,19 @@ def test_real_offline_browser_and_dashboard(tmp_path):
                 {"name": "index.html", "mimeType": "text/html", "buffer": HTML.encode()}
             )
             await page.locator("#start").click()
-            await page.locator("#results").wait_for(state="visible", timeout=60000)
+            try:
+                await page.locator("#results").wait_for(state="visible", timeout=60000)
+            except Exception:
+                print("Dashboard page errors:", errors)
+                print("Dashboard error:", await page.locator("#error").inner_text())
+                print("Progress:", await page.locator("#progress-detail").inner_text())
+                print("Jobs:", server.app.state.assessments.list())
+                for job in server.app.state.assessments.list():
+                    print("Partial report:", server.app.state.assessments.report(job["id"]))
+                destination = Path(__import__("os").environ.get("FRICTIONLAB_APP_EVIDENCE",str(tmp_path)))
+                destination.mkdir(parents=True, exist_ok=True)
+                await page.screenshot(path=str(destination / "failed-dashboard.png"), full_page=True)
+                raise
             text = await page.locator("#results").inner_text()
             assert "FAILED" in text and "SKIPPED" in text and "Horizontal overflow" in text
             assert "Browser isolation alone" in text

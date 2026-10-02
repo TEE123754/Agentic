@@ -95,4 +95,4 @@ Mind2Web reference scores are separate from actual planner evaluation. Optional 
 
 Acceptance runs once after construction; rerun affected failures only. See [CONTRIBUTING](CONTRIBUTING.md), [SECURITY](SECURITY.md) and the [implementation plan](IMPLEMENTATION_PLAN.md). Project code is licensed under [MIT](LICENSE); third-party components retain their notices.
 
-Release validation is in progress: 250 distinct regression cases pass, while two real local-model journeys and the three-profile real-model pilot remain unresolved on the free CPU runner. FrictionLab 0.1.0 is a development candidate. See [Phase 11 results and remaining work](docs/phase11-validation.md) and [release operations](docs/phase11-release.md).
+The owned-fixture release gate passed: 265 distinct regression cases, healthy real checkout 3/3 completed, with a reviewed partial defect baseline that excludes two planner faults. New assessment/desktop acceptance is in progress. FrictionLab 0.1.0 is a development candidate. See [Phase 11 results and remaining work](docs/phase11-validation.md) and [release operations](docs/phase11-release.md).

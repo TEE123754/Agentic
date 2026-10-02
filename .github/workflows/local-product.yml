@@ -7,6 +7,11 @@ on:
         type: choice
         options: [all, linux, windows]
         default: all
+      affected:
+        description: Initial full phase batch or affected UI repair
+        type: choice
+        options: [all, dashboard]
+        default: all
 permissions:
   contents: read
 concurrency:
@@ -38,7 +43,11 @@ jobs:
       - name: Completed workspace gate and affected BYOK integration
         run: |
           mkdir -p artifacts/local-workspace
-          .venv/bin/python -m pytest -q tests/phase_12 tests/phase_10 --junitxml=artifacts/local-workspace/acceptance.xml
+          if [ "${{ inputs.affected }}" = dashboard ]; then
+            .venv/bin/python -m pytest -q tests/phase_12/test_assessment.py::test_real_offline_browser_and_dashboard --junitxml=artifacts/local-workspace/affected.xml
+          else
+            .venv/bin/python -m pytest -q tests/phase_12 tests/phase_10 --junitxml=artifacts/local-workspace/acceptance.xml
+          fi
           .venv/bin/python -I scripts/accept_local_workspace.py
           cp /tmp/frictionlab-installed-acceptance.json artifacts/local-workspace/
           sha256sum dist/* > dist/SHA256SUMS

@@ -157,6 +157,16 @@ Phases 0–6 have completed their documented owned-fixture gates. Phases 7–10 
 
 **Remaining:** No required work for this declared gate. Live account/model API smoke and actual model behavior need the operator's own eligible free key; clean Windows/macOS archive installation, public publication, arbitrary isolated replicas and human calibration remain unverified. Phase 11 consolidated release validation remains unchecked. [Validation](phase10-validation.md); [setup guide](phase10-installation.md).
 
-## Phase 11 - In progress (release gate not met)
+## Phase 11 - Complete for the owned-fixture release gate
 
 Built release operations, workspace-aware setup, license/pin review, full-regression/installed-wheel workflow and real three-profile pilot. The single full regression (https://github.com/TEE123754/Agentic/actions/runs/36896802260) returned 249 passed and 4 failed in 1615.56 seconds. Two healthy planner journeys and the pilot missed runtime limits on the free CPU runner; pilot reports remain partial with zero sentinel traffic, unchanged data and no abandonment diagnosis. A legacy-manifest recovery KeyError is repaired; the affected follow-up (https://github.com/TEE123754/Agentic/actions/runs/36901248316) passed 20/20 in 41.50 seconds plus installed-wheel/browser/landing acceptance. Report/screenshot/license/archive review and illustrative partial examples are complete. Overall 250 distinct checks pass and three real-model cases remain unresolved. Remaining: resolve real planner latency/completion, pass those three selectors and rebuild the final candidate. See [validation record](phase11-validation.md). Phase 11 stays unchecked. No laptop models/containers installed, no public release, and external sites stay blocked.
+
+### Final Phase 11 receipt
+
+[36956658903](https://github.com/TEE123754/Agentic/actions/runs/36956658903) passed 71/71 in 1319.509 seconds plus installed-wheel acceptance; 265 distinct regression cases pass across full/affected windows. Healthy real checkout: ready, 3/3 completed/no missing evidence. Defect baseline: partial, one grounded mobile abandonment, two excluded planner faults. Reviewed latest reports, comparison, exports, portable screenshot, archives and cleanup; zero sentinel requests and unchanged data. Earlier unresolved statements are historical. See [complete validation receipt](phase11-validation.md).
+
+## Phases 12–13 - Built; affected acceptance remaining
+
+The shared FastAPI/vanilla dashboard, six-category static catalog, zero-contact URL/snapshots, separately approved single-GET capture, offline renderer, axe/viewports, scores/coverage/confidence, progress/cancel/recovery and JSON/MD/HTML/ZIP reports are built. CLI `frictionlab start` prints localhost; Tkinter desktop provides masked key setup and service launch/open/stop. Keys use process memory or explicitly selected native OS keyring, with no plaintext fallback. AI only suggests fixes for measured findings; active/dynamic checks need a verified replica or source/access and are skipped here.
+
+[36959441855](https://github.com/TEE123754/Agentic/actions/runs/36959441855) returned 51 passed/one Linux dashboard timeout. Windows native/package receipt is under review. Neither phase is ticked until required acceptance succeeds. See [setup and scope](local-assessment.md) and the implementation plan. No laptop browser/model tests, package installs or containers run for these phases.

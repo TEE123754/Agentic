@@ -27,6 +27,7 @@ class LocalServer:
                 host="127.0.0.1",
                 port=self.port,
                 access_log=False,
+                log_config=None,  # Frozen GUI apps have no stdout/stderr for colored formatters.
                 log_level="warning",
                 timeout_graceful_shutdown=55,
             )
