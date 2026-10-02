@@ -9,6 +9,10 @@ import sys
 from pathlib import Path
 
 root = Path(__file__).resolve().parents[1]
+manifest = json.loads((root / "configs/axe-manifest.json").read_text(encoding="utf-8"))
+script = root / manifest["script"]
+if hashlib.sha256(script.read_bytes()).hexdigest() != manifest["script_sha256"]:
+    raise ValueError("Pinned axe resource differs from its manifest; check Git line endings")
 command = [
     sys.executable,
     "-m",

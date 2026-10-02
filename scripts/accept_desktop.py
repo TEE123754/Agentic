@@ -1,5 +1,6 @@
 """Verify the extracted Windows download rather than the source checkout."""
 
+import hashlib
 import json
 import shutil
 import subprocess
@@ -13,7 +14,10 @@ with tempfile.TemporaryDirectory() as temporary:
     with zipfile.ZipFile(root / "dist/FrictionLab-windows-x64.zip") as archive:
         names = archive.namelist()
         assert any(n.endswith("frictionlab/web/index.html") for n in names)
-        assert any(n.endswith("vendor/axe-core/axe.min.js") for n in names)
+        axe_path = next(n for n in names if n.endswith("vendor/axe-core/axe.min.js"))
+        manifest_path = next(n for n in names if n.endswith("configs/axe-manifest.json"))
+        manifest = json.loads(archive.read(manifest_path))
+        assert hashlib.sha256(archive.read(axe_path)).hexdigest() == manifest["script_sha256"]
         assert "FrictionLab/LICENSE" in names and "FrictionLab/THIRD_PARTY_NOTICES.md" in names
         assert not any(n.endswith((".gguf", ".env", "app-settings.json")) for n in names)
         archive.extractall(destination)
